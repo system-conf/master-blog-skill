@@ -1,0 +1,1256 @@
+<title>Master Blog Skill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#050505; --bg2:#0A0A0A; --card:#101010; --card2:#151515;
+  --line:#242424; --line2:#2E2A27; --code:#0B0B0B; --codeline:#202020;
+  --or:#FF6A00; --or2:#FF7A00; --or3:#FF9A4D; --or-dim:rgba(255,106,0,.12); --or-dim2:rgba(255,106,0,.06);
+  --fg:#FFFFFF; --fg2:#A8A29E; --fg3:#78716C;
+  --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171;
+  --d:Archivo,"Helvetica Neue",Arial,sans-serif;
+  --b:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --m:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:14px; --rb:10px;
+  --w:1240px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--b);font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.045) 1px, transparent 0);
+  background-size:34px 34px;mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 75%)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--or);outline-offset:2px;border-radius:4px}
+h1,h2,h3,h4{font-family:var(--d);font-weight:700;letter-spacing:-.022em;text-wrap:balance;margin:0;line-height:1.15}
+p{margin:0}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.mono{font-family:var(--m)}
+.eyebrow{font-family:var(--m);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg3)}
+.acc{color:var(--or)}
+
+/* ---------- top bar ---------- */
+header.top{position:sticky;top:0;z-index:60;background:rgba(5,5,5,.72);backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--line)}
+.topin{max-width:var(--w);margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;gap:26px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--d);font-weight:700;letter-spacing:-.02em;font-size:15px}
+.logo .sq{width:26px;height:26px;border-radius:7px;background:var(--or);color:#0A0500;display:grid;place-items:center;
+  font-family:var(--m);font-weight:700;font-size:12px;flex:none}
+nav.main{display:flex;gap:4px;margin-left:6px}
+nav.main a{font-size:13.5px;color:var(--fg2);padding:7px 11px;border-radius:8px;font-weight:500}
+nav.main a:hover{color:var(--fg);background:#141414}
+nav.main a.on{color:var(--or);background:var(--or-dim)}
+.topright{margin-left:auto;display:flex;align-items:center;gap:10px}
+.searchbtn{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--bg2);border-radius:var(--rb);
+  padding:6px 8px 6px 12px;color:var(--fg3);font-size:13px;min-width:190px}
+.searchbtn:hover{border-color:var(--line2);color:var(--fg2)}
+.kbd{font-family:var(--m);font-size:10.5px;border:1px solid var(--line);border-radius:5px;padding:2px 5px;color:var(--fg3);background:#0F0F0F}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:var(--rb);padding:9px 15px;font-size:13.5px;font-weight:600;
+  border:1px solid var(--line);background:var(--card);transition:.16s}
+.btn:hover{border-color:var(--line2);background:var(--card2)}
+.btn.pri{background:var(--or);border-color:var(--or);color:#100600}
+.btn.pri:hover{background:var(--or2);border-color:var(--or2)}
+.btn.sm{padding:6px 11px;font-size:12.5px}
+.burger{display:none}
+
+/* ---------- hero ---------- */
+.hero{padding:74px 0 54px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;left:50%;top:-320px;width:900px;height:520px;transform:translateX(-50%);
+  background:radial-gradient(ellipse at center, rgba(255,106,0,.13), transparent 62%);pointer-events:none}
+.badge:hover{border-color:#3A2A18;color:var(--fg)}
+.badge{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--bg2);border-radius:999px;
+  padding:5px 13px 5px 9px;font-family:var(--m);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--fg2)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--or);box-shadow:0 0 0 3px var(--or-dim)}
+h1.big{font-size:clamp(40px,6.4vw,74px);font-weight:800;letter-spacing:-.038em;line-height:1.02;margin:24px 0 0}
+h1.big em{font-style:normal;color:var(--or)}
+.lede{color:var(--fg2);font-size:17px;max-width:62ch;margin-top:20px}
+.ctarow{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.herogrid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+
+/* terminal */
+.term{background:var(--code);border:1px solid var(--codeline);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 24px 60px -30px rgba(0,0,0,.9)}
+.termbar{display:flex;align-items:center;gap:7px;padding:10px 13px;border-bottom:1px solid var(--codeline);background:#0E0E0E}
+.tdot{width:9px;height:9px;border-radius:50%;background:#2A2A2A}
+.termbar span{margin-left:8px;font-family:var(--m);font-size:11px;color:var(--fg3)}
+.termbody{padding:16px 18px;font-family:var(--m);font-size:12.5px;line-height:1.85;overflow-x:auto}
+.termbody .p{color:var(--or)}
+.termbody .c{color:var(--fg3)}
+.termbody .g{color:var(--ok)}
+.termbody .w{color:var(--fg)}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.stat{padding:26px 24px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:none}
+.stat b{display:block;font-family:var(--d);font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1;
+  font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:7px;font-family:var(--m);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--fg3)}
+
+/* ---------- sections ---------- */
+section{padding:62px 0;border-bottom:1px solid var(--line)}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+.shead h2{font-size:clamp(24px,3vw,32px);letter-spacing:-.03em}
+.shead p{color:var(--fg2);margin-top:9px;max-width:60ch;font-size:15px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;transition:.18s}
+a.card:hover,.card.hov:hover{border-color:#3A2A18;background:var(--card2);transform:translateY(-2px)}
+.card h3{font-size:17px;letter-spacing:-.02em}
+.card p{color:var(--fg2);font-size:14px;margin-top:9px}
+.tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.tag{font-family:var(--m);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--fg3);
+  border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+.tag.o{color:var(--or3);border-color:#3A2A18;background:var(--or-dim2)}
+
+/* before / after */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ba .col{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.ba .h{padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--m);font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--fg3);display:flex;align-items:center;gap:9px}
+.ba .col.after .h{color:var(--or);background:var(--or-dim2)}
+.ba ul{margin:0;padding:16px 18px 18px 34px;color:var(--fg2);font-size:14px;display:grid;gap:9px}
+.ba .col.after ul{color:#E7E5E4}
+
+/* pipeline */
+.pipe{display:grid;gap:0;counter-reset:ph}
+.step{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:15px 0;border-bottom:1px dashed var(--line);position:relative}
+.step:last-child{border-bottom:none}
+.step .no{font-family:var(--m);font-size:12px;color:var(--fg3);padding-top:3px;letter-spacing:.06em}
+.step.gate .no{color:var(--or)}
+.step h4{font-size:15.5px;letter-spacing:-.015em}
+.step p{color:var(--fg2);font-size:13.5px;margin-top:4px}
+.gatechip{display:inline-block;margin-left:9px;font-family:var(--m);font-size:10px;letter-spacing:.1em;color:#100600;
+  background:var(--or);border-radius:5px;padding:2px 6px;vertical-align:2px}
+
+/* ---------- doc layout ---------- */
+.doc{display:grid;grid-template-columns:214px minmax(0,1fr) 250px;gap:40px;padding:38px 0 80px;align-items:start}
+.rail{position:sticky;top:80px;font-size:13.5px}
+.rail .lbl{font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3);
+  padding:0 0 10px}
+.rail a{display:block;padding:6px 11px;border-radius:8px;color:var(--fg2);border-left:2px solid transparent}
+.rail a:hover{color:var(--fg);background:#121212}
+.rail a.on{color:var(--or);border-left-color:var(--or);background:var(--or-dim2)}
+.side{position:sticky;top:80px;display:grid;gap:14px}
+.metabox{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+.metabox .mh{padding:11px 15px;border-bottom:1px solid var(--line);font-family:var(--m);font-size:10.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--fg3)}
+.mrow{display:flex;justify-content:space-between;gap:12px;padding:9px 15px;font-size:13px;border-bottom:1px solid #1A1A1A}
+.mrow:last-child{border-bottom:none}
+.mrow span{color:var(--fg3)}
+.mrow b{font-weight:600;font-family:var(--m);font-size:12px}
+.prose{max-width:74ch}
+.prose h2{font-size:26px;letter-spacing:-.028em;margin:44px 0 14px;scroll-margin-top:80px}
+.prose h2:first-child{margin-top:0}
+.prose h3{font-size:18px;margin:28px 0 10px;letter-spacing:-.02em}
+.prose p{color:#D6D3D1;margin:0 0 14px}
+.prose ul,.prose ol{color:#D6D3D1;margin:0 0 16px;padding-left:22px;display:grid;gap:7px}
+.prose li::marker{color:var(--or3)}
+.prose strong{color:#fff;font-weight:700}
+.prose code{font-family:var(--m);font-size:.88em;background:#151312;border:1px solid var(--codeline);
+  border-radius:5px;padding:1.5px 5px;color:var(--or3)}
+.prose table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 18px}
+.prose th{text-align:left;font-family:var(--m);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fg3);border-bottom:1px solid var(--line);padding:9px 12px;font-weight:500}
+.prose td{border-bottom:1px solid #191919;padding:10px 12px;color:#D6D3D1;vertical-align:top}
+.prose tr:hover td{background:#0C0C0C}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin:0 0 20px}
+.tblwrap table{margin:0}
+.tblwrap th,.tblwrap td{padding:10px 14px}
+.prose a.xlink{color:var(--or3);border-bottom:1px solid rgba(255,154,77,.3);white-space:nowrap}
+.prose a.xlink:hover{color:var(--or);border-bottom-color:var(--or)}
+.prose a.xlink svg{margin-left:3px;opacity:.6;vertical-align:0}
+.prose td a.xlink{white-space:normal}
+.freshbar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;margin:0 0 26px}
+.freshbar div{background:var(--card);padding:14px 16px}
+.freshbar b{display:block;font-family:var(--d);font-size:17px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.freshbar span{display:block;font-family:var(--m);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--fg3);margin-top:5px}
+.freshbar .ok b{color:var(--ok)}
+@media (max-width:720px){.freshbar{grid-template-columns:1fr 1fr}}
+.prose pre.fence{font-family:var(--m);font-size:12.4px;line-height:1.7;background:var(--code);
+  border:1px solid var(--codeline);border-radius:var(--rb);padding:14px 16px;margin:0 0 18px;
+  overflow-x:auto;color:var(--or3)}
+.callout{border:1px solid var(--line);border-left:2px solid var(--or);border-radius:var(--rb);background:var(--or-dim2);
+  padding:14px 18px;margin:0 0 18px}
+.callout p:last-child{margin-bottom:0}
+
+/* code viewer */
+.viewer{border:1px solid var(--codeline);border-radius:var(--r);background:var(--code);overflow:hidden;margin:0 0 22px}
+.vtabs{display:flex;gap:2px;padding:8px 8px 0;border-bottom:1px solid var(--codeline);background:#0E0E0E;overflow-x:auto}
+.vtab{font-family:var(--m);font-size:11.5px;padding:7px 12px;border-radius:8px 8px 0 0;color:var(--fg3);white-space:nowrap;
+  border:1px solid transparent;border-bottom:none}
+.vtab:hover{color:var(--fg2)}
+.vtab.on{color:var(--or);background:var(--code);border-color:var(--codeline)}
+.vbar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--codeline);background:#0C0C0C}
+.vbar .fname{font-family:var(--m);font-size:11.5px;color:var(--fg3);margin-right:auto}
+.vcode{max-height:520px;overflow:auto;font-family:var(--m);font-size:12.3px;line-height:1.72;padding:14px 0}
+.vcode.full{max-height:none}
+.vcode table{border-collapse:collapse;width:100%}
+.vcode td.ln{width:1%;text-align:right;padding:0 14px 0 16px;color:#3F3F3F;user-select:none;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.vcode td.lc{padding-right:18px;white-space:pre;color:#C9C5C2}
+.vcode.wrap td.lc{white-space:pre-wrap;word-break:break-word}
+.vcode tr:hover td.lc{background:#0F0F0F}
+.hh{color:var(--or);font-weight:500}
+.hf{color:#8B8580}
+.hc{color:var(--or3)}
+.hq{color:#6B6560}
+.hl{color:#D6D3D1}
+.hb{color:#fff}
+
+/* prompt block */
+.pblock{border:1px solid var(--codeline);border-radius:var(--rb);background:var(--code);margin:0 0 14px;overflow:hidden}
+.pblock .ph{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:1px solid var(--codeline);
+  font-family:var(--m);font-size:11px;color:var(--fg3)}
+.pblock pre{margin:0;padding:14px 16px;font-family:var(--m);font-size:12.4px;line-height:1.72;color:#D6D3D1;
+  white-space:pre-wrap;overflow-x:auto}
+
+/* term list */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.chip{font-family:var(--m);font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:6px 13px;color:var(--fg2)}
+.chip:hover{border-color:var(--line2);color:var(--fg)}
+.chip.on{background:var(--or);border-color:var(--or);color:#100600;font-weight:500}
+.tinput{flex:1;min-width:220px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--rb);
+  padding:10px 14px;color:var(--fg);font-size:14px;font-family:var(--b)}
+.tinput:focus{outline:none;border-color:var(--or)}
+.tinput::placeholder{color:var(--fg3)}
+.termcard{display:block;position:relative}
+.termcard .en{font-family:var(--m);font-size:11px;color:var(--fg3);margin-top:3px}
+.termcard .st{color:var(--fg2);font-size:13.5px;margin-top:11px;display:-webkit-box;-webkit-line-clamp:3;
+  -webkit-box-orient:vertical;overflow:hidden}
+.star{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
+  color:#3F3F3F;font-size:14px;z-index:2}
+.star:hover{background:#1A1A1A;color:var(--fg2)}
+.star.on{color:var(--or)}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:46px 24px;text-align:center;color:var(--fg3)}
+.empty b{display:block;color:var(--fg);font-family:var(--d);font-size:17px;margin-bottom:7px}
+
+/* term detail blocks */
+.tdblock{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:20px 22px;margin:0 0 14px}
+.tdblock > .lbl{font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--or);
+  display:block;margin-bottom:12px}
+.tdblock.plain > .lbl{color:var(--fg3)}
+.tdblock p:last-child{margin-bottom:0}
+.srclink{display:block;font-size:12.5px;line-height:1.45;color:var(--fg2);border-left:2px solid #2E2A27;padding-left:10px}
+.srclink:hover{color:var(--or3);border-left-color:var(--or)}
+.srclink svg{opacity:.5;margin-left:3px;vertical-align:-1px}
+.relrow{display:flex;gap:8px;flex-wrap:wrap}
+.relrow a{font-family:var(--m);font-size:12px;border:1px solid var(--line);border-radius:8px;padding:6px 11px;color:var(--fg2)}
+.relrow a:hover{border-color:#3A2A18;color:var(--or3);background:var(--or-dim2)}
+
+/* install drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(3px);z-index:90;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--bg2);border-left:1px solid var(--line);
+  z-index:91;transform:translateX(102%);transition:transform .26s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.dhead{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:16px}
+.dhead h3{font-size:20px;letter-spacing:-.025em}
+.dhead p{color:var(--fg2);font-size:13.5px;margin-top:5px}
+.dbody{padding:22px 24px 40px;overflow-y:auto;display:grid;gap:16px}
+.opt{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+.opt .oh{padding:13px 16px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
+.opt .num{font-family:var(--m);font-size:11px;width:22px;height:22px;border-radius:6px;background:var(--or-dim);
+  color:var(--or);display:grid;place-items:center;flex:none}
+.opt .oh b{font-size:14px;font-family:var(--d);letter-spacing:-.01em}
+.opt .ob{padding:14px 16px;font-size:13.5px;color:var(--fg2);display:grid;gap:11px}
+.opt code.cmd{display:block;font-family:var(--m);font-size:11.8px;background:var(--code);border:1px solid var(--codeline);
+  border-radius:8px;padding:10px 12px;color:var(--or3);overflow-x:auto;white-space:pre}
+.close{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;
+  color:var(--fg2);margin-left:auto;flex:none}
+.close:hover{background:var(--card2);color:var(--fg)}
+
+/* command palette */
+.cp{position:fixed;top:14vh;left:50%;transform:translateX(-50%) scale(.97);width:min(620px,92vw);background:#0C0C0C;
+  border:1px solid var(--line2);border-radius:16px;z-index:95;overflow:hidden;opacity:0;pointer-events:none;
+  transition:.18s;box-shadow:0 40px 90px -30px #000}
+.cp.on{opacity:1;pointer-events:auto;transform:translateX(-50%) scale(1)}
+.cpin{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.cpin input{flex:1;background:none;border:none;color:var(--fg);font-size:16px;font-family:var(--b)}
+.cpin input:focus{outline:none}
+.cpin input::placeholder{color:var(--fg3)}
+.cplist{max-height:52vh;overflow-y:auto;padding:8px}
+.cpgroup{font-family:var(--m);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--fg3);
+  padding:12px 12px 6px}
+.cpitem{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:14px}
+.cpitem .k{font-family:var(--m);font-size:10.5px;color:var(--fg3);border:1px solid var(--line);border-radius:5px;
+  padding:2px 6px;flex:none}
+.cpitem .sub{color:var(--fg3);font-size:12.5px;margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:44%}
+.cpitem.sel{background:var(--or-dim);color:var(--or)}
+.cpitem.sel .k{border-color:#3A2A18}
+.cpfoot{border-top:1px solid var(--line);padding:9px 16px;display:flex;gap:16px;font-size:11.5px;color:var(--fg3);
+  font-family:var(--m)}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--or);color:#100600;
+  font-weight:600;font-size:13.5px;padding:10px 20px;border-radius:999px;z-index:99;opacity:0;pointer-events:none;
+  transition:.2s;box-shadow:0 14px 40px -12px rgba(255,106,0,.6)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* footer */
+footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
+.fgrid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:32px}
+.fgrid h5{font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3);
+  margin:0 0 12px;font-weight:500}
+.fgrid a{display:block;padding:3px 0;color:var(--fg2)}
+.fgrid a:hover{color:var(--or)}
+.fbot{margin-top:40px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font-family:var(--m);font-size:11.5px}
+
+@media (max-width:1080px){
+  .doc{grid-template-columns:minmax(0,1fr);gap:26px}
+  .rail,.side{position:static}
+  .side{grid-template-columns:1fr 1fr;display:grid}
+  .rail{display:none}
+}
+@media (max-width:860px){
+  .herogrid{grid-template-columns:1fr;gap:34px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}
+  .grid3,.grid2,.ba,.fgrid{grid-template-columns:1fr}
+  nav.main{display:none}
+  .searchbtn{min-width:0}
+  .searchbtn .lbl,.searchbtn .kbd{display:none}
+  .btn .hidesm{display:none}
+  .side{grid-template-columns:1fr}
+  .fgrid{gap:26px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+.fade{animation:fade .32s cubic-bezier(.2,.6,.3,1) both}
+@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+</style>
+
+<header class="top">
+  <div class="topin">
+    <a class="logo" href="#/"><span class="sq">&gt;_</span> master-blog</a>
+    <nav class="main" id="nav">
+      <a href="#/skill">Skill</a>
+      <a href="#/nasil-calisir">Nasıl Çalışır</a>
+      <a href="#/terimler">Terimler</a>
+      <a href="#/kurulum">Kurulum</a>
+      <a href="#/kaynaklar">Kaynaklar</a>
+    </nav>
+    <div class="topright">
+      <button class="searchbtn" id="openCp" aria-label="Ara">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="lbl">Skill ve terim ara</span>
+        <span class="kbd" style="margin-left:auto">⌘K</span>
+      </button>
+      <button class="btn pri" id="openInstall">Claude'a Ekle</button>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a class="logo" href="#/"><span class="sq">&gt;_</span> master-blog</a>
+        <p style="color:var(--fg2);margin-top:14px;max-width:38ch">Claude için üretilmiş, uçtan uca SEO/GEO blog üretim skill'i — ve arkasındaki terminolojinin tam sözlüğü.</p>
+      </div>
+      <div><h5>Skill</h5>
+        <a href="#/skill">Genel bakış</a><a href="#/skill#dosyalar">SKILL.md</a>
+        <a href="#/skill#promptlar">Örnek promptlar</a><a href="#/kurulum">Kurulum</a></div>
+      <div><h5>Öğren</h5>
+        <a href="#/nasil-calisir">Skill nasıl çalışır</a><a href="#/terimler">Terim sözlüğü</a>
+        <a href="#/terim/kanibalizasyon">Kanibalizasyon</a><a href="#/kaynaklar">Kaynaklar</a></div>
+      <div><h5>Kategoriler</h5>
+        <a href="#/terimler?k=SEO">SEO</a><a href="#/terimler?k=Claude">Claude &amp; AI</a>
+        <a href="#/terimler?k=Teknik">Teknik</a><a href="#/terimler?k=İçerik">İçerik</a></div>
+    </div>
+    <div class="fbot">
+      <span>v1.0 · MIT Lisansı · Açık kaynak</span>
+      <span>Claude kullanıcıları için yazıldı.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Claude'a Ekle"></aside>
+<div class="cp" id="cp" role="dialog" aria-modal="true" aria-label="Komut paleti">
+  <div class="cpin">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fg3)" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="cpq" placeholder="Skill, terim, sayfa ara…" autocomplete="off" spellcheck="false">
+    <span class="kbd">ESC</span>
+  </div>
+  <div class="cplist" id="cplist"></div>
+  <div class="cpfoot"><span>↑↓ gez</span><span>↵ aç</span><span>esc kapat</span></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/*__DATA__*/
+
+/* ============ yardımcılar ============ */
+const $ = (s,r=document)=>r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inFrame = (()=>{ try{ return window.self !== window.top; }catch(e){ return true; } })();
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),1900); }
+async function copy(text,msg){
+  try{ await navigator.clipboard.writeText(text); toast(msg||'Kopyalandı'); }
+  catch(e){
+    const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast(msg||'Kopyalandı'); }catch(_){ toast('Kopyalanamadı — metni elle seçin'); }
+    ta.remove();
+  }
+}
+const DLP = (typeof claude!=='undefined' && claude && typeof claude.use==='function')
+  ? claude.use('downloads').catch(()=>null) : Promise.resolve(null);
+async function download(name,text){
+  const dl = await DLP;
+  if(dl){
+    try{ await dl.save({filename:name, data:text}); toast(name+' kaydedildi'); }
+    catch(err){
+      const c = err && err.code;
+      if(c==='declined') toast('İndirme iptal edildi');
+      else if(c==='rate_limited') toast('Bir indirme penceresi zaten açık');
+      else openInstall('dl:'+name);
+    }
+    return;
+  }
+  if(inFrame){ openInstall('dl:'+name); return; }
+  const b=new Blob([text],{type:'text/markdown;charset=utf-8'});
+  const u=URL.createObjectURL(b), a=document.createElement('a');
+  a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),1500);
+  toast(name+' indiriliyor');
+}
+
+/* mini markdown: paragraf, liste, tablo, **kalın**, `kod` */
+function md(src){
+  const inline = t => esc(t)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+      '<a class="xlink" href="$2" target="_blank" rel="noopener noreferrer">$1<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  const lines = String(src).split('\n');
+  let out='', i=0;
+  while(i<lines.length){
+    const l=lines[i];
+    if(!l.trim()){ i++; continue; }
+    if(/^#{2,6}\s/.test(l)){
+      const lvl=(l.match(/^#+/)[0].length); const txt=l.replace(/^#+\s*/,'');
+      const tag=lvl<=2?'h2':lvl===3?'h3':'h4';
+      const id=txt.toLowerCase().replace(/[çğıöşü]/g,c=>({'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u'}[c]))
+        .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      out+='<'+tag+' id="'+id+'">'+inline(txt)+'</'+tag+'>'; i++; continue;
+    }
+    if(/^---+\s*$/.test(l)){ out+='<hr style="border:none;border-top:1px solid var(--line);margin:32px 0">'; i++; continue; }
+    if(/^>\s?/.test(l)){
+      const buf=[]; while(i<lines.length && /^>\s?/.test(lines[i])){ buf.push(lines[i].replace(/^>\s?/,'')); i++; }
+      out+='<div class="callout">'+md(buf.join('\n'))+'</div>'; continue;
+    }
+    if(/^\s*```/.test(l)){
+      i++; const buf=[];
+      while(i<lines.length && !/^\s*```/.test(lines[i])){ buf.push(lines[i]); i++; }
+      i++; out+='<pre class="fence">'+esc(buf.join('\n'))+'</pre>'; continue;
+    }
+    if(/^\|/.test(l)){
+      const rows=[]; while(i<lines.length && /^\|/.test(lines[i])){ rows.push(lines[i]); i++; }
+      const cells=r=>r.replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
+      const head=cells(rows[0]); const body=rows.slice(2).map(cells);
+      out+='<div class="tblwrap"><table><thead><tr>'+head.map(h=>'<th>'+inline(h)+'</th>').join('')+'</tr></thead><tbody>'
+        + body.map(r=>'<tr>'+r.map(c=>'<td>'+inline(c)+'</td>').join('')+'</tr>').join('') + '</tbody></table></div>';
+      continue;
+    }
+    if(/^\s*[-*]\s+/.test(l)){
+      const items=[]; while(i<lines.length && /^\s*[-*]\s+/.test(lines[i])){ items.push(lines[i].replace(/^\s*[-*]\s+/,'')); i++; }
+      out+='<ul>'+items.map(t=>'<li>'+inline(t)+'</li>').join('')+'</ul>'; continue;
+    }
+    if(/^\s*\d+\.\s+/.test(l)){
+      const items=[]; while(i<lines.length && /^\s*\d+\.\s+/.test(lines[i])){ items.push(lines[i].replace(/^\s*\d+\.\s+/,'')); i++; }
+      out+='<ol>'+items.map(t=>'<li>'+inline(t)+'</li>').join('')+'</ol>'; continue;
+    }
+    const buf=[]; while(i<lines.length && lines[i].trim() && !/^\||^\s*[-*]\s+|^\s*\d+\.\s+/.test(lines[i])){ buf.push(lines[i]); i++; }
+    out+='<p>'+inline(buf.join(' '))+'</p>';
+  }
+  return out;
+}
+
+/* dosya vurgulama */
+const PYKW=/\b(def|class|return|import|from|if|elif|else|for|while|try|except|finally|with|as|in|is|not|and|or|None|True|False|lambda|pass|break|continue|raise|assert|global)\b/g;
+function hlPy(line){
+  const e = esc(line);
+  if(/^\s*#/.test(line)) return '<span class="hf">'+e+'</span>';
+  const i=e.indexOf('#');
+  const code = i>=0 ? e.slice(0,i) : e, rest = i>=0 ? e.slice(i) : '';
+  return '<span class="hl">'+code.replace(PYKW,'<span class="hh">$1</span>')+'</span>'
+       + (rest?'<span class="hf">'+rest+'</span>':'');
+}
+function hl(line){
+  if(FILES[VF] && FILES[VF].name.endsWith('.py')) return hlPy(line);
+  const e = esc(line);
+  if(/^---\s*$/.test(line)) return '<span class="hf">'+e+'</span>';
+  if(/^#{1,6}\s/.test(line)) return '<span class="hh">'+e+'</span>';
+  if(/^\s*(\||```)/.test(line)) return '<span class="hq">'+e+'</span>';
+  if(/^\s*[-*]\s|^\s*\d+\.\s/.test(line)) return e.replace(/^(\s*(?:[-*]|\d+\.)\s)/,'<span class="hc">$1</span>');
+  if(/^[a-zA-Z-]+:/.test(line)) return e.replace(/^([a-zA-Z-]+:)/,'<span class="hc">$1</span>');
+  return '<span class="hl">'+e+'</span>';
+}
+function codeTable(text){
+  return '<table>'+text.split('\n').map((l,n)=>
+    '<tr><td class="ln">'+(n+1)+'</td><td class="lc">'+(hl(l)||'&nbsp;')+'</td></tr>').join('')+'</table>';
+}
+
+/* yer imleri */
+const BM = {
+  key:'mb_favs',
+  get(){ try{ return JSON.parse(localStorage.getItem(this.key)||'[]'); }catch(e){ return []; } },
+  has(s){ return this.get().includes(s); },
+  toggle(s){ let a=this.get(); a=a.includes(s)?a.filter(x=>x!==s):a.concat(s);
+    try{ localStorage.setItem(this.key,JSON.stringify(a)); }catch(e){} return a.includes(s); }
+};
+
+/* ============ içerik ============ */
+const PHASES=[
+ {n:'00',t:'Proje keşfi',d:'Framework, içerik kaynağı, frontmatter şeması, sitemap/robots, yönlendirme tanımları ve içerik envanteri çıkarılır. Hiçbir şey varsayılmaz.'},
+ {n:'01',t:'Konu ve veri gerekçesi',d:'Aday konular Search Console, reklam arama terimleri, kapsam boşluğu ve gerçek müşteri sorularından üretilir. "Güzel konu" gerekçe sayılmaz.'},
+ {n:'02',t:'Arama niyeti ve SERP',d:'Sorgu dört niyet sınıfından biriyle etiketlenir; SERP formatı okunur. Niyet işlemselse blog değil ticari sayfa önerilir.'},
+ {n:'03',t:'Kanibalizasyon kapısı',d:'Planlanan H2 iskeleti mevcut içerikle karşılaştırılır, örtüşme oranı sayıyla hesaplanır. %50 ve üzeri kanibaldir.',g:1},
+ {n:'04',t:'Brief ve onay',d:'15 satırlık brief: hedef sorgu, niyet, vaat, H2 iskeleti, iç link hedefleri, kanıt kaynakları, kelime bandı. Onaysız gövde yazılmaz.'},
+ {n:'05',t:'SEO katmanı',d:'Title, meta, hiyerarşi, ilk 100 kelime, semantik alan, okunabilirlik ve kalıcı slug. Kelime istifleme yasak.'},
+ {n:'06',t:'GEO katmanı',d:'Answer-first cümleler, bağımsız tanımlar, soru başlıkları, zorunlu tablo, somut sayılar ve özet bölümü — alıntılanabilirlik için.'},
+ {n:'07',t:'E-E-A-T katmanı',d:'Birinci elden deneyim, ölçülebilir iddia, isimli yazar, kaynak ve tutarlılık. Uydurma deneyim yazılmaz.'},
+ {n:'08',t:'Bağlantı mimarisi',d:'4-6 tanımlayıcı iç bağlantı, çeşitli anchor metinleri, ters yön link ve curl ile doğrulanmış 0-2 dış kaynak.'},
+ {n:'09',t:'Teknik paket',d:'Frontmatter şemaya birebir, görsel ve alt metin, BlogPosting schema, gerçek güncelleme tarihi.'},
+ {n:'10',t:'Öz denetim kapısı',d:'40 maddelik kontrol listesi madde madde çalıştırılır. Blokaj maddesi varsa yayın durur.',g:1},
+ {n:'11',t:'Yayın ve canlı doğrulama',d:'Build, deploy, URL 200 kontrolü, sitemap doğrulaması, indeksleme talebi ve tek ekranlık yayın raporu.'},
+ {n:'12',t:'Ölçüm ve tazeleme',d:'28 gün sonra gösterim/tıklama/pozisyon okunur; karar tablosuna göre başlık revizyonu, derinleştirme veya niyet düzeltmesi yapılır.'}
+];
+const PROMPTS=[
+ {t:'Sıfırdan yazı',p:'master-blog skill\'ini kullan.\n\nHedef kelime: oyun grubu güvenlik mesafesi\n\nÖnce projeyi keşfet, sonra kanibalizasyon kapısını çalıştır.\nBrief\'i bana onaya getir; onaylamadan gövdeyi yazma.'},
+ {t:'Veriden konu seçimi',p:'master-blog skill\'iyle bu ay için 3 içerik adayı çıkar.\n\nAdayları Search Console verisindeki 8-30 pozisyon bandından seç.\nHer aday için: hedef sorgu, veri sinyali, niyet etiketi ve\nmevcut içerikle kanibalizasyon riski yaz.'},
+ {t:'Mevcut yazıyı tazeleme',p:'master-blog skill\'ini güncelleme modunda çalıştır.\n\nDosya: src/content/blog/oyun-grubu-fiyatlari.md\n\nNeyin eskidiğini listele, yalnızca eskiyeni değiştir,\nguncelleme tarihini gerçek değişiklikle birlikte at.'},
+ {t:'Kanibalizasyon kontrolü',p:'master-blog skill\'inin 3. aşamasını tek başına çalıştır.\n\nPlanladığım yazı: "salıncak nasıl seçilir"\n\nMevcut blog envanteriyle örtüşme oranını hesapla,\nkararı TEMİZ / AÇI DEĞİŞTİR / GÜNCELLE olarak ver.'},
+ {t:'Yayın öncesi denetim',p:'master-blog skill\'inin 40 maddelik yayın öncesi kontrol listesini\nşu taslağa uygula ve sonucu __/40 biçiminde raporla.\n\nBlokaj maddelerini ayrı listele; düzeltmeden yayınlama.'}
+];
+
+/* ============ görünümler ============ */
+const A = (h,c)=>'<a class="'+(c||'')+'" href="'+h+'">';
+
+function vHome(){
+  const totalLines = FILES.reduce((a,f)=>a+f.text.split('\n').length,0);
+  return `
+<section class="hero"><div class="wrap"><div class="herogrid">
+  <div>
+    <a class="badge" href="#/kaynaklar"><span class="dot"></span>Açık kaynak · v1.0 · Son doğrulama 7 Eyl 2026</a>
+    <h1 class="big">Blog yazan değil,<br><em>yayına hazırlayan</em> skill.</h1>
+    <p class="lede">master-blog, Claude'a bir web projesinde içerik üretmenin tam sürecini öğretir: veriden konu seçimi, kanibalizasyon denetimi, SEO + GEO + E-E-A-T katmanları, 40 maddelik yayın öncesi kapı ve canlı doğrulama.</p>
+    <div class="ctarow">
+      <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
+      <a class="btn" href="#/skill">Skill'i incele</a>
+      <a class="btn" href="#/terimler">Terim sözlüğü</a>
+    </div>
+  </div>
+  <div class="term">
+    <div class="termbar"><i class="tdot"></i><i class="tdot"></i><i class="tdot"></i><span>claude — master-blog</span></div>
+    <div class="termbody">
+<span class="c">$</span> <span class="w">claude</span>
+<span class="p">&gt;</span> <span class="w">master-blog skill'iyle "güvenlik mesafesi" yazısını hazırla</span>
+
+<span class="c">·</span> <span class="w">Aşama 0</span>  proje keşfi <span class="c">— astro · 14 içerik · şema bulundu</span>
+<span class="c">·</span> <span class="w">Aşama 1</span>  aday gerekçesi <span class="c">— GSC: 412 gösterim, poz. 14</span>
+<span class="c">·</span> <span class="w">Aşama 2</span>  niyet <span class="c">— bilgilendirme · SERP: liste + tablo</span>
+<span class="c">·</span> <span class="w">Aşama 3</span>  kanibalizasyon <span class="g">— 6 H2'nin 2'si = %33 · TEMİZ</span>
+<span class="c">·</span> <span class="w">Aşama 4</span>  brief onaya sunuldu
+<span class="c">…</span>
+<span class="c">·</span> <span class="w">Aşama 10</span> öz denetim <span class="g">— 40/40 · blokaj yok</span>
+<span class="c">·</span> <span class="w">Aşama 11</span> canlı doğrulama <span class="g">— HTTP 200 · sitemap ✓</span>
+    </div>
+  </div>
+</div></div></section>
+
+<div class="wrap"><div class="stats">
+  <div class="stat"><b>13</b><span>Aşama · 2 kapı</span></div>
+  <div class="stat"><b>40</b><span>Denetim maddesi</span></div>
+  <div class="stat"><b>${TERMS.length}</b><span>Açıklanan terim</span></div>
+  <div class="stat"><b>${totalLines.toLocaleString('tr-TR')}</b><span>Satır talimat</span></div>
+</div></div>
+
+<section><div class="wrap">
+  <div class="shead"><div>
+    <span class="eyebrow">Fark</span>
+    <h2 style="margin-top:10px">Bu skill Claude'da neyi değiştiriyor?</h2>
+    <p>Aynı istek, skill yüklü olmadan ve olduğunda. Fark üslupta değil, süreçte.</p>
+  </div></div>
+  <div class="ba">
+    <div class="col"><div class="h">Skill olmadan</div><ul>
+      <li>Konu, sohbetin akışında seçilir; veri gerekçesi sorulmaz.</li>
+      <li>Mevcut içerikle çakışıp çakışmadığı kontrol edilmez.</li>
+      <li>Metin akıcıdır ama kaynağı belirsiz ölçü ve iddia içerebilir.</li>
+      <li>İç bağlantı hatırlanırsa eklenir, anchor'lar tekdüzedir.</li>
+      <li>"Bitti" denir; yayın ve doğrulama kullanıcıya kalır.</li>
+    </ul></div>
+    <div class="col after"><div class="h">master-blog ile</div><ul>
+      <li>Aday konu, veri sinyaliyle birlikte gerekçelendirilir.</li>
+      <li>Kanibalizasyon oranı hesaplanır; %50 üstü yazıyı durdurur.</li>
+      <li>Teknik bilgi yalnızca proje verisinden alınır; kaynağı yoksa yazılmaz.</li>
+      <li>4-6 tanımlayıcı iç bağlantı + doğrulanmış dış kaynak zorunludur.</li>
+      <li>40 maddelik kapı geçilmeden yayın yapılmaz, URL canlı doğrulanır.</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead">
+    <div><span class="eyebrow">Süreç</span><h2 style="margin-top:10px">13 aşama, 2 atlanamaz kapı</h2>
+    <p>Numaralar süs değil: aşamalar sırayla çalışır ve kapılar geçilmeden ilerlenmez.</p></div>
+    <a class="btn" href="#/skill">Tüm süreci gör</a>
+  </div>
+  <div class="pipe">${PHASES.slice(0,6).map(p=>`
+    <div class="step${p.g?' gate':''}"><div class="no">${p.n}</div>
+      <div><h4>${p.t}${p.g?'<span class="gatechip">KAPI</span>':''}</h4><p>${p.d}</p></div></div>`).join('')}
+    <div class="step"><div class="no">…</div><div><h4 style="color:var(--fg2)">Kalan 7 aşama</h4>
+      <p>SEO, GEO ve E-E-A-T katmanları, bağlantı mimarisi, teknik paket, öz denetim kapısı, yayın ve ölçüm.
+      ${A('#/skill','acc')}Tümünü aç →</a></p></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead">
+    <div><span class="eyebrow">Sözlük</span><h2 style="margin-top:10px">Terimler tek tek açıklanıyor</h2>
+    <p>Her terim için tanım, basit anlatım, teknik anlatım, neden önemli, örnek, yaygın yanılgı ve ilgili terimler.</p></div>
+    <a class="btn" href="#/terimler">${TERMS.length} terimin tamamı</a>
+  </div>
+  <div class="grid3">${['kanibalizasyon','geo','arama-niyeti','e-e-a-t','ince-icerik','context-window']
+    .map(s=>TERMS.find(t=>t.slug===s)).filter(Boolean).map(termCard).join('')}</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead">
+    <div><span class="eyebrow">Güncellik</span><h2 style="margin-top:10px">Her iddia kaynağına bağlı</h2>
+    <p>SEO ve GEO tarafı hızlı değişiyor. Skill'deki zamana bağlı her bilgi tarihi ve kaynağıyla kayıtlı; 3 ayda bir tazeleniyor.</p></div>
+    <a class="btn" href="#/kaynaklar">Doğrulama kaydını gör</a>
+  </div>
+  <div class="grid3">
+    <a class="card" href="#/terim/schema-markup">
+      <div class="tagrow" style="margin:0 0 12px"><span class="tag o">7 Mayıs 2026</span></div>
+      <h3>FAQ zengin sonuçları kaldırıldı</h3>
+      <p>Hâlâ "FAQ şeması ekle, SERP'te açılır kutu çıkar" diyen rehberler bayat. Skill artık FAQPage ve HowTo'yu zengin sonuç için önermiyor.</p></a>
+    <a class="card" href="#/terim/geo">
+      <div class="tagrow" style="margin:0 0 12px"><span class="tag o">3 Haziran 2026</span></div>
+      <h3>GEO ölçümü resmileşti</h3>
+      <p>Search Console'un Generative AI raporu AI Overviews ve AI Mode gösterimlerini veriyor — ama tıklama ve pozisyon vermiyor.</p></a>
+    <a class="card" href="#/terim/ctr">
+      <div class="tagrow" style="margin:0 0 12px"><span class="tag o">12 Eylül 2025</span></div>
+      <h3>Search Console verisinde kırılma</h3>
+      <p><code class="mono" style="color:var(--or3)">&amp;num=100</code> kaldırıldı; gösterim ve ortalama pozisyonda kalıcı kırılma oluştu. Öncesi ve sonrası karşılaştırılamaz.</p></a>
+  </div>
+</div></section>
+
+<section style="border-bottom:none"><div class="wrap">
+  <div class="card hov" style="padding:38px;display:grid;gap:18px;justify-items:start;background:linear-gradient(180deg,#121212,#0C0C0C)">
+    <span class="eyebrow">Kurulum</span>
+    <h2 style="font-size:clamp(22px,3vw,30px);max-width:24ch">${FILES.length} dosya, tek dizin. Claude gerisini kendi yönetir.</h2>
+    <p style="color:var(--fg2);max-width:58ch">Skill'i indir ya da kopyala, <code class="mono" style="color:var(--or3)">~/.claude/skills/master-blog/</code> altına koy. Claude, blog isteği geldiğinde açıklamayı okuyup skill'i kendisi yükler.</p>
+    <div class="ctarow" style="margin-top:4px">
+      <button class="btn pri" onclick="openInstall()">Kurulum seçeneklerini gör</button>
+      <a class="btn" href="#/skill#dosyalar">Dosyaları oku</a>
+    </div>
+  </div>
+</div></section>`;
+}
+
+function termCard(t){
+  const fav=BM.has(t.slug);
+  return `<a class="card termcard" href="#/terim/${t.slug}">
+    <span class="star${fav?' on':''}" role="button" tabindex="0" aria-label="Kaydet" onclick="favTog(event,'${t.slug}')">${fav?'★':'☆'}</span>
+    <div class="tagrow" style="margin:0 0 12px"><span class="tag o">${esc(t.cat)}</span><span class="tag">${esc(t.level)}</span>${t.src?'<span class="tag" style="color:var(--ok);border-color:#1E3A24">✓ kaynaklı</span>':''}</div>
+    <h3>${esc(t.name)}</h3><div class="en">${esc(t.en)}</div>
+    <div class="st">${esc(t.short)}</div></a>`;
+}
+function favTog(e,slug){ e.preventDefault(); e.stopPropagation(); BM.toggle(slug); render(); }
+
+function vSkill(){
+  const toc=[['ozet','Genel bakış'],['ne-yapar','Ne yapıyor?'],['ne-zaman','Ne zaman kullanılır?'],
+    ['surec','13 aşamalı süreç'],['dosyalar','Skill dosyaları'],['promptlar','Örnek promptlar'],
+    ['kalite','Kalite ve sınırlar'],['surum','Sürüm geçmişi']];
+  return `<div class="wrap"><div class="doc">
+  <aside class="rail"><div class="lbl">İçindekiler</div>
+    ${toc.map(([id,t])=>`<a href="#/skill#${id}" data-toc="${id}">${t}</a>`).join('')}</aside>
+
+  <div class="prose">
+    <div style="margin-bottom:26px">
+      <div class="tagrow" style="margin:0 0 14px">
+        <span class="tag o">İçerik / SEO</span><span class="tag">Uzman</span><span class="tag">Workflow</span><span class="tag">v1.0</span></div>
+      <h1 style="font-size:clamp(30px,4.4vw,44px);letter-spacing:-.035em">Master Blog Skill</h1>
+      <p style="color:var(--fg2);font-size:16.5px;margin-top:14px;max-width:66ch">
+        Claude'u, bir web projesinde içerik üretiminin tamamını yürütebilen bir editöre dönüştürür:
+        veriden konu seçer, arama niyetini çözer, yazmadan önce kanibalizasyon denetimi yapar,
+        SEO + GEO + E-E-A-T katmanlarını tek tek uygular, 40 maddelik kapıdan geçirir ve yayını canlı doğrular.</p>
+      <div class="ctarow" style="margin-top:22px">
+        <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
+        <button class="btn" onclick="copyAll()">Tüm skill'i kopyala</button>
+        <button class="btn" onclick="download(FILES[0].name,FILES[0].text)">SKILL.md indir</button>
+      </div>
+    </div>
+
+    <h2 id="ozet">Genel bakış</h2>
+    ${md(`master-blog, projeye özel değildir; her çalıştırmada bulunduğu projeyi keşfeder. Astro, Next.js, Hugo ya da düz Markdown — içerik nerede yaşıyorsa şemasını oradan öğrenir ve o şemaya birebir uyar.
+
+Skill üç şeyi aynı anda güvence altına alır: **doğruluk** (yazılan her teknik bilgi proje verisinden gelir), **ayrışma** (yeni içerik mevcut içeriğin sıralamasını yemez) ve **alıntılanabilirlik** (hem Google hem yapay zekâ motorları içeriği parça parça alıntılayabilir).`)}
+    <div class="callout">${md(`**Temel ilke:** Her yazının veri temelli bir gerekçesi olmalı. "Güzel konu" gerekçe değildir — somut sinyal gösterilir: arama sorgusu, gösterim verisi, kapsanmamış hedef kelime, satış ekibine gelen tekrar eden soru.`)}</div>
+
+    <h2 id="ne-yapar">Ne yapıyor?</h2>
+    ${md(`Skill, blog yazmayı tek bir "metin üretme" işi olmaktan çıkarıp on üç adımlı, iki kapılı bir sürece dönüştürür. En büyük farkı, **yazmadan önce** yaptığı işlerdedir: proje keşfi, veri gerekçesi, niyet analizi ve kanibalizasyon denetimi. En pahalı hata olan "yanlış yazının tamamını yazmak", en ucuz yerde yakalanır.
+
+İkinci farkı, **yazdıktan sonra** yaptığı işlerdedir: 40 maddelik kontrol listesi, canlı URL doğrulaması ve 28 gün sonrası için ölçüm planı.`)}
+
+    <h2 id="ne-zaman">Ne zaman kullanılır?</h2>
+    <div class="ba" style="margin-bottom:20px">
+      <div class="col after"><div class="h">Kullan</div><ul>
+        <li>Yayına girecek gerçek bir blog/rehber içeriği üretilecekse</li>
+        <li>Sitede zaten içerik varsa ve çakışma riski önemliyse</li>
+        <li>İçerik ticari sonuç doğuracaksa (teklif, satış, kayıt)</li>
+        <li>Mevcut bir yazı tazelenecekse (güncelleme modu)</li>
+        <li>Yayın öncesi denetim disiplinine ihtiyaç varsa</li>
+      </ul></div>
+      <div class="col"><div class="h">Kullanma</div><ul>
+        <li>Sadece hızlı bir taslak ya da fikir listesi isteniyorsa</li>
+        <li>Sosyal medya metni, e-posta ya da kısa kopya yazılacaksa</li>
+        <li>Yalnızca denetim raporu isteniyorsa (ayrı bir denetim skill'i doğru araçtır)</li>
+        <li>İçerik yayınlanmayacak, iç kullanım için yazılacaksa</li>
+        <li>Arama niyeti işlemselse — o durumda blog değil ticari sayfa gerekir</li>
+      </ul></div>
+    </div>
+
+    <h2 id="surec">13 aşamalı süreç</h2>
+    <div class="pipe" style="margin-bottom:24px">${PHASES.map(p=>`
+      <div class="step${p.g?' gate':''}"><div class="no">${p.n}</div>
+        <div><h4>${p.t}${p.g?'<span class="gatechip">KAPI</span>':''}</h4><p>${p.d}</p></div></div>`).join('')}</div>
+
+    <h2 id="dosyalar">Skill dosyaları</h2>
+    ${md(`Skill dört dosyadan oluşur. Ana dosya süreci yürütür; referans dosyaları yalnızca gerektiğinde okunur — bu, bağlam bütçesini korumak için bilinçli bir tasarım kararıdır (bkz. kademeli açılım).`)}
+    ${viewer()}
+
+    <h2 id="promptlar">Örnek promptlar</h2>
+    ${md(`Doğrudan kopyalanıp kullanılabilir. Skill zaten kuruluysa Claude çoğu durumda kendisi devreye alır; ilk cümlede adını anmak tetiklenmeyi kesinleştirir.`)}
+    ${PROMPTS.map((p,i)=>`<div class="pblock"><div class="ph"><span>${esc(p.t)}</span>
+      <button class="btn sm" style="margin-left:auto" onclick="copy(PROMPTS[${i}].p,'Prompt kopyalandı')">Kopyala</button></div>
+      <pre>${esc(p.p)}</pre></div>`).join('')}
+
+    <h2 id="kalite">Kalite ve sınırlar</h2>
+    ${md(`Bu skill bir yazım şablonu değil, bir süreç sözleşmesidir. Ne yaptığı kadar **ne yapmadığı** da tanımlıdır:`)}
+    ${md(`- **Uydurma yok.** Ölçü, fiyat, standart numarası, istatistik — kaynağı gösterilemiyorsa metne girmez.
+- **Sahte tazelik yok.** İçerik değişmeden güncelleme tarihi atılmaz.
+- **Sahte deneyim yok.** Doğrulanamayan birinci elden iddia yazılmaz.
+- **Kırık link yayınlanmaz.** Her dış URL yayından önce doğrulanır.
+- **Onaysız silme yok.** İçerik kaldırma önerisi her zaman 301 planıyla gelir.`)}
+    <div class="callout">${md(`**Dürüstlük notu:** Bu sayfadaki hiçbir rakam pazarlama amaçlı üretilmemiştir. Gösterilen sayılar (13 aşama, 40 madde, ${TERMS.length} terim, satır sayısı) skill dosyalarından doğrudan sayılmıştır. Skill'in kalite puanı, indirme sayısı veya sıralama garantisi sunulmaz — çünkü ölçülebilir değildir.`)}</div>
+
+    <h3>Bilgi tazeliği kuralı</h3>
+    ${md(`SEO ve GEO tarafı hızlı değişiyor: FAQ zengin sonuçları 7 Mayıs 2026'da kaldırıldı, Search Console'un yapay zekâ raporu 3 Haziran 2026'da geldi, \`&num=100\` parametresinin kaldırılması Search Console verisinde kalıcı bir kırılma bıraktı. Bu yüzden skill'in **11. kırmızı çizgisi** şudur: arama motoru davranışına dair zamana bağlı hiçbir iddia, \`references/kaynaklar.md\` kaydıyla doğrulanmadan metne giremez; kayıt 3 aydan eskiyse yeniden aranır.`)}
+    <p><a class="acc" href="#/kaynaklar">Kaynaklar ve doğrulama kaydını gör →</a></p>
+
+    <h2 id="surum">Sürüm geçmişi</h2>
+    <div class="tblwrap"><table><thead><tr><th>Sürüm</th><th>Tarih</th><th>Değişiklik</th></tr></thead>
+    <tbody><tr><td class="mono">1.0</td><td class="mono">2026-09-07</td>
+    <td>İlk yayın: 13 aşamalı süreç, kanibalizasyon ve öz denetim kapıları, 40 maddelik kontrol listesi,
+    ${TERMS.length} terimlik sözlük ve schema/GEO referansı.</td></tr></tbody></table></div>
+  </div>
+
+  <aside class="side">
+    <div class="metabox"><div class="mh">Skill bilgisi</div>
+      <div class="mrow"><span>Ad</span><b>master-blog</b></div>
+      <div class="mrow"><span>Sürüm</span><b>1.0</b></div>
+      <div class="mrow"><span>Tip</span><b>Workflow</b></div>
+      <div class="mrow"><span>Seviye</span><b>Uzman</b></div>
+      <div class="mrow"><span>Dosya</span><b>${FILES.length}</b></div>
+      <div class="mrow"><span>Lisans</span><b>MIT</b></div>
+      <div class="mrow"><span>Dil</span><b>Türkçe</b></div>
+    </div>
+    <div class="metabox"><div class="mh">Uyumluluk</div>
+      <div class="mrow"><span>Claude Code</span><b style="color:var(--ok)">Evet</b></div>
+      <div class="mrow"><span>Claude uygulaması</span><b style="color:var(--warn)">Yükleme ile</b></div>
+      <div class="mrow"><span>Agent SDK</span><b style="color:var(--ok)">Evet</b></div>
+    </div>
+    <div style="display:grid;gap:8px">
+      <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
+      <button class="btn" onclick="copyAll()">Tümünü kopyala</button>
+      <button class="btn" onclick="copy(location.href,'Bağlantı kopyalandı')">Bağlantıyı paylaş</button>
+    </div>
+  </aside>
+</div></div>`;
+}
+
+/* dosya görüntüleyici */
+let VF=0, VW=false, VFull=false;
+function viewer(){
+  const f=FILES[VF];
+  return `<div class="viewer" id="viewer">
+    <div class="vtabs">${FILES.map((x,i)=>`<button class="vtab${i===VF?' on':''}" onclick="setFile(${i})">${esc(x.name)}</button>`).join('')}</div>
+    <div class="vbar">
+      <span class="fname">${esc(f.path)} · ${f.text.split('\n').length} satır · ${(f.text.length/1024).toFixed(1)} KB</span>
+      <button class="btn sm" onclick="VW=!VW;render()">${VW?'Sarma: açık':'Sarma: kapalı'}</button>
+      <button class="btn sm" onclick="VFull=!VFull;render()">${VFull?'Küçült':'Tam boy'}</button>
+      <button class="btn sm" onclick="copy(FILES[VF].text,FILES[VF].name+' kopyalandı')">Kopyala</button>
+      <button class="btn sm" onclick="download(FILES[VF].name,FILES[VF].text)">İndir</button>
+    </div>
+    <div class="vcode${VW?' wrap':''}${VFull?' full':''}">${codeTable(f.text)}</div>
+  </div>`;
+}
+function setFile(i){ VF=i; render(); setTimeout(()=>{const v=document.getElementById('viewer'); if(v) v.scrollIntoView({block:'start'});},0); }
+function copyAll(){
+  copy(FILES.map(f=>'==== '+f.path+' ====\n\n'+f.text).join('\n\n\n'),'4 dosyanın tamamı kopyalandı');
+}
+
+/* ---------- terimler ---------- */
+let TQ='', TC='hepsi';
+function vTerms(params){
+  if(params && params.get('k')) TC=params.get('k');
+  const cats=['hepsi',...Array.from(new Set(TERMS.map(t=>t.cat))),'kayıtlarım'];
+  const favs=BM.get();
+  let list=TERMS.filter(t=>{
+    if(TC==='kayıtlarım') return favs.includes(t.slug);
+    if(TC!=='hepsi' && t.cat!==TC) return false; return true;
+  });
+  if(TQ.trim()){
+    const q=TQ.toLowerCase().trim();
+    list=list.filter(t=>(t.name+' '+t.en+' '+t.short+' '+t.simple+' '+t.technical).toLowerCase().includes(q));
+  }
+  return `<div class="wrap"><div style="padding:44px 0 20px">
+    <span class="eyebrow">Sözlük</span>
+    <h1 style="font-size:clamp(30px,4.4vw,44px);letter-spacing:-.035em;margin-top:12px">Claude, SEO ve içerik terimleri</h1>
+    <p style="color:var(--fg2);max-width:66ch;margin-top:14px;font-size:16px">
+      ${TERMS.length} terim; her biri tanım, basit anlatım, teknik anlatım, neden önemli olduğu, örnek,
+      yaygın yanılgı ve ilgili terimlerle. Yüzeysel tek cümlelik açıklama yok.</p>
+  </div>
+  <div class="filters">
+    <input class="tinput" id="tq" placeholder="Terim ara — kanibalizasyon, RAG, canonical…" value="${esc(TQ)}">
+    ${cats.map(c=>`<button class="chip${TC===c?' on':''}" onclick="TC='${c}';render()">${c==='kayıtlarım'?'★ Kayıtlarım':esc(c)}</button>`).join('')}
+  </div>
+  <p style="color:var(--fg3);font-family:var(--m);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px">
+    ${list.length} terim listeleniyor</p>
+  ${list.length?`<div class="grid3" style="padding-bottom:70px">${list.map(termCard).join('')}</div>`
+   :`<div class="empty" style="margin-bottom:70px"><b>Sonuç yok</b>
+     ${TC==='kayıtlarım'?'Kartlardaki ☆ simgesine dokunarak terim kaydedebilirsin.':'Aramayı sadeleştir ya da başka bir kategori seç.'}</div>`}
+  </div>`;
+}
+
+function vTerm(slug){
+  const t=TERMS.find(x=>x.slug===slug);
+  if(!t) return `<div class="wrap"><div class="empty" style="margin:80px 0"><b>Terim bulunamadı</b>
+    <a class="acc" href="#/terimler">Sözlüğe dön →</a></div></div>`;
+  const rel=t.related.map(r=>TERMS.find(x=>x.slug===r)).filter(Boolean);
+  const idx=TERMS.indexOf(t), prev=TERMS[idx-1], next=TERMS[idx+1];
+  const fav=BM.has(t.slug);
+  return `<div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">${esc(t.cat)} terimleri</div>
+      ${TERMS.filter(x=>x.cat===t.cat).map(x=>`<a href="#/terim/${x.slug}" class="${x.slug===t.slug?'on':''}">${esc(x.name)}</a>`).join('')}
+    </aside>
+    <div class="prose">
+      <a href="#/terimler" class="mono" style="font-size:12px;color:var(--fg3)">← Sözlük</a>
+      <div class="tagrow" style="margin:16px 0 12px"><span class="tag o">${esc(t.cat)}</span>
+        <span class="tag">${esc(t.level)}</span><span class="tag">${esc(t.en)}</span></div>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em">${esc(t.name)}</h1>
+      <p style="font-size:17px;color:#E7E5E4;margin:16px 0 26px;max-width:64ch">${esc(t.short)}</p>
+
+      <div class="tdblock"><span class="lbl">Basitçe</span>${md(t.simple)}</div>
+      <div class="tdblock"><span class="lbl">Teknik olarak</span>${md(t.technical)}</div>
+      <div class="tdblock"><span class="lbl">Neden önemli</span>${md(t.why)}</div>
+      <div class="tdblock plain"><span class="lbl">Örnek</span>${md(t.example)}</div>
+      <div class="tdblock plain"><span class="lbl">Yaygın yanılgı</span>${md(t.myth)}</div>
+
+      <h2 style="font-size:20px;margin:30px 0 14px">İlgili terimler</h2>
+      <div class="relrow">${rel.map(r=>`<a href="#/terim/${r.slug}">${esc(r.name)}</a>`).join('')}</div>
+
+      <div style="display:flex;gap:12px;justify-content:space-between;margin-top:44px;padding-top:22px;border-top:1px solid var(--line);flex-wrap:wrap">
+        ${prev?`<a class="btn" href="#/terim/${prev.slug}">← ${esc(prev.name)}</a>`:'<span></span>'}
+        ${next?`<a class="btn" href="#/terim/${next.slug}">${esc(next.name)} →</a>`:'<span></span>'}
+      </div>
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Terim bilgisi</div>
+        <div class="mrow"><span>Kategori</span><b>${esc(t.cat)}</b></div>
+        <div class="mrow"><span>Seviye</span><b>${esc(t.level)}</b></div>
+        <div class="mrow"><span>İngilizce</span><b style="font-size:11px">${esc(t.en)}</b></div>
+      </div>
+      <div class="metabox"><div class="mh">Skill'de nerede geçiyor</div>
+        <div style="padding:13px 15px;font-size:13px;color:var(--fg2)">${esc(t.usedIn)}
+        <a href="#/skill#surec" class="acc" style="display:block;margin-top:8px;font-size:12.5px">Süreci gör →</a></div>
+      </div>
+      ${t.src?`<div class="metabox"><div class="mh">Doğrulanmış kaynaklar</div>
+        <div style="padding:12px 15px;display:grid;gap:10px">
+          ${t.src.map(x=>`<a class="srclink" href="${esc(x.u)}" target="_blank" rel="noopener noreferrer">${esc(x.t)}
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7M9 7h8v8"/></svg></a>`).join('')}
+          <span style="font-family:var(--m);font-size:10.5px;color:var(--fg3);letter-spacing:.06em;
+            border-top:1px solid #1A1A1A;padding-top:9px">SON DOĞRULAMA: 7 EYL 2026</span>
+        </div></div>`:''}
+      <div style="display:grid;gap:8px">
+        <button class="btn" onclick="BM.toggle('${t.slug}');render();toast(BM.has('${t.slug}')?'Kaydedildi':'Kayıt kaldırıldı')">
+          ${fav?'★ Kayıtlı':'☆ Kaydet'}</button>
+        <button class="btn" onclick="copy(location.href,'Bağlantı kopyalandı')">Bağlantıyı paylaş</button>
+      </div>
+    </aside>
+  </div></div>`;
+}
+
+/* ---------- nasıl çalışır ---------- */
+function vHow(){
+  return `<div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">Bölümler</div>
+      <a href="#/nasil-calisir#skill-nedir">Skill nedir</a>
+      <a href="#/nasil-calisir#yapi">Dosya yapısı</a>
+      <a href="#/nasil-calisir#yukleme">Nasıl yükleniyor</a>
+      <a href="#/nasil-calisir#iyi-skill">İyi skill neye benzer</a>
+      <a href="#/nasil-calisir#sinir">Sınırlar</a></aside>
+    <div class="prose">
+      <span class="eyebrow">Rehber</span>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em;margin-top:12px">Claude Skills nasıl çalışır</h1>
+      <p style="color:var(--fg2);font-size:16.5px;margin-top:14px;max-width:64ch">
+        Skill kavramını hiç duymamış biri için, baştan sona.</p>
+
+      <h2 id="skill-nedir">Skill nedir?</h2>
+      ${md(`Bir skill, Claude'a belirli bir iş için nasıl davranacağını öğreten talimat paketidir. En basit hâliyle bir \`SKILL.md\` dosyasıdır: üstte kısa bir tanıtım (frontmatter), altında Markdown ile yazılmış süreç.
+
+Prompt ile farkı kalıcılıktır. Prompt tek konuşmalıktır; skill dosyada durur, ilgili iş geldiğinde devreye girer ve her seferinde aynı standardı uygular.`)}
+      <div class="callout">${md(`**Üç adımda özet:** **01 Tanımla** — skill'in amacı, süreci ve yasakları yazılır. **02 Etkinleş** — Claude, gelen isteği skill'in açıklamasıyla eşleştirir ve dosyayı okur. **03 Yürüt** — skill, Claude'un o görevdeki yaklaşımını ve adım sırasını yönlendirir.`)}</div>
+
+      <h2 id="yapi">Dosya yapısı</h2>
+      ${md(`\`\`\`
+master-blog/
+  SKILL.md
+  references/
+\`\`\``)}
+      <div class="tblwrap"><table><thead><tr><th>Öğe</th><th>Zorunlu</th><th>Ne işe yarar</th></tr></thead><tbody>
+        <tr><td class="mono">SKILL.md</td><td>Evet</td><td>Frontmatter + sürecin kendisi</td></tr>
+        <tr><td class="mono">name</td><td>Evet</td><td>kebab-case; dizin adıyla aynı olmalı</td></tr>
+        <tr><td class="mono">description</td><td>Evet</td><td>En kritik alan: ne yaptığı <em>ve</em> ne zaman kullanılacağı</td></tr>
+        <tr><td class="mono">argument-hint</td><td>Hayır</td><td>Slash komutu olarak çağrıldığında beklenen argüman</td></tr>
+        <tr><td class="mono">references/</td><td>Hayır</td><td>Yalnızca gerektiğinde okunan derin referanslar</td></tr>
+        <tr><td class="mono">scripts/</td><td>Hayır</td><td>Çalıştırılabilir yardımcılar (ör. kelime sayacı)</td></tr>
+      </tbody></table></div>
+
+      <h2 id="yukleme">Nasıl yükleniyor?</h2>
+      ${md(`Skill'in tamamı her zaman bellekte durmaz. Kademeli açılım şöyle işler:
+
+1. **Her zaman yüklü:** yalnızca \`name\` ve \`description\`. Birkaç yüz token.
+2. **Eşleşince yüklenir:** iş, açıklamayla örtüştüğünde \`SKILL.md\` gövdesi okunur.
+3. **Gerektiğinde açılır:** \`references/\` altındaki dosyalar ancak o adımda okunur.
+
+Bu yüzden iyi skill tasarımı "her şeyi ana dosyaya yaz" değil, "hangi bilginin ne zaman gerektiğini tasarla"dır.`)}
+
+      <h2 id="iyi-skill">İyi bir skill neye benzer?</h2>
+      ${md(`- **Açıklaması tetikleyicidir.** "Blog yazar" değil; hangi cümlelerde devreye gireceğini ve hangi durumda devreye **girmeyeceğini** söyler.
+- **Eşikleri sayıdır.** "Çok benzerse" değil, "örtüşme %50 ve üzeriyse".
+- **Kapıları vardır.** Atlanamaz adımlar açıkça işaretlenir.
+- **Yasakları yazılıdır.** Ne yapmayacağı, ne yapacağı kadar nettir.
+- **Örnek verir.** Üslup kuralla değil, zayıf/güçlü karşılaştırmasıyla aktarılır.
+- **Bölünmüştür.** Uzun listeler referans dosyalarına taşınır.`)}
+
+      <h2 id="sinir">Sınırlar</h2>
+      ${md(`Skill sihir değildir. Model yine model olarak kalır: bilgi kesim tarihi vardır, halüsinasyon üretebilir, araç çıktısını yanlış okuyabilir. Skill'in yaptığı şey, **hata yapma olasılığı yüksek yerlere kontrol koymaktır** — doğrulama adımı, sayısal eşik, insan onayı.
+
+Bu yüzden bu skill "sıralama garantisi" gibi ölçülemeyen bir vaat vermez; yalnızca sürecin tekrarlanabilir ve denetlenebilir olmasını sağlar.`)}
+      <div class="relrow" style="margin-top:24px">
+        ${['claude-skill','progressive-disclosure','context-window','agentic-workflow','hallucination']
+          .map(s=>TERMS.find(t=>t.slug===s)).filter(Boolean)
+          .map(t=>`<a href="#/terim/${t.slug}">${esc(t.name)}</a>`).join('')}
+      </div>
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Hızlı başlangıç</div>
+        <div style="padding:14px 15px;font-size:13.5px;color:var(--fg2);display:grid;gap:10px">
+          <span>Skill'i kur, sonra Claude'a şunu yaz:</span>
+          <code class="mono" style="background:var(--code);border:1px solid var(--codeline);border-radius:8px;padding:9px 11px;color:var(--or3);font-size:11.5px;display:block">master-blog skill'iyle<br>yeni yazı hazırla</code>
+        </div>
+      </div>
+      <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
+    </aside>
+  </div></div>`;
+}
+
+/* ---------- kurulum sayfası ---------- */
+function vInstall(){
+  return `<div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">Kurulum</div>
+      <a href="#/kurulum#nasil">Nasıl çalışır</a>
+      <a href="#/kurulum#yontem">Yöntemler</a>
+      <a href="#/kurulum#dogrula">Doğrulama</a>
+      <a href="#/kurulum#sss">Sık sorulanlar</a></aside>
+    <div class="prose">
+      <span class="eyebrow">Kurulum</span>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em;margin-top:12px">Skill'i Claude'a ekle</h1>
+      <p style="color:var(--fg2);font-size:16.5px;margin-top:14px;max-width:64ch">
+        Dört dosyayı doğru dizine koymak yeterli. Kurulumdan sonra ayrı bir "etkinleştirme" adımı yok.</p>
+      <div class="ctarow" style="margin:22px 0 8px">
+        <button class="btn pri" onclick="openInstall()">Kurulum panelini aç</button>
+        <button class="btn" onclick="copy(INSTALL_CMD,'Kurulum komutu kopyalandı')">Tek komutu kopyala</button>
+      </div>
+
+      <h2 id="nasil">Kurulum nasıl çalışır?</h2>
+      ${md(`Claude Code, iki dizindeki skill'leri kendiliğinden tanır:
+
+- \`~/.claude/skills/\` — **kişisel**: bütün projelerinde geçerli olur.
+- \`<proje>/.claude/skills/\` — **projeye özel**: repoda durur, ekiple paylaşılır.
+
+Dosyalar yerine konduğunda Claude, yeni oturumda skill'in adını ve açıklamasını görür. Blogla ilgili bir istek geldiğinde açıklamayla eşleştirir ve \`SKILL.md\` dosyasını okur.`)}
+      <div class="callout">${md(`**Dürüstlük notu:** Bu sayfa "tek tıkla Claude'a kur" bağlantısı sunmaz, çünkü herkes için çalışan genel bir kurulum bağlantısı (deep link) mevcut değildir. Aşağıdaki yöntemlerin hepsi gerçek dosya kurulumudur.`)}</div>
+
+      <h2 id="yontem">Yöntemler</h2>
+      ${md(`**1 · Tek komut (en hızlı).** "Tek komutu kopyala" düğmesi, dört dosyayı da \`~/.claude/skills/master-blog/\` altında oluşturan bir kabuk komutu panoya alır. Terminale yapıştırıp çalıştırman yeterli. Komut yalnızca dizin oluşturur ve dosya yazar; başka bir şey yapmaz — yapıştırmadan önce okuyabilirsin.
+
+**2 · Claude'a yaptır.** Dosyaları kopyalayıp Claude Code'a şu isteği ver: "Bu içeriği \`~/.claude/skills/master-blog/SKILL.md\` olarak kaydet." Referans dosyaları için aynısını \`references/\` altına tekrarla.
+
+**3 · Elle.** Dosyaları indir, dizini kendin oluştur ve dosyaları içine koy. Dizin adı \`master-blog\` olmalı — frontmatter'daki \`name\` ile aynı.
+
+**4 · Claude uygulaması (web / masaüstü).** Uygulama tarafında özel skill yükleme, Ayarlar içindeki yetenekler/skills bölümünden yapılır ve genellikle skill klasörünün sıkıştırılmış hâlini (zip) ister. Bu arayüz ve plan gereksinimleri zamanla değişebildiği için buradan adım adım ekran tarifi vermiyoruz; uygulamandaki güncel Ayarlar bölümünü kontrol et.`)}
+
+      <h2 id="dogrula">Kurulumu doğrula</h2>
+      ${md(`1. Yeni bir Claude Code oturumu başlat (mevcut oturum eski listeyi taşır).
+2. \`ls ~/.claude/skills/master-blog\` — dört dosya görünmeli.
+3. Claude'a "master-blog skill'iyle bir içerik adayı çıkar" yaz. Skill devredeyse ilk iş proje keşfi olur ve aday için veri gerekçesi ister.`)}
+
+      <h2 id="sss">Sık sorulanlar</h2>
+      ${md(`**Skill her mesajda mı yükleniyor?** Hayır. Normalde yalnızca adı ve açıklaması bağlamda durur; iş eşleştiğinde tam dosya okunur.
+
+**Mevcut blog skill'imle çakışır mı?** Açıklamaları farklıysa çakışmaz. Aynı işi yapan iki skill varsa, birinin açıklamasına "şu durumda diğerini kullan" satırı eklemek en temiz çözümdür.
+
+**Projeye özel mi, kişisel mi kuralım?** Ekip aynı süreci kullanacaksa projeye özel kurulum daha iyidir: repoda sürümlenir, herkeste aynı olur.
+
+**Değiştirebilir miyim?** Evet, MIT lisanslı. Eşikleri (kelime bandı, örtüşme oranı, iç link sayısı) kendi projene göre uyarlaman zaten beklenen kullanımdır.`)}
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Hedef dizin</div>
+        <div style="padding:14px 15px;display:grid;gap:9px;font-size:12.5px;color:var(--fg2)">
+          <code class="mono" style="color:var(--or3)">~/.claude/skills/master-blog/</code>
+          <span style="color:var(--fg3)">veya</span>
+          <code class="mono" style="color:var(--or3)">&lt;proje&gt;/.claude/skills/master-blog/</code>
+        </div>
+      </div>
+      <div class="metabox"><div class="mh">Dosyalar</div>
+        ${FILES.map(f=>`<div class="mrow"><span style="font-family:var(--m);font-size:11.5px">${esc(f.path)}</span>
+          <b>${f.text.split('\n').length} sr</b></div>`).join('')}
+      </div>
+      <button class="btn pri" onclick="openInstall()">Kurulum paneli</button>
+    </aside>
+  </div></div>`;
+}
+
+/* ---------- kaynaklar ---------- */
+function vSources(){
+  const f=FILES.find(x=>x.name==='kaynaklar.md');
+  return `<div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">Bölümler</div>
+      <a href="#/kaynaklar#1-yapilandirilmis-veri">Yapılandırılmış veri</a>
+      <a href="#/kaynaklar#2-core-web-vitals">Core Web Vitals</a>
+      <a href="#/kaynaklar#3-search-console-ve-olcum">Search Console</a>
+      <a href="#/kaynaklar#4-one-cikan-snippet-ve-ai-overviews">Snippet ve AI Overviews</a>
+      <a href="#/kaynaklar#5-llms-txt">llms.txt</a>
+      <a href="#/kaynaklar#6-ai-tarayicilari-robots-txt">AI tarayıcıları</a>
+      <a href="#/kaynaklar#7-google-cekirdek-guncellemeleri">Çekirdek güncellemeler</a></aside>
+    <div class="prose">
+      <span class="eyebrow">Kanıt</span>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em;margin-top:12px">Kaynaklar ve doğrulama kaydı</h1>
+      <p style="color:var(--fg2);font-size:16.5px;margin:14px 0 8px;max-width:64ch">
+        Skill'deki zamana bağlı her iddia burada kaynağına bağlanır. SEO ve GEO tarafı hızlı
+        değişiyor; bu sayfa neyin ne zaman doğrulandığını ve neyin tazelenmesi gerektiğini gösterir.</p>
+      <div class="freshbar">
+        <div><b>7 Eyl 2026</b><span>Son doğrulama</span></div>
+        <div><b>${(f.text.match(/https:\/\//g)||[]).length}</b><span>Kaynak bağlantısı</span></div>
+        <div class="ok"><b>200</b><span>Tümü canlı doğrulandı</span></div>
+        <div><b>3 ay</b><span>Tazeleme aralığı</span></div>
+      </div>
+      ${md(f.text.split('\n').slice(1).join('\n'))}
+      <div style="display:flex;gap:10px;margin-top:30px;flex-wrap:wrap">
+        <button class="btn" onclick="copy(FILES.find(x=>x.name==='kaynaklar.md').text,'kaynaklar.md kopyalandı')">Dosyayı kopyala</button>
+        <button class="btn" onclick="download('kaynaklar.md',FILES.find(x=>x.name==='kaynaklar.md').text)">İndir</button>
+      </div>
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Doğrulama</div>
+        <div class="mrow"><span>Son kontrol</span><b>7 Eyl 2026</b></div>
+        <div class="mrow"><span>Tazeleme aralığı</span><b>3 ay</b></div>
+        <div class="mrow"><span>Kaynak sınıfı</span><b>Birincil / Ölçüm / Sektör</b></div>
+      </div>
+      <div class="metabox"><div class="mh">Neden var?</div>
+        <div style="padding:13px 15px;font-size:13px;color:var(--fg2)">
+          Bir SEO iddiası kaynaksızsa, o iddia ne kadar yaygınsa o kadar tehlikelidir.
+          Skill bu dosyayı Aşama 9 ve 12'de okur.</div>
+      </div>
+    </aside>
+  </div></div>`;
+}
+
+/* ---------- kurulum paneli ---------- */
+function openInstall(mode){
+  const dl = mode && String(mode).startsWith('dl:') ? String(mode).slice(3) : null;
+  const f = dl ? FILES.find(x=>x.name===dl) : null;
+  $('#drawer').innerHTML = `
+    <div class="dhead">
+      <div><h3>Claude'a Ekle</h3><p>master-blog · v1.0 · ${FILES.length} dosya · MIT</p></div>
+      <button class="close" onclick="closeInstall()" aria-label="Kapat">✕</button>
+    </div>
+    <div class="dbody">
+      ${f?`<div class="opt" style="border-color:#3A2A18;background:var(--or-dim2)">
+        <div class="oh"><span class="num">!</span><b>İndirme bu görünümde engelli</b></div>
+        <div class="ob"><span>Bu sayfa gömülü bir çerçevede açıldığı için tarayıcı dosya indirmesini engelliyor.
+        <b style="color:var(--fg)">${esc(f.name)}</b> içeriğini panoya alıp dosyaya yapıştırabilirsin.</span>
+        <button class="btn pri" onclick="copy(FILES.find(x=>x.name==='${esc(f.name)}').text,'${esc(f.name)} kopyalandı')">
+          ${esc(f.name)} içeriğini kopyala</button></div></div>`:''}
+
+      <div class="opt">
+        <div class="oh"><span class="num">1</span><b>Tek komutla kur</b></div>
+        <div class="ob">
+          <span>Dört dosyayı da <code class="mono" style="color:var(--or3)">~/.claude/skills/master-blog/</code> altında oluşturur. Kopyala, terminale yapıştır, çalıştır.</span>
+          <code class="cmd">mkdir -p ~/.claude/skills/master-blog/references
+cat &gt; ~/.claude/skills/master-blog/SKILL.md &lt;&lt;'EOF'
+...
+EOF</code>
+          <button class="btn pri" onclick="copy(INSTALL_CMD,'Kurulum komutu kopyalandı')">Kurulum komutunu kopyala</button>
+          <span style="color:var(--fg3);font-size:12.5px">Komut yalnızca dizin oluşturur ve dosya yazar. Yapıştırmadan önce içeriğini okuyabilirsin.</span>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="oh"><span class="num">2</span><b>Dosyaları al</b></div>
+        <div class="ob">
+          <span>Her dosyayı ayrı ayrı kopyala ya da indir; ardından hedef dizine yerleştir.</span>
+          <div style="display:grid;gap:7px">
+            ${FILES.map((x,i)=>`<div style="display:flex;gap:8px;align-items:center">
+              <code class="mono" style="flex:1;font-size:11.5px;color:var(--fg2);overflow:hidden;text-overflow:ellipsis">${esc(x.path)}</code>
+              <button class="btn sm" onclick="copy(FILES[${i}].text,'${esc(x.name)} kopyalandı')">Kopyala</button>
+              <button class="btn sm" onclick="download(FILES[${i}].name,FILES[${i}].text)">İndir</button>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="oh"><span class="num">3</span><b>Claude'a yaptır</b></div>
+        <div class="ob">
+          <span>Dosyaları kopyaladıktan sonra Claude Code'a şu isteği ver:</span>
+          <code class="cmd">Bu içeriği ~/.claude/skills/master-blog/SKILL.md
+olarak kaydet, referans dosyalarını da
+references/ altına yaz.</code>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="oh"><span class="num">4</span><b>Nerede çalışır?</b></div>
+        <div class="ob">
+          <div class="mrow" style="padding:6px 0"><span>Claude Code (terminal / IDE)</span><b style="color:var(--ok)">Dosya kurulumu</b></div>
+          <div class="mrow" style="padding:6px 0"><span>Claude uygulaması (web / masaüstü)</span><b style="color:var(--warn)">Ayarlardan yükleme</b></div>
+          <div class="mrow" style="padding:6px 0;border:none"><span>Agent SDK</span><b style="color:var(--ok)">Skill dizini olarak</b></div>
+          <span style="color:var(--fg3);font-size:12.5px">Uygulama tarafındaki yükleme arayüzü ve plan gereksinimleri değişebilir; güncel Ayarlar bölümünü kontrol et.</span>
+        </div>
+      </div>
+
+      <p style="color:var(--fg3);font-size:13px;border-top:1px solid var(--line);padding-top:16px">
+        Bir skill'i kurmadan önce içeriğini oku. Skill, Claude'un davranışını değiştirir — ne yaptığını bilmediğin bir talimat setini yükleme.</p>
+    </div>`;
+  $('#drawer').classList.add('on'); $('#scrim').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeInstall(){ $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on'); document.body.style.overflow=''; }
+
+/* ---------- komut paleti ---------- */
+const PAGES=[
+  {t:'Ana sayfa',h:'#/',s:'Genel bakış'},
+  {t:'Skill detayı',h:'#/skill',s:'13 aşama, dosyalar, promptlar'},
+  {t:'Skill dosyaları',h:'#/skill#dosyalar',s:'SKILL.md ve referanslar'},
+  {t:'Örnek promptlar',h:'#/skill#promptlar',s:'Kopyalanabilir promptlar'},
+  {t:'Claude Skills nasıl çalışır',h:'#/nasil-calisir',s:'Rehber'},
+  {t:'Terim sözlüğü',h:'#/terimler',s:'Tüm terimler'},
+  {t:'Kurulum',h:'#/kurulum',s:'Claude\'a ekleme yöntemleri'},
+  {t:'Kaynaklar ve doğrulama kaydı',h:'#/kaynaklar',s:'Zamana bağlı iddiaların kanıtı'}
+];
+let CPI=0, CPR=[];
+function cpOpen(){ $('#cp').classList.add('on'); $('#scrim').classList.add('on'); const q=$('#cpq'); q.value=''; cpRender(''); q.focus(); }
+function cpClose(){ $('#cp').classList.remove('on'); if(!$('#drawer').classList.contains('on')) $('#scrim').classList.remove('on'); }
+function cpRender(q){
+  q=(q||'').toLowerCase().trim();
+  const pages=PAGES.filter(p=>!q||(p.t+' '+p.s).toLowerCase().includes(q)).map(p=>({g:'Sayfalar',t:p.t,s:p.s,h:p.h}));
+  const terms=TERMS.filter(t=>!q||(t.name+' '+t.en+' '+t.short).toLowerCase().includes(q))
+    .slice(0,q?9:5).map(t=>({g:'Terimler',t:t.name,s:t.en+' · '+t.cat,h:'#/terim/'+t.slug}));
+  const files=FILES.filter(f=>!q||f.name.toLowerCase().includes(q)||f.text.toLowerCase().includes(q))
+    .map((f,i)=>({g:'Skill dosyaları',t:f.name,s:f.path,h:'#/skill#dosyalar',f:FILES.indexOf(f)}));
+  CPR=[...pages,...terms,...files]; CPI=0;
+  const el=$('#cplist');
+  if(!CPR.length){ el.innerHTML='<div style="padding:26px;text-align:center;color:var(--fg3)">Sonuç yok</div>'; return; }
+  let html='', last='';
+  CPR.forEach((r,i)=>{
+    if(r.g!==last){ html+='<div class="cpgroup">'+r.g+'</div>'; last=r.g; }
+    html+=`<div class="cpitem${i===CPI?' sel':''}" data-i="${i}" onclick="cpGo(${i})">
+      <span class="k">${r.g==='Terimler'?'T':r.g==='Skill dosyaları'?'F':'→'}</span>
+      <span>${esc(r.t)}</span><span class="sub">${esc(r.s)}</span></div>`;
+  });
+  el.innerHTML=html;
+}
+function cpMove(d){
+  CPI=(CPI+d+CPR.length)%CPR.length;
+  document.querySelectorAll('.cpitem').forEach(el=>el.classList.toggle('sel',+el.dataset.i===CPI));
+  const sel=document.querySelector('.cpitem.sel'); if(sel) sel.scrollIntoView({block:'nearest'});
+}
+function cpGo(i){ const r=CPR[i]; if(!r) return; if(r.f!==undefined) VF=r.f; cpClose(); location.hash=r.h; }
+
+/* ---------- yönlendirici ---------- */
+function route(){
+  const raw=location.hash.replace(/^#/,'')||'/';
+  const [pathQ,anchor]=raw.split('#');
+  const [path,qs]=pathQ.split('?');
+  return {path:path||'/',anchor,params:new URLSearchParams(qs||'')};
+}
+function render(){
+  const {path,anchor,params}=route();
+  const seg=path.split('/').filter(Boolean);
+  let html, nav='';
+  if(seg[0]==='skill'){ html=vSkill(); nav='#/skill'; }
+  else if(seg[0]==='terimler'){ html=vTerms(params); nav='#/terimler'; }
+  else if(seg[0]==='terim'){ html=vTerm(seg[1]); nav='#/terimler'; }
+  else if(seg[0]==='nasil-calisir'){ html=vHow(); nav='#/nasil-calisir'; }
+  else if(seg[0]==='kurulum'){ html=vInstall(); nav='#/kurulum'; }
+  else if(seg[0]==='kaynaklar'){ html=vSources(); nav='#/kaynaklar'; }
+  else { html=vHome(); }
+  const app=$('#app'); app.innerHTML=html; app.classList.remove('fade'); void app.offsetWidth; app.classList.add('fade');
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')===nav));
+  const tq=$('#tq');
+  if(tq){ tq.oninput=e=>{ TQ=e.target.value; const p=e.target.selectionStart; render();
+    const n=$('#tq'); if(n){ n.focus(); try{n.setSelectionRange(p,p);}catch(_){ } } }; }
+  document.querySelectorAll('.rail a[data-toc]').forEach(a=>
+    a.classList.toggle('on',a.dataset.toc===anchor));
+  if(anchor){ const el=document.getElementById(anchor);
+    if(el) setTimeout(()=>el.scrollIntoView({block:'start',behavior:'auto'}),0); }
+  else window.scrollTo(0,0);
+  const t=TERMS.find(x=>x.slug===seg[1]);
+  document.title = seg[0]==='terim'&&t ? t.name+' — Master Blog Skill'
+    : seg[0]==='terimler' ? 'Terim Sözlüğü — Master Blog Skill'
+    : seg[0]==='kurulum' ? 'Kurulum — Master Blog Skill'
+    : seg[0]==='kaynaklar' ? 'Kaynaklar — Master Blog Skill'
+    : seg[0]==='nasil-calisir' ? 'Claude Skills Nasıl Çalışır — Master Blog Skill'
+    : 'Master Blog Skill';
+}
+
+window.addEventListener('hashchange',render);
+$('#scrim').onclick=()=>{ closeInstall(); cpClose(); };
+$('#openInstall').onclick=()=>openInstall();
+$('#openCp').onclick=cpOpen;
+$('#cpq').addEventListener('input',e=>cpRender(e.target.value));
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); $('#cp').classList.contains('on')?cpClose():cpOpen(); return; }
+  if(e.key==='Escape'){ cpClose(); closeInstall(); return; }
+  if($('#cp').classList.contains('on')){
+    if(e.key==='ArrowDown'){ e.preventDefault(); cpMove(1); }
+    if(e.key==='ArrowUp'){ e.preventDefault(); cpMove(-1); }
+    if(e.key==='Enter'){ e.preventDefault(); cpGo(CPI); }
+  }
+});
+render();
+</script>
