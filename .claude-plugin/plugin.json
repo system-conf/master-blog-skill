@@ -1,7 +1,7 @@
 {
   "name": "master-blog",
-  "version": "1.1.0",
-  "description": "Uçtan uca SEO/GEO blog üretim skill'i: veriden konu seçimi, kanibalizasyon ve öz denetim kapıları, 43 maddelik yayın öncesi kontrol, mekanik denetçi ve 41 terimlik sözlük.",
+  "version": "1.2.0",
+  "description": "Uçtan uca SEO/GEO blog üretim skill'i: veriden konu seçimi, kanibalizasyon ve öz denetim kapıları, 43 maddelik yayın öncesi kontrol, mekanik denetçi ve 66 terimlik sözlük.",
   "author": { "name": "master-blog contributors", "url": "https://github.com/system-conf/master-blog-skill" },
   "homepage": "https://system-conf.github.io/master-blog-skill/",
   "repository": "https://github.com/system-conf/master-blog-skill",

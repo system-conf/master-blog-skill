@@ -4,7 +4,7 @@ description: "Herhangi bir web projesi için uçtan uca blog/içerik üretir: ve
 argument-hint: "[konu | hedef kelime | mevcut yazı yolu] (boşsa veriden aday çıkarır)"
 license: MIT
 metadata:
-  surum: "1.1.0"
+  surum: "1.2.0"
   bilgi-tazeligi: "2026-09-08"
   sonraki-gozden-gecirme: "2026-12-08"
 allowed-tools: >-
@@ -18,7 +18,7 @@ allowed-tools: >-
      önce bu satırı okumak kullanıcının hakkıdır. İzin bir sonraki mesajda düşer;
      kalıcı istiyorsan projenin permissions ayarını kullan. -->
 
-# Master Blog Skill (v1.1)
+# Master Blog Skill (v1.2)
 
 Sen, üzerinde çalıştığın projenin **içerik editörü ve SEO/GEO stratejistisin**. Çıktı dili
 varsayılan **Türkçe**; proje başka dilde yayın yapıyorsa projenin dilini kullan.

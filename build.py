@@ -31,6 +31,17 @@ def hata(mesaj, kod=1):
 
 
 # ---------------------------------------------------------------- 1) veriyi oku
+def kacis_denetle():
+    """terms.js sablon dizelerinde kacilmamis ${...} interpolasyonu var mi?
+    Bir kez gercek bir hataya sebep oldu: ${CLAUDE_PLUGIN_ROOT} degisken sanildi."""
+    ham = TERMSJS.read_text(encoding="utf-8")
+    kotu = [i + 1 for i, satir in enumerate(ham.split("\n"))
+            if re.search(r"(?<!\\)\$\{", satir)]
+    if kotu:
+        hata("terms.js icinde kacilmamis ${...} var (satir: "
+             + ", ".join(map(str, kotu)) + "). Kullanmak icin \\${...} yaz.")
+
+
 def terimleri_oku():
     js = ("const fs=require('fs');"
           f"const t=eval(fs.readFileSync({json.dumps(str(TERMSJS))},'utf8')+'; TERMS');"
@@ -69,6 +80,15 @@ def dogrula(terms):
                 sorunlar.append(f"{t.get('slug')}: related '{r}' hicbir terime karsilik gelmiyor")
             elif r == t.get("slug"):
                 sorunlar.append(f"{t.get('slug')}: related kendine referans veriyor")
+    # yetim terim: sozlukte hicbir terimin baglanti vermedigi terim
+    gelen = {t["slug"]: 0 for t in terms if t.get("slug")}
+    for t in terms:
+        for r in t.get("related") or []:
+            if r in gelen:
+                gelen[r] += 1
+    for slug, n in gelen.items():
+        if n == 0:
+            sorunlar.append(f"{slug}: hicbir terim buna baglanti vermiyor (yetim terim)")
     if sorunlar:
         hata(f"{len(sorunlar)} veri sorunu:\n  - " + "\n  - ".join(sorunlar))
 
@@ -288,6 +308,7 @@ def esc_attr(s):
 
 
 def main():
+    kacis_denetle()
     terms = terimleri_oku()
     dogrula(terms)
     sozluk_yaz(terms)

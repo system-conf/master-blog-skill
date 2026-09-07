@@ -196,7 +196,7 @@ Denetimlerde önerilen ama **gerekçeyle uygulanmayan** üç şey:
   alanlar, slug biçimi, seviye enum'ı, kırık `related` ve bozuk `src` build'i durduruyor.
 - **`og:image` yok.** Uydurma bir görsel koymak yerine eksik bırakıldı; sosyal paylaşımda
   kart görselsiz görünüyor. Gerçek bir kapak görseli üretildiğinde eklenecek.
-- **İngilizce sürüm yok.** Altyapı maliyeti orta, içerik maliyeti kalıcı: 41 terim × 6 uzun
+- **İngilizce sürüm yok.** Altyapı maliyeti orta, içerik maliyeti kalıcı: 66 terim × 6 uzun
   alan + 19 KB `SKILL.md`, ve her güncelleme iki dilde bakım demek. Talep gelirse
   `kullanim-senaryolari.md` içindeki dil profili yaklaşımıyla kademeli yapılabilir.
 

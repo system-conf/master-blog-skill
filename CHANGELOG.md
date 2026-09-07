@@ -3,6 +3,27 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.2.0] — 2026-09-08
+
+### Eklendi
+- **Sözlük 41 → 66 terim.** Seçim ölçütü objektifti: skill'in kendi dosyalarında
+  kullandığı ama sözlükte tanımı olmayan 28 kavram mekanik olarak tespit edildi.
+  - SEO: sorgu dağıtımı (query fan-out), AI Overviews ve AI Mode, çekirdek güncelleme,
+    kopya içerik, dış bağlantı otoritesi, programatik SEO, anahtar kelime araştırması
+  - İçerik: içerik brief'i, cevap önce (answer-first), okunabilirlik, içerik budama,
+    kontrol grubu, dönüşüm hunisi
+  - Teknik: snippet direktifleri, site haritası, tarama bütçesi, yumuşak 404, hreflang,
+    JavaScript SEO
+  - Claude: alt ajan, skill değerlendirmesi, plugin, araç izinleri, bağlam mühendisliği, MCP
+- Kategori dengesi düzeldi: SEO 21 · Claude 22 · Teknik 14 · İçerik 9 (önceden İçerik 3)
+- 50 geri bağlantı eklendi; sözlükte yetim terim kalmadı (ortalama gelen bağlantı 4,4)
+- `build.py`'a iki veri kalite kapısı: **yetim terim** denetimi ve terms.js içinde
+  kaçılmamış `${...}` interpolasyonu denetimi (ikincisi gerçek bir hataya sebep olmuştu)
+
+### Değişti
+- Site 48 → 73 sayfa
+- 23 terim doğrulanmış kaynak taşıyor; tüm kaynak URL'leri `curl` ile 200 doğrulandı
+
 ## [1.1.0] — 2026-09-08
 
 Dört bağımsız denetim ajanının bulguları uygulandı.
