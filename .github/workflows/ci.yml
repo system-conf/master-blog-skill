@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 6 1 */3 *"   # 3 ayda bir: kaynaklar.md tazeleme hatırlatması
+
+jobs:
+  dogrula:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Regresyon testleri (kontrol.py)
+        run: python3 tests/calistir.py
+
+      - name: Mekanik kontrol temiz fixture üzerinde
+        run: python3 skill/master-blog/scripts/kontrol.py tests/fixtures/temiz.md --kelime "güvenlik mesafesi"
+
+      - name: Build (veri doğrulama + site üretimi)
+        run: python3 build.py
+
+      - name: Üretilen çıktı commit'lenenle aynı mı
+        run: |
+          git diff --exit-code -- docs dist skill/master-blog/references/terimler-sozlugu.md \
+            || { echo "::error::build.py çıktısı commit'lenmiş dosyalarla uyuşmuyor. 'python3 build.py' çalıştırıp sonucu commit'le."; exit 1; }
+
+  dis-linkler:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: kaynaklar.md içindeki dış bağlantılar hâlâ yaşıyor mu
+        run: |
+          fail=0
+          for u in $(grep -o 'https://[^)]*' skill/master-blog/references/kaynaklar.md | sort -u); do
+            code=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 20 -A "Mozilla/5.0" "$u" || echo 000)
+            [ "$code" = "200" ] || { echo "::warning::$code $u"; fail=1; }
+          done
+          [ $fail -eq 0 ] && echo "tüm kaynaklar 200" || echo "::warning::bazı kaynaklar yanıt vermedi — kaynaklar.md tazelenmeli"

@@ -19,8 +19,15 @@ site/
   template.html             site kabuğu (CSS + JS)
   data/terms.js             terim sözlüğünün TEK doğruluk kaynağı
 
-build.py                    terms.js + skill dosyaları → dist/index.html
-docs/index.html             yayınlanabilir tek dosyalık site (GitHub Pages kaynağı)
+tests/
+  calistir.py               regresyon testleri (ek bağımlılık yok)
+  fixtures/                 her testin dayandığı gerçek hata örneği
+
+build.py                    terms.js + skill dosyaları → docs/ + dist/
+docs/                       GitHub Pages: 47 statik sayfa, her terim kendi URL'sinde
+  assets/{app.js,style.css} ortak paket (sayfalar arası önbelleklenir)
+  sitemap.xml, robots.txt
+dist/artifact.html          tek dosyalık sürüm (Claude Artifact için, iskeletsiz)
 ```
 
 ## Kurulum (skill)
@@ -36,21 +43,53 @@ Sonra yeni bir Claude Code oturumu aç ve: `master-blog skill'iyle yeni yazı ha
 ## Siteyi yeniden üret
 
 ```bash
-python3 build.py
+python3 build.py       # docs/ (47 sayfa) + dist/artifact.html üretir
+python3 tests/calistir.py
 ```
+
+`build.py` iki farklı çıktı üretir çünkü iki ortamın gereksinimi zıt:
+
+| Çıktı | Yönlendirme | Belge iskeleti | Neden |
+|---|---|---|---|
+| `docs/` | gerçek URL (`pushState`) | `<!doctype>` + `lang` + `viewport` **var** | Arama motoru her terimi ayrı belge olarak indeksleyebilsin |
+| `dist/artifact.html` | hash (`#/terim/x`) | **yok** | Artifact runtime iskeleti kendisi ekler; `<html>` yazmak yasak |
+
+**Veri doğrulama build'in parçasıdır.** Kırık `related` referansı, tekrar eden slug,
+eksik zorunlu alan, geçersiz seviye veya bozuk `src` girdisi build'i **hata koduyla
+durdurur** — sessizce geçmez.
 
 Terim eklemek/düzenlemek için yalnızca `site/data/terms.js` düzenlenir; `build.py`
 hem siteyi hem skill'in terim sözlüğü referansını yeniden üretir.
+`docs/`, `dist/` ve `terimler-sozlugu.md` üretilen dosyalardır — elle düzenlenmez,
+ama commit'lenir (CI ikisinin uyuştuğunu `git diff --exit-code` ile denetler).
 
-`terms.js` alanları: `slug, name, en, cat, level, short, simple, technical, why,
-example, myth, related[], usedIn`. `related` içindeki slug'lar var olmalı — build
-sırasında kırık bağlantı sessizce kartlardan düşer, bu yüzden ekledikten sonra kontrol et:
+`terms.js` alanları:
+
+| Alan | Zorunlu | Not |
+|---|---|---|
+| `slug` | evet | kebab-case, benzersiz |
+| `name`, `en` | evet | Türkçe ad ve İngilizce karşılığı |
+| `cat` | evet | serbest; yeni kategori otomatik eklenir |
+| `level` | evet | `Başlangıç` \| `Orta` \| `İleri` \| `Uzman` |
+| `short`, `simple`, `technical`, `why`, `example`, `myth` | evet | markdown (tablo, liste, kod, link) |
+| `related[]` | evet | var olan slug'lar; kendine referans yasak |
+| `usedIn` | evet | skill'de hangi aşamada geçtiği |
+| `src[]` | hayır | `{t, u}` — doğrulanmış kaynak; `https://` zorunlu |
+
+Hepsi `python3 build.py` ile denetlenir; hatalı veri build'i durdurur.
+
+## Test ve CI
 
 ```bash
-node -e "const t=eval(require('fs').readFileSync('site/data/terms.js','utf8')+'; TERMS');
-const s=new Set(t.map(x=>x.slug));t.forEach(x=>x.related.forEach(r=>{if(!s.has(r))console.log('kirik:',x.slug,'->',r)}));
-console.log(t.length,'terim')"
+python3 tests/calistir.py
 ```
+
+`tests/fixtures/` altındaki her dosya, geçmişte gerçekten görülmüş bir hatayı temsil eder:
+Türkçe `İ` katlaması, `seoBaslik` alanının H1 kaynağı sayılmaması, sahte soru başlıkları,
+kelime içi tirelerin sayımı şişirmesi, BOM'lu dosya, iç link önek eşleşmesi.
+
+`.github/workflows/ci.yml` her push'ta testleri ve build determinizmini denetler;
+3 ayda bir de `kaynaklar.md` içindeki dış bağlantıların hâlâ 200 döndüğünü kontrol eder.
 
 ## Mekanik kontrol
 

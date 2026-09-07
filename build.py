@@ -1,79 +1,369 @@
 #!/usr/bin/env python3
-"""master-blog: skill dosyalarindan ve terim verisinden tek dosyalik siteyi uretir."""
-import json, subprocess, pathlib, sys
+"""master-blog: skill dosyalarindan ve terim verisinden siteyi ve skill referansini uretir.
 
-ROOT   = pathlib.Path(__file__).parent
-SKILL  = ROOT / "skill" / "master-blog"
-SITE   = ROOT / "site"
-DIST   = ROOT / "docs"   # GitHub Pages kaynağı (main dalı /docs)
+Cikis kodlari: 0 basarili · 1 veri/dogrulama hatasi · 2 ortam hatasi (node yok vb.)
+"""
+import json, re, subprocess, pathlib, sys
+
+ROOT    = pathlib.Path(__file__).parent
+SKILL   = ROOT / "skill" / "master-blog"
+SITE    = ROOT / "site"
+DOCS    = ROOT / "docs"          # GitHub Pages: her sayfa gercek bir URL
+DIST    = ROOT / "dist"          # Artifact: tek dosya, hash yonlendirme
 TERMSJS = SITE / "data" / "terms.js"
 
-# 1) terms.js -> JSON
-terms = json.loads(subprocess.run(
-    ["node", "-e", f"const t=eval(require('fs').readFileSync({json.dumps(str(TERMSJS))},'utf8')+'; TERMS');process.stdout.write(JSON.stringify(t))"],
-    capture_output=True, text=True, check=True).stdout)
+BASE     = "/master-blog-skill/"
+SITE_URL = "https://system-conf.github.io" + BASE
+REPO_URL = "https://github.com/system-conf/master-blog-skill"
+TAGLINE  = ("Claude icin uctan uca SEO/GEO blog uretim skill'i: 13 asamali surec, "
+            "kanibalizasyon ve oz denetim kapilari, 40 maddelik yayin oncesi kontrol "
+            "ve 41 terimlik sozluk.")
 
-# 2) terim sozlugunu skill referansi olarak uret
-LEVELS = {"Başlangıç": 1, "Orta": 2, "İleri": 3, "Uzman": 4}
-lines = ["# Terimler Sözlüğü",
-         "",
-         f"Bu dosya `site/data/terms.js` dosyasından üretilir; elle düzenlenmez. {len(terms)} terim.",
-         "",
-         "Kullanıcıya bir terimi açıklarken buradaki yapıyı kullan: tanım → basit anlatım →",
-         "teknik anlatım → neden önemli → örnek → yaygın yanılgı.",
-         ""]
-for cat in ["Claude", "SEO", "İçerik", "Teknik"]:
-    grup = sorted([t for t in terms if t["cat"] == cat], key=lambda t: (LEVELS.get(t["level"], 9), t["name"]))
-    if not grup:
-        continue
-    lines += [f"## {cat}", ""]
-    for t in grup:
-        lines += [f"### {t['name']} ({t['en']})", "",
-                  f"`{t['cat']}` · `{t['level']}` · skill'de: {t['usedIn']}", "",
-                  f"**Tanım.** {t['short']}", "",
-                  "**Basitçe.**", "", t["simple"], "",
-                  "**Teknik olarak.**", "", t["technical"], "",
-                  "**Neden önemli.**", "", t["why"], "",
-                  "**Örnek.**", "", t["example"], "",
-                  "**Yaygın yanılgı.**", "", t["myth"], "",
-                  "**İlgili terimler:** " + ", ".join(
-                      next(x["name"] for x in terms if x["slug"] == r) for r in t["related"]), "",
-                  "---", ""]
-(SKILL / "references" / "terimler-sozlugu.md").write_text("\n".join(lines), encoding="utf-8")
+KATEGORI_SIRASI = ["Claude", "SEO", "İçerik", "Teknik"]
+SEVIYELER  = ["Başlangıç", "Orta", "İleri", "Uzman"]
+ZORUNLU    = ["slug", "name", "en", "cat", "level", "short", "simple",
+              "technical", "why", "example", "myth", "related", "usedIn"]
 
-# 3) skill dosyalari
+
+def hata(mesaj, kod=1):
+    print(f"BUILD HATASI: {mesaj}", file=sys.stderr)
+    sys.exit(kod)
+
+
+# ---------------------------------------------------------------- 1) veriyi oku
+def terimleri_oku():
+    js = ("const fs=require('fs');"
+          f"const t=eval(fs.readFileSync({json.dumps(str(TERMSJS))},'utf8')+'; TERMS');"
+          "process.stdout.write(JSON.stringify(t));")
+    try:
+        p = subprocess.run(["node", "-e", js], capture_output=True, text=True)
+    except FileNotFoundError:
+        hata("node bulunamadi. terms.js okunamiyor (kurulum: https://nodejs.org).", 2)
+    if p.returncode != 0:
+        hata("terms.js okunamadi. node ciktisi:\n" + (p.stderr.strip() or "(bos)"))
+    return json.loads(p.stdout)
+
+
+# ------------------------------------------------------------- 2) veriyi dogrula
+def dogrula(terms):
+    sorunlar, slugs = [], {}
+    for i, t in enumerate(terms):
+        ad = t.get("slug") or f"#{i}"
+        for alan in ZORUNLU:
+            if not t.get(alan):
+                sorunlar.append(f"{ad}: '{alan}' alani eksik veya bos")
+        if t.get("slug"):
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", t["slug"]):
+                sorunlar.append(f"{ad}: slug kebab-case degil")
+            if t["slug"] in slugs:
+                sorunlar.append(f"{ad}: slug tekrar ediyor")
+            slugs[t["slug"]] = t
+        if t.get("level") and t["level"] not in SEVIYELER:
+            sorunlar.append(f"{ad}: bilinmeyen seviye '{t['level']}' (gecerli: {', '.join(SEVIYELER)})")
+        for k in t.get("src") or []:
+            if not (isinstance(k, dict) and k.get("t") and str(k.get("u", "")).startswith("https://")):
+                sorunlar.append(f"{ad}: src girdisi {{t, u}} bicimli ve https:// olmali")
+    for t in terms:
+        for r in t.get("related") or []:
+            if r not in slugs:
+                sorunlar.append(f"{t.get('slug')}: related '{r}' hicbir terime karsilik gelmiyor")
+            elif r == t.get("slug"):
+                sorunlar.append(f"{t.get('slug')}: related kendine referans veriyor")
+    if sorunlar:
+        hata(f"{len(sorunlar)} veri sorunu:\n  - " + "\n  - ".join(sorunlar))
+
+
+# ------------------------------------------------- 3) skill terim sozlugunu uret
+def sozluk_yaz(terms):
+    kategoriler = KATEGORI_SIRASI + [c for c in dict.fromkeys(t["cat"] for t in terms)
+                                     if c not in KATEGORI_SIRASI]
+    seviye_sira = {s: i for i, s in enumerate(SEVIYELER)}
+    ad = {t["slug"]: t["name"] for t in terms}
+    satir = ["# Terimler Sözlüğü", "",
+             f"Bu dosya `site/data/terms.js` dosyasından üretilir; elle düzenlenmez. {len(terms)} terim.",
+             "",
+             "Kullanıcıya bir terimi açıklarken buradaki yapıyı kullan: tanım → basit anlatım →",
+             "teknik anlatım → neden önemli → örnek → yaygın yanılgı.",
+             "",
+             "## İçindekiler", ""]
+    for cat in kategoriler:
+        grup = [t for t in terms if t["cat"] == cat]
+        if grup:
+            satir.append(f"- **{cat}**: " + ", ".join(t["name"] for t in grup))
+    satir.append("")
+    yazilan = 0
+    for cat in kategoriler:
+        grup = sorted([t for t in terms if t["cat"] == cat],
+                      key=lambda t: (seviye_sira.get(t["level"], 99), t["name"]))
+        if not grup:
+            continue
+        satir += [f"## {cat}", ""]
+        for t in grup:
+            yazilan += 1
+            satir += [f"### {t['name']} ({t['en']})", "",
+                      f"`{t['cat']}` · `{t['level']}` · skill'de: {t['usedIn']}", "",
+                      f"**Tanım.** {t['short']}", "",
+                      "**Basitçe.**", "", t["simple"], "",
+                      "**Teknik olarak.**", "", t["technical"], "",
+                      "**Neden önemli.**", "", t["why"], "",
+                      "**Örnek.**", "", t["example"], "",
+                      "**Yaygın yanılgı.**", "", t["myth"], "",
+                      "**İlgili terimler:** " + ", ".join(ad[r] for r in t["related"]), ""]
+            if t.get("src"):     # kaynaklar sitede vardi ama skill'e hic ulasmiyordu
+                satir += ["**Doğrulanmış kaynaklar.**", ""]
+                satir += [f"- [{k['t']}]({k['u']})" for k in t["src"]]
+                satir += [""]
+            satir += ["---", ""]
+    if yazilan != len(terms):
+        hata(f"{len(terms) - yazilan} terim hicbir kategoriye yazilamadi (sessiz veri kaybi)")
+    (SKILL / "references" / "terimler-sozlugu.md").write_text("\n".join(satir), encoding="utf-8")
+
+
+# ------------------------------------------------------- 4) skill dosyalari + kurulum
 ORDER = ["SKILL.md",
          "references/yayin-oncesi-kontrol.md",
          "references/terimler-sozlugu.md",
          "references/schema-ve-geo.md",
          "references/kaynaklar.md",
          "scripts/kontrol.py"]
-files = []
-for rel in ORDER:
-    p = SKILL / rel
-    files.append({"name": p.name, "path": f"master-blog/{rel}", "text": p.read_text(encoding="utf-8")})
-
-# 4) tek komutluk kurulum betigi
 HEREDOC = "MASTERBLOG_EOF"
-cmd = ["mkdir -p ~/.claude/skills/master-blog/references ~/.claude/skills/master-blog/scripts"]
-for rel, f in zip(ORDER, files):
-    assert HEREDOC not in f["text"], f"heredoc sinirlayicisi dosyada geciyor: {rel}"
-    cmd.append(f"cat > ~/.claude/skills/master-blog/{rel} <<'{HEREDOC}'\n{f['text'].rstrip()}\n{HEREDOC}")
-cmd.append("chmod +x ~/.claude/skills/master-blog/scripts/kontrol.py")
-cmd.append('echo "master-blog kuruldu -> ~/.claude/skills/master-blog (yeni bir Claude oturumu baslat)"')
-install_cmd = "\n".join(cmd) + "\n"
 
-# 5) siteyi uret
-tpl = (SITE / "template.html").read_text(encoding="utf-8")
-terms_src = TERMSJS.read_text(encoding="utf-8")
-data = (terms_src.rstrip().rstrip(";") + ";\n"
-        + "const FILES = " + json.dumps(files, ensure_ascii=False) + ";\n"
-        + "const INSTALL_CMD = " + json.dumps(install_cmd, ensure_ascii=False) + ";\n")
-data = data.replace("</script>", "<\\/script>")
-out = tpl.replace("/*__DATA__*/", data)
-DIST.mkdir(exist_ok=True)
-(DIST / "index.html").write_text(out, encoding="utf-8")
 
-kb = len(out.encode("utf-8")) / 1024
-print(f"docs/index.html · {kb:.0f} KB · {len(terms)} terim · {len(files)} dosya · "
-      f"{sum(len(f['text'].splitlines()) for f in files)} satir skill")
+def dosyalari_topla():
+    files = []
+    for rel in ORDER:
+        p = SKILL / rel
+        if not p.exists():
+            hata(f"skill dosyasi bulunamadi: {rel}")
+        files.append({"name": p.name, "path": f"master-blog/{rel}",
+                      "text": p.read_text(encoding="utf-8")})
+    return files
+
+
+def kurulum_komutu(files):
+    cmd = ["mkdir -p ~/.claude/skills/master-blog/references ~/.claude/skills/master-blog/scripts"]
+    for rel, f in zip(ORDER, files):
+        if HEREDOC in f["text"]:      # assert degil: python3 -O ile devre disi kalmasin
+            hata(f"heredoc sinirlayicisi dosyada geciyor: {rel}")
+        cmd.append(f"cat > ~/.claude/skills/master-blog/{rel} <<'{HEREDOC}'\n{f['text'].rstrip()}\n{HEREDOC}")
+    cmd.append("chmod +x ~/.claude/skills/master-blog/scripts/kontrol.py")
+    cmd.append('echo "master-blog kuruldu -> ~/.claude/skills/master-blog (yeni bir Claude oturumu baslat)"')
+    return "\n".join(cmd) + "\n"
+
+
+# ------------------------------------------------------------------ 5) siteyi uret
+def js_gomme_guvenli(s):
+    """HTML spec: script literalinde <!--, <script ve </script dizileri ASCII buyuk/kucuk
+    harf duyarsiz kacilmali. Onceki surum yalnizca kucuk harfli </script> icin kaciyordu."""
+    return re.sub(r"(?i)<(!--|/?script)", lambda m: "\\x3C" + m.group(1), s)
+
+
+SAYFALAR = [
+    ("",               "Master Blog Skill",
+     "Claude'a bir web proje­sinde içerik üretmenin tam sürecini öğreten açık kaynak skill: "
+     "veriden konu seçimi, kanibalizasyon denetimi, SEO + GEO + E-E-A-T katmanları ve 40 maddelik yayın kapısı."),
+    ("skill",          "Skill Dokümantasyonu — Master Blog Skill",
+     "master-blog skill'inin 13 aşamalı süreci, iki atlanamaz kapısı, altı dosyası, örnek promptları "
+     "ve mekanik kontrol scripti: ne yaptığı ve ne yapmadığı."),
+    ("nasil-calisir",  "Claude Skills Nasıl Çalışır — Master Blog Skill",
+     "Claude Skill nedir, dosya yapısı nasıldır, kademeli açılım nasıl işler ve iyi bir skill neye benzer — "
+     "hiç bilmeyen biri için baştan sona."),
+    ("terimler",       "Terim Sözlüğü — Master Blog Skill",
+     "Claude, SEO, GEO ve içerik dünyasından 41 terim; her biri tanım, basit anlatım, teknik anlatım, "
+     "örnek ve yaygın yanılgısıyla."),
+    ("kurulum",        "Kurulum — Master Blog Skill",
+     "master-blog skill'ini Claude Code ve Claude uygulamasına ekleme yöntemleri: tek komut, depo klonlama "
+     "ve elle kurulum."),
+    ("kaynaklar",      "Kaynaklar ve Doğrulama Kaydı — Master Blog Skill",
+     "Skill'deki zamana bağlı her iddianın tarihi, kaynak sınıfı ve doğrulanmış bağlantısı. "
+     "Son doğrulama: 7 Eylül 2026."),
+]
+
+
+def onrender(bundle, yollar):
+    """Node ile her rotanin HTML'ini onceden uretir (statik sayfalar icin)."""
+    js = """
+const APP = {innerHTML:'', classList:{add(){},remove(){},toggle(){}}, offsetWidth:1,
+  querySelector:()=>null, setAttribute(){}, focus(){}};
+const el = new Proxy(function(){}, {get:(t,k)=>{
+  if(k==='classList') return {add(){},remove(){},toggle(){},contains(){return false}};
+  if(k==='dataset') return {}; if(k==='style') return {}; if(k==='value') return '';
+  if(k==='offsetWidth') return 1; if(k==='getAttribute') return ()=>'';
+  if(['addEventListener','scrollIntoView','focus','setAttribute','removeAttribute'].includes(k)) return ()=>{};
+  return el; }, set:()=>true, apply:()=>el});
+global.document={querySelector:s=>s==='#app'?APP:el, querySelectorAll:()=>[],
+  getElementById:()=>null, addEventListener:()=>{}, createElement:()=>el, body:el, title:''};
+global.window={addEventListener:()=>{}, self:1, top:1, scrollTo:()=>{}, open:()=>{}};
+global.localStorage={getItem:()=>null,setItem:()=>{}};
+global.navigator={clipboard:{}};
+global.history={pushState:()=>{}};
+global.setTimeout=()=>0; global.clearTimeout=()=>{};
+global.location={pathname:'BASE_YER', search:'', hash:'', href:''};
+const BUNDLE = require('fs').readFileSync(process.argv[2],'utf8');
+const YOLLAR = JSON.parse(process.argv[3]);
+const cikti = {};
+eval(BUNDLE + `
+;YOLLAR.forEach(y=>{
+  location.pathname = 'BASE_YER' + (y ? y + '/' : '');
+  location.search=''; location.hash='';
+  ILK_YUKLEME = true;
+  render();
+  cikti[y] = APP.innerHTML;
+});
+`);
+process.stdout.write(JSON.stringify(cikti));
+""".replace("BASE_YER", BASE)
+    tmp = ROOT / ".onrender.js"
+    bnd = ROOT / ".bundle.js"
+    tmp.write_text(js, encoding="utf-8")
+    bnd.write_text(bundle, encoding="utf-8")
+    try:
+        p = subprocess.run(["node", str(tmp), str(bnd), json.dumps(yollar)],
+                           capture_output=True, text=True)
+        if p.returncode != 0:
+            hata("onrender basarisiz. node ciktisi:\n" + (p.stderr.strip() or "(bos)"))
+        return json.loads(p.stdout)
+    finally:
+        tmp.unlink(missing_ok=True); bnd.unlink(missing_ok=True)
+
+
+def statik_linkler(html):
+    """Onrenderda '#/...' hreflerini gercek yollara cevirir (istemci de ayni islemi yapar)."""
+    def cev(m):
+        s = m.group(1)
+        pq, _, frag = s.partition("#")
+        yol, _, qs = pq.partition("?")
+        yol = yol.lstrip("/")
+        return ('href="' + BASE + (yol + "/" if yol else "")
+                + ("?" + qs if qs else "") + ("#" + frag if frag else "") + '"')
+    return re.sub(r'href="#(/[^"]*)"', cev, html)
+
+
+def sayfa_yaz(yol, baslik, aciklama, govde, style_href, script_src, kabuk, jsonld=""):
+    kanonik = SITE_URL + (yol + "/" if yol else "")
+    derinlik = "../" * (len(yol.split("/")) if yol else 0)
+    head = f"""<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{baslik}</title>
+<meta name="description" content="{aciklama}">
+<link rel="canonical" href="{kanonik}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Master Blog Skill">
+<meta property="og:title" content="{baslik}">
+<meta property="og:description" content="{aciklama}">
+<meta property="og:url" content="{kanonik}">
+<meta property="og:locale" content="tr_TR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{baslik}">
+<meta name="twitter:description" content="{aciklama}">
+<meta name="theme-color" content="#050505">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="{derinlik}{style_href}">
+{jsonld}</head>
+<body>
+"""
+    gövde_html = kabuk.replace("<!--__APP__-->", govde)
+    html = head + gövde_html + f'<script src="{derinlik}{script_src}" defer></script>\n</body>\n</html>\n'
+    hedef = DOCS / yol / "index.html" if yol else DOCS / "index.html"
+    hedef.parent.mkdir(parents=True, exist_ok=True)
+    hedef.write_text(html, encoding="utf-8")
+    return len(html.encode("utf-8"))
+
+
+def esc_attr(s):
+    return (str(s).replace("&", "&amp;").replace('"', "&quot;")
+            .replace("<", "&lt;").replace(">", "&gt;"))
+
+
+def main():
+    terms = terimleri_oku()
+    dogrula(terms)
+    sozluk_yaz(terms)
+    files = dosyalari_topla()
+
+    tpl = (SITE / "template.html").read_text(encoding="utf-8")
+    veri = (TERMSJS.read_text(encoding="utf-8").rstrip().rstrip(";") + ";\n"
+            + "const FILES = " + json.dumps(files, ensure_ascii=False) + ";\n"
+            + "const INSTALL_CMD = " + json.dumps(kurulum_komutu(files), ensure_ascii=False) + ";\n")
+
+    # ---------- A) Artifact surumu: tek dosya, iskeletsiz, hash yonlendirme ----------
+    spa = tpl.replace("/*__DATA__*/", js_gomme_guvenli(
+        "const MODE='spa'; const BASE='';\n" + veri))
+    DIST.mkdir(exist_ok=True)
+    (DIST / "artifact.html").write_text(spa, encoding="utf-8")
+
+    # ---------- B) GitHub Pages surumu: sayfa basina gercek URL ----------
+    stil   = re.search(r"<style>(.*?)</style>", tpl, re.S).group(1)
+    script = re.search(r"<script>(.*)</script>", tpl, re.S).group(1)
+    kabuk  = tpl.split("</style>", 1)[1].split("<script>", 1)[0]
+    if "<main id=\"app\"></main>" not in kabuk:
+        hata("sablonda <main id=\"app\"></main> bulunamadi")
+    kabuk = statik_linkler(kabuk).replace("<main id=\"app\"></main>",
+                                          '<main id="app" tabindex="-1"><!--__APP__--></main>')
+
+    bundle = script.replace("/*__DATA__*/", js_gomme_guvenli(
+        f"const MODE='static'; const BASE='{BASE}';\n" + veri))
+
+    yollar = [y for y, _, _ in SAYFALAR] + ["terim/" + t["slug"] for t in terms]
+    render_ = onrender(bundle, yollar)
+
+    DOCS.mkdir(exist_ok=True)
+    (DOCS / "assets").mkdir(exist_ok=True)
+    (DOCS / "assets" / "style.css").write_text(stil, encoding="utf-8")
+    (DOCS / "assets" / "app.js").write_text(bundle, encoding="utf-8")
+    (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+
+    toplam = 0
+    for yol, baslik, aciklama in SAYFALAR:
+        ld = ""
+        if yol == "":
+            ld = ('<script type="application/ld+json">' + json.dumps({
+                "@context": "https://schema.org", "@type": "WebSite",
+                "name": "Master Blog Skill", "url": SITE_URL,
+                "description": aciklama, "inLanguage": "tr-TR",
+                "codeRepository": REPO_URL, "license": "https://opensource.org/licenses/MIT",
+            }, ensure_ascii=False) + "</script>\n")
+        toplam += sayfa_yaz(yol, esc_attr(baslik), esc_attr(aciklama),
+                            statik_linkler(render_[yol]),
+                            "assets/style.css", "assets/app.js", kabuk, ld)
+
+    for t in terms:
+        yol = "terim/" + t["slug"]
+        aciklama = t["short"][:300]
+        ld = ('<script type="application/ld+json">' + json.dumps({
+            "@context": "https://schema.org", "@type": "DefinedTerm",
+            "name": t["name"], "alternateName": t["en"], "description": t["short"],
+            "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "Master Blog Skill Terim Sözlüğü",
+                                 "url": SITE_URL + "terimler/"},
+            "url": SITE_URL + yol + "/", "inLanguage": "tr-TR",
+        }, ensure_ascii=False) + "</script>\n")
+        toplam += sayfa_yaz(yol, esc_attr(t["name"] + " — Master Blog Skill"), esc_attr(aciklama),
+                            statik_linkler(render_[yol]),
+                            "assets/style.css", "assets/app.js", kabuk, ld)
+
+    # ---------- C) sitemap + robots ----------
+    from datetime import date
+    bugun = date.today().isoformat()
+    urls = "".join(f"  <url><loc>{SITE_URL}{(y + '/') if y else ''}</loc>"
+                   f"<lastmod>{bugun}</lastmod></url>\n" for y in yollar)
+    (DOCS / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n",
+        encoding="utf-8")
+    (DOCS / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}sitemap.xml\n", encoding="utf-8")
+
+    print(f"docs/  · {len(yollar)} sayfa · toplam {toplam/1024:.0f} KB "
+          f"(app.js {len(bundle.encode()) / 1024:.0f} KB + style.css {len(stil.encode()) / 1024:.0f} KB ortak)")
+    print(f"dist/artifact.html · {len(spa.encode()) / 1024:.0f} KB · tek dosya")
+    print(f"{len(terms)} terim · {len(files)} skill dosyasi · "
+          f"{sum(len(f['text'].splitlines()) for f in files)} satir")
+
+
+if __name__ == "__main__":
+    main()

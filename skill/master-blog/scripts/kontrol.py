@@ -18,7 +18,13 @@ Bayraklar:
 
 Çıkış kodu: blokaj varsa 1, yoksa 0.
 """
-import argparse, json, os, re, sys, urllib.request, urllib.error
+import argparse, json, os, re, sys, unicodedata, urllib.request, urllib.error
+
+
+def tr_kucult(s):
+    """Türkçeye duyarlı küçültme. Python'un lower()'ı 'İ' -> 'i'+U+0307 üretir;
+    bu, hedef kelime aramalarını sessizce bozar."""
+    return unicodedata.normalize("NFC", str(s).replace("İ", "i").replace("I", "ı")).lower()
 
 # ---------- eşikler (projene göre uyarlanabilir) ----------
 TITLE_MAX   = 60
@@ -31,10 +37,19 @@ PARA_MAX_KELIME = 90
 JENERIK_ANCHOR = ["buraya tıkla", "buraya tıklayın", "tıklayın", "buradan", "bu link",
                   "click here", "read more", "devamı", "detaylı bilgi için tıkla"]
 TITLE_ALAN = ["seoBaslik", "seoTitle", "title", "seo_title", "baslik"]
-DESC_ALAN  = ["ozet", "description", "metaDescription", "excerpt", "aciklama", "ozet"]
+DESC_ALAN  = ["ozet", "description", "metaDescription", "excerpt", "aciklama"]
 TARIH_ALAN = ["tarih", "date", "publishedAt", "pubDate"]
 
-SORU_ISARETI = ("?", " mi", " mı", " mu", " mü", "nasıl", "neden", "kaç", "hangi", "nedir", "ne kadar")
+# Alt dize araması yanlış pozitif üretiyordu ("mimarisi" -> " mi", "kaçınılmaz" -> "kaç").
+# Kelime sınırı + "neden sonuç" gibi bileşik kalıplar için negatif ileri bakış.
+SORU_DESENI = re.compile(
+    r"\?|\b(?:mi|mı|mu|mü|midir|mıdır|mudur|müdür)\b"
+    r"|\b(?:nasıl|niçin|nerede|nereden|hangi|nedir|kim|kaç|ne kadar|ne zaman)\b"
+    r"|\bneden\b(?!\s*[-–—]?\s*sonu[çc])")
+
+
+def soru_mu(baslik):
+    return bool(SORU_DESENI.search(tr_kucult(baslik)))
 
 
 def frontmatter_ayir(text):
@@ -57,7 +72,10 @@ def govde_temizle(body):
     t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)
     t = re.sub(r"^\s*\|.*$", " ", t, flags=re.M)
     t = re.sub(r"https?://\S+", " ", t)
-    t = re.sub(r"[#>*_~\-]", " ", t)
+    t = re.sub(r"(?m)^\s*[-*+]\s+", " ", t)      # madde imleri
+    t = re.sub(r"(?m)^\s*-{3,}\s*$", " ", t)     # yatay çizgi
+    t = re.sub(r"\s-\s", " ", t)                 # tek başına tire
+    t = re.sub(r"[#>*_~]", " ", t)                # kelime içi tire KORUNUR
     return t
 
 
@@ -116,10 +134,17 @@ def main():
     ap.add_argument("--icerik-dizini", default="")
     a = ap.parse_args()
 
-    raw = open(a.dosya, encoding="utf-8").read()
+    try:
+        raw = open(a.dosya, encoding="utf-8-sig").read()   # utf-8-sig: BOM'lu dosyalar
+    except FileNotFoundError:
+        print(f"HATA: '{a.dosya}' bulunamadı. Yazının tam yolunu ver.", file=sys.stderr)
+        sys.exit(2)          # 1 = blokaj, 2 = çağrı hatası
+    except OSError as e:
+        print(f"HATA: '{a.dosya}' okunamadı: {e}", file=sys.stderr)
+        sys.exit(2)
     fm, body = frontmatter_ayir(raw)
     duz = govde_temizle(body)
-    kelime = a.kelime.strip().lower()
+    kelime = tr_kucult(a.kelime.strip())
     r = Rapor()
 
     # --- 14 · title ---
@@ -133,7 +158,7 @@ def main():
         else:
             r.ekle(14, "Title uzunluğu", "gecti", f"{n} karakter")
         if kelime:
-            idx = title.lower().find(kelime)
+            idx = tr_kucult(title).find(kelime)
             sinir = max(15, len(title) // 3)
             if idx < 0:
                 r.ekle(14, "Hedef kelime title'da", "uyari", f"'{kelime}' title'da hiç geçmiyor")
@@ -152,7 +177,10 @@ def main():
 
     # --- 16 · tek H1 ---
     h1 = re.findall(r"^#\s+(.+)$", body, re.M)
-    fm_baslikta = bool(next((fm[k] for k in ("baslik", "title") if fm.get(k)), ""))
+    # Frontmatter'da herhangi bir başlık alanı varsa H1 şablondan gelir.
+    # Önceden yalnızca ("baslik","title") kontrol ediliyordu; seoBaslik/seoTitle kullanan
+    # doğru biçimli yazılar haksız yere BLOKAJ alıyordu.
+    fm_baslikta = bool(next((fm[k] for k in TITLE_ALAN if fm.get(k)), ""))
     if fm_baslikta:
         r.ekle(16, "Gövdede H1", "gecti" if len(h1) == 0 else "blokaj",
                "H1 frontmatter'dan geliyor" if len(h1) == 0 else f"gövdede {len(h1)} adet H1 var (çift H1)")
@@ -169,13 +197,13 @@ def main():
 
     # --- 18 · ilk 100 kelimede hedef kelime ---
     if kelime:
-        ilk100 = " ".join(duz.split()[:100]).lower()
+        ilk100 = tr_kucult(" ".join(duz.split()[:100]))
         r.ekle(18, "İlk 100 kelimede hedef kelime", "gecti" if kelime in ilk100 else "uyari",
                "var" if kelime in ilk100 else "yok")
 
     # --- 19 · soru biçimli H2 oranı ---
     h2 = [b[1] for b in basliklar if b[0] == 2]
-    soru = [h for h in h2 if any(s in h.lower() for s in SORU_ISARETI)]
+    soru = [h for h in h2 if soru_mu(h)]
     if h2:
         oran = len(soru) / len(h2)
         r.ekle(19, "Soru/karar biçimli H2", "gecti" if oran >= SORU_ORANI else "uyari",
@@ -186,7 +214,7 @@ def main():
     # --- 20 · kelime istifleme (paragraf başına 1) ---
     if kelime:
         paragraflar = [p for p in re.split(r"\n\s*\n", govde_temizle(body)) if p.strip()]
-        asiri = [i for i, p in enumerate(paragraflar) if p.lower().count(kelime) > 1]
+        asiri = [i for i, p in enumerate(paragraflar) if tr_kucult(p).count(kelime) > 1]
         r.ekle(20, "Kelime istifleme", "gecti" if not asiri else "uyari",
                "yok" if not asiri else f"{len(asiri)} paragrafta hedef kelime 1'den fazla")
 
@@ -195,9 +223,10 @@ def main():
     slug_ok = bool(re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug))
     detay = slug if slug_ok else f"{slug} — kebab-case değil (büyük harf/Türkçe karakter/alt çizgi)"
     if slug_ok and kelime:
-        anahtar = re.sub(r"[^a-z0-9]+", "-", kelime.replace("ı","i").replace("ğ","g").replace("ü","u")
-                         .replace("ş","s").replace("ö","o").replace("ç","c"))
-        if anahtar.split("-")[0] not in slug:
+        cev = str.maketrans("ıığüşöç", "iigusoc")
+        anahtar = re.sub(r"[^a-z0-9]+", "-", kelime.translate(cev)).strip("-")
+        parcalar = [x for x in anahtar.split("-") if len(x) > 2]
+        if parcalar and not any(x in slug for x in parcalar):
             detay += " · hedef kelime slug'da geçmiyor"
     r.ekle(21, "Slug formatı", "gecti" if slug_ok else "blokaj", detay)
 
@@ -223,8 +252,8 @@ def main():
     r.ekle(33, "İç bağlantı sayısı", "gecti" if len(ic) >= IC_LINK_MIN else "blokaj",
            f"{len(ic)} adet (en az {IC_LINK_MIN})")
 
-    jenerik = [t for t, _ in linkler if t.strip().lower() in JENERIK_ANCHOR]
-    anchorlar = [t.strip().lower() for t, _ in ic]
+    jenerik = [t for t, _ in linkler if tr_kucult(t.strip()) in JENERIK_ANCHOR]
+    anchorlar = [tr_kucult(t.strip()) for t, _ in ic]
     tekrar = {x for x in anchorlar if anchorlar.count(x) > 1}
     sorun = []
     if jenerik: sorun.append(f"jenerik anchor: {', '.join(sorted(set(jenerik))[:3])}")
@@ -248,10 +277,16 @@ def main():
                f"{len(dis)} link 200" if not kotu else "; ".join(kotu[:3]))
 
     if a.icerik_dizini:
+        try:
+            mevcut = {os.path.splitext(f)[0] for f in os.listdir(a.icerik_dizini)}
+        except OSError as e:
+            print(f"HATA: içerik dizini okunamadı: {e}", file=sys.stderr)
+            sys.exit(2)
         eksik = []
         for _, u in ic:
-            hedef = u.split("#")[0].strip("/").split("/")[-1]
-            if hedef and not any(f.startswith(hedef) for f in os.listdir(a.icerik_dizini)):
+            hedef = u.split("#")[0].split("?")[0].strip("/").split("/")[-1]
+            hedef = os.path.splitext(hedef)[0]
+            if hedef and hedef not in mevcut:      # önek değil, tam eşleşme
                 eksik.append(u)
         r.ekle(36, "İç link hedefleri", "gecti" if not eksik else "uyari",
                "hepsi mevcut" if not eksik else f"bulunamadı: {', '.join(eksik[:3])}")
@@ -262,7 +297,7 @@ def main():
         r.ekle(38, "Görsel alt metni", "gecti", "görsel yok")
     else:
         bos = [u for t, u in gorseller if len(t.strip()) < 8]
-        istif = [u for t, u in gorseller if kelime and t.lower().count(kelime) > 1]
+        istif = [u for t, u in gorseller if kelime and tr_kucult(t).count(kelime) > 1]
         d = []
         if bos:   d.append(f"{len(bos)} görselde alt metni yok/çok kısa")
         if istif: d.append(f"{len(istif)} alt metninde kelime istifleme")

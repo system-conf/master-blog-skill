@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kurulum — Master Blog Skill</title>
+<meta name="description" content="master-blog skill'ini Claude Code ve Claude uygulamasına ekleme yöntemleri: tek komut, depo klonlama ve elle kurulum.">
+<link rel="canonical" href="https://system-conf.github.io/master-blog-skill/kurulum/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Master Blog Skill">
+<meta property="og:title" content="Kurulum — Master Blog Skill">
+<meta property="og:description" content="master-blog skill'ini Claude Code ve Claude uygulamasına ekleme yöntemleri: tek komut, depo klonlama ve elle kurulum.">
+<meta property="og:url" content="https://system-conf.github.io/master-blog-skill/kurulum/">
+<meta property="og:locale" content="tr_TR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kurulum — Master Blog Skill">
+<meta name="twitter:description" content="master-blog skill'ini Claude Code ve Claude uygulamasına ekleme yöntemleri: tek komut, depo klonlama ve elle kurulum.">
+<meta name="theme-color" content="#050505">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+
+<a class="skip" href="#app">İçeriğe atla</a>
+<header class="top">
+  <div class="topin">
+    <a class="logo" href="/master-blog-skill/"><span class="sq">&gt;_</span> master-blog</a>
+    <nav class="main" id="nav">
+      <a href="/master-blog-skill/skill/">Skill</a>
+      <a href="/master-blog-skill/nasil-calisir/">Nasıl Çalışır</a>
+      <a href="/master-blog-skill/terimler/">Terimler</a>
+      <a href="/master-blog-skill/kurulum/">Kurulum</a>
+      <a href="/master-blog-skill/kaynaklar/">Kaynaklar</a>
+    </nav>
+    <div class="topright">
+      <button class="searchbtn" id="openCp" aria-label="Ara">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="lbl">Skill ve terim ara</span>
+        <span class="kbd" style="margin-left:auto">⌘K</span>
+      </button>
+      <a class="btn" href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer" aria-label="GitHub deposu">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.8 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.5-1.5 7.8-5.8 7.8-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+        <span class="hidesm">GitHub</span></a>
+      <button class="btn pri" id="openInstall">Claude'a Ekle</button>
+    </div>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"><div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">Kurulum</div>
+      <a href="/master-blog-skill/kurulum/#nasil">Nasıl çalışır</a>
+      <a href="/master-blog-skill/kurulum/#yontem">Yöntemler</a>
+      <a href="/master-blog-skill/kurulum/#dogrula">Doğrulama</a>
+      <a href="/master-blog-skill/kurulum/#sss">Sık sorulanlar</a></aside>
+    <div class="prose">
+      <span class="eyebrow">Kurulum</span>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em;margin-top:12px">Skill'i Claude'a ekle</h1>
+      <p style="color:var(--fg2);font-size:16.5px;margin-top:14px;max-width:64ch">
+        Dört dosyayı doğru dizine koymak yeterli. Kurulumdan sonra ayrı bir "etkinleştirme" adımı yok.</p>
+      <div class="ctarow" style="margin:22px 0 8px">
+        <button class="btn pri" onclick="openInstall()">Kurulum panelini aç</button>
+        <button class="btn" onclick="copy(INSTALL_CMD,'Kurulum komutu kopyalandı')">Tek komutu kopyala</button>
+      </div>
+
+      <h2 id="nasil">Kurulum nasıl çalışır?</h2>
+      <p>Claude Code, iki dizindeki skill'leri kendiliğinden tanır:</p><ul><li><code>~/.claude/skills/</code> — <strong>kişisel</strong>: bütün projelerinde geçerli olur.</li><li><code>&lt;proje&gt;/.claude/skills/</code> — <strong>projeye özel</strong>: repoda durur, ekiple paylaşılır.</li></ul><p>Dosyalar yerine konduğunda Claude, yeni oturumda skill'in adını ve açıklamasını görür. Blogla ilgili bir istek geldiğinde açıklamayla eşleştirir ve <code>SKILL.md</code> dosyasını okur.</p>
+      <div class="callout"><p><strong>Dürüstlük notu:</strong> Bu sayfa &quot;tek tıkla Claude'a kur&quot; bağlantısı sunmaz, çünkü herkes için çalışan genel bir kurulum bağlantısı (deep link) mevcut değildir. Aşağıdaki yöntemlerin hepsi gerçek dosya kurulumudur.</p></div>
+
+      <h2 id="yontem">Yöntemler</h2>
+      <p><strong>1 · Tek komut (en hızlı).</strong> &quot;Tek komutu kopyala&quot; düğmesi, dört dosyayı da <code>~/.claude/skills/master-blog/</code> altında oluşturan bir kabuk komutu panoya alır. Terminale yapıştırıp çalıştırman yeterli. Komut yalnızca dizin oluşturur ve dosya yazar; başka bir şey yapmaz — yapıştırmadan önce okuyabilirsin.</p><p><strong>2 · Claude'a yaptır.</strong> Dosyaları kopyalayıp Claude Code'a şu isteği ver: &quot;Bu içeriği <code>~/.claude/skills/master-blog/SKILL.md</code> olarak kaydet.&quot; Referans dosyaları için aynısını <code>references/</code> altına tekrarla.</p><p><strong>3 · Elle.</strong> Dosyaları indir, dizini kendin oluştur ve dosyaları içine koy. Dizin adı <code>master-blog</code> olmalı — frontmatter'daki <code>name</code> ile aynı.</p><p><strong>4 · Claude uygulaması (web / masaüstü).</strong> Uygulama tarafında özel skill yükleme, Ayarlar içindeki yetenekler/skills bölümünden yapılır ve genellikle skill klasörünün sıkıştırılmış hâlini (zip) ister. Bu arayüz ve plan gereksinimleri zamanla değişebildiği için buradan adım adım ekran tarifi vermiyoruz; uygulamandaki güncel Ayarlar bölümünü kontrol et.</p>
+
+      <h2 id="dogrula">Kurulumu doğrula</h2>
+      <ol><li>Yeni bir Claude Code oturumu başlat (mevcut oturum eski listeyi taşır).</li><li><code>ls ~/.claude/skills/master-blog</code> — dört dosya görünmeli.</li><li>Claude'a &quot;master-blog skill'iyle bir içerik adayı çıkar&quot; yaz. Skill devredeyse ilk iş proje keşfi olur ve aday için veri gerekçesi ister.</li></ol>
+
+      <h2 id="sss">Sık sorulanlar</h2>
+      <p><strong>Skill her mesajda mı yükleniyor?</strong> Hayır. Normalde yalnızca adı ve açıklaması bağlamda durur; iş eşleştiğinde tam dosya okunur.</p><p><strong>Mevcut blog skill'imle çakışır mı?</strong> Açıklamaları farklıysa çakışmaz. Aynı işi yapan iki skill varsa, birinin açıklamasına &quot;şu durumda diğerini kullan&quot; satırı eklemek en temiz çözümdür.</p><p><strong>Projeye özel mi, kişisel mi kuralım?</strong> Ekip aynı süreci kullanacaksa projeye özel kurulum daha iyidir: repoda sürümlenir, herkeste aynı olur.</p><p><strong>Değiştirebilir miyim?</strong> Evet, MIT lisanslı. Eşikleri (kelime bandı, örtüşme oranı, iç link sayısı) kendi projene göre uyarlaman zaten beklenen kullanımdır.</p>
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Hedef dizin</div>
+        <div style="padding:14px 15px;display:grid;gap:9px;font-size:12.5px;color:var(--fg2)">
+          <code class="mono" style="color:var(--or3)">~/.claude/skills/master-blog/</code>
+          <span style="color:var(--fg3)">veya</span>
+          <code class="mono" style="color:var(--or3)">&lt;proje&gt;/.claude/skills/master-blog/</code>
+        </div>
+      </div>
+      <div class="metabox"><div class="mh">Dosyalar</div>
+        <div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/SKILL.md</span>
+          <b>420 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yayin-oncesi-kontrol.md</span>
+          <b>87 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/terimler-sozlugu.md</span>
+          <b>1772 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/schema-ve-geo.md</span>
+          <b>140 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/kaynaklar.md</span>
+          <b>129 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/scripts/kontrol.py</span>
+          <b>330 sr</b></div>
+      </div>
+      <button class="btn pri" onclick="openInstall()">Kurulum paneli</button>
+    </aside>
+  </div></div></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a class="logo" href="/master-blog-skill/"><span class="sq">&gt;_</span> master-blog</a>
+        <p style="color:var(--fg2);margin-top:14px;max-width:38ch">Claude için üretilmiş, uçtan uca SEO/GEO blog üretim skill'i — ve arkasındaki terminolojinin tam sözlüğü.</p>
+      </div>
+      <div><h5>Skill</h5>
+        <a href="/master-blog-skill/skill/">Genel bakış</a><a href="/master-blog-skill/skill/#dosyalar">SKILL.md</a>
+        <a href="/master-blog-skill/skill/#promptlar">Örnek promptlar</a><a href="/master-blog-skill/kurulum/">Kurulum</a>
+        <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer">GitHub deposu</a></div>
+      <div><h5>Öğren</h5>
+        <a href="/master-blog-skill/nasil-calisir/">Skill nasıl çalışır</a><a href="/master-blog-skill/terimler/">Terim sözlüğü</a>
+        <a href="/master-blog-skill/terim/kanibalizasyon/">Kanibalizasyon</a><a href="/master-blog-skill/kaynaklar/">Kaynaklar</a></div>
+      <div><h5>Kategoriler</h5>
+        <a href="/master-blog-skill/terimler/?k=SEO">SEO</a><a href="/master-blog-skill/terimler/?k=Claude">Claude &amp; AI</a>
+        <a href="/master-blog-skill/terimler/?k=Teknik">Teknik</a><a href="/master-blog-skill/terimler/?k=İçerik">İçerik</a></div>
+    </div>
+    <div class="fbot">
+      <span>v1.0 · MIT Lisansı · <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer" style="color:var(--or3)">github.com/system-conf/master-blog-skill</a></span>
+      <span>Claude kullanıcıları için yazıldı.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Claude'a Ekle" inert></aside>
+<div class="cp" id="cp" role="dialog" aria-label="Komut paleti" inert>
+  <div class="cpin">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fg3)" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="cpq" placeholder="Skill, terim, sayfa ara…" autocomplete="off" spellcheck="false">
+    <span class="kbd">ESC</span>
+  </div>
+  <div class="cplist" id="cplist"></div>
+  <div class="cpfoot"><span>↑↓ gez</span><span>↵ aç</span><span>esc kapat</span></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

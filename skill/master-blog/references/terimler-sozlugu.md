@@ -5,6 +5,13 @@ Bu dosya `site/data/terms.js` dosyasından üretilir; elle düzenlenmez. 41 teri
 Kullanıcıya bir terimi açıklarken buradaki yapıyı kullan: tanım → basit anlatım →
 teknik anlatım → neden önemli → örnek → yaygın yanılgı.
 
+## İçindekiler
+
+- **Claude**: Skill, Bağlam Penceresi, Token, Kademeli Açılım, Ajanik İş Akışı, Sistem Promptu, Prompt Enjeksiyonu, Halüsinasyon, Temellendirme, RAG, Gömme Vektörü, Yapılandırılmış Çıktı, Araç Kullanımı, Örnekle Yönlendirme, Düşünce Zinciri, Bilgi Kesim Tarihi
+- **SEO**: Kanibalizasyon, Arama Niyeti, SERP, GEO, E-E-A-T, YMYL, Doorway Sayfa, İç Bağlantı, Anchor Metni, Öne Çıkan Snippet, Uzun Kuyruk, Tıklama Oranı, Kelime İstifleme, Varlık
+- **İçerik**: İnce İçerik, Konu Kümesi (Hub-Spoke), Tazelik
+- **Teknik**: Canonical Etiketi, 301 Yönlendirme, Yapılandırılmış Veri, İndeksleme, Yetim Sayfa, Core Web Vitals, Erişilebilirlik, llms.txt
+
 ## Claude
 
 ### Bağlam Penceresi (Context Window)
@@ -212,6 +219,10 @@ Kötü açıklama: `description: "Blog yazar."`
 **"Skill = prompt."** Değil. Prompt tek konuşmalık girdi, skill kalıcı ve koşullu yüklenen bir yetenektir. **"Ne kadar uzunsa o kadar iyi."** Değil — bağlam maliyeti gerçektir; ana dosya odaklı olmalı, derinlik referanslara taşınmalıdır.
 
 **İlgili terimler:** Kademeli Açılım, Sistem Promptu, Bağlam Penceresi, Ajanik İş Akışı
+
+**Doğrulanmış kaynaklar.**
+
+- [Anthropic — Agent Skills dokümantasyonu](https://docs.claude.com/en/docs/agents-and-tools/agent-skills)
 
 ---
 
@@ -839,6 +850,11 @@ Sorgu: "oyun grubu güvenlik mesafesi". Başlık "Ürünlerimiz Hakkında" ise C
 
 **İlgili terimler:** SERP, Öne Çıkan Snippet, Arama Niyeti
 
+**Doğrulanmış kaynaklar.**
+
+- [Search Console veri kırılmaları: num=100, AI Mode, Mayıs 2025 hatası](https://www.getpassionfruit.com/research/your-search-console-data-has-been-wrong-for-a-year)
+- [Google — title link rehberi](https://developers.google.com/search/docs/appearance/title-link)
+
 ---
 
 ### Uzun Kuyruk (Long-Tail Keywords)
@@ -961,6 +977,11 @@ Güçlü: "Keşifte ilk ölçtüğümüz mesafe güvenlik alanıdır; kreş bah�
 
 **İlgili terimler:** YMYL, Temellendirme, Halüsinasyon, Tazelik
 
+**Doğrulanmış kaynaklar.**
+
+- [Google — Kalite Değerlendirici Kılavuzu (E-E-A-T'nin tanımlandığı belge, PDF)](https://static.googleusercontent.com/media/guidelines.raterhub.com/en//searchqualityevaluatorguidelines.pdf)
+- [Google — yararlı içerik rehberi](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
+
 ---
 
 ### YMYL (Your Money or Your Life)
@@ -1048,6 +1069,11 @@ H2: "Kanibalizasyon nedir?" → Hemen altında: "Kanibalizasyon, aynı sitedeki 
 **"Snippet kazanmak trafiği azaltır."** Bazı sorgularda tıklama azalır ama görünürlük ve marka hatırlanırlığı artar; ticari niyetli sorgularda genellikle tıklama artar.
 
 **İlgili terimler:** SERP, GEO, Arama Niyeti, Tıklama Oranı
+
+**Doğrulanmış kaynaklar.**
+
+- [Snippet görünürlüğü ve AI Overviews ilişkisi (Ahrefs verisi)](https://www.digitalapplied.com/blog/featured-snippets-ai-overview-era-optimization-2026)
+- [Snippet kazanan sayfaların AIO'da alıntılanma oranı](https://www.airops.com/blog/featured-snippets-ai-overviews-position-zero)
 
 ---
 
@@ -1144,6 +1170,12 @@ Güçlü (alıntılanır): "Güvenlik alanı, ekipmanın etrafında serbest bır
 **"GEO diye bir şey yok, sadece SEO var."** Örtüşme büyüktür ama aynı değildir: klasik SEO sayfayı, GEO bloğu optimize eder. **"llms.txt koyunca AI motorları içeriğini alıntılar."** Google Temmuz 2025'te desteklemediğini açıkladı; Mayıs 2026'daki 137.000 alan adılık bir incelemede dosyaların %97'si hiç istek almamıştı. Zararı yok, garantisi de yok.
 
 **İlgili terimler:** SERP, E-E-A-T, Yapılandırılmış Veri, İç Bağlantı
+
+**Doğrulanmış kaynaklar.**
+
+- [Google — Generative AI performance raporu duyurusu (3 Haz 2026)](https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports)
+- [Search Console Yardım — rapor alanları ve sınırları](https://support.google.com/webmasters/answer/16984139)
+- [AI tarayıcı tokenları referansı (2026)](https://www.honeyb.ai/blog/ai-crawler-user-agents-reference-2026)
 
 ---
 
@@ -1463,6 +1495,10 @@ Adres değişikliği bildirimi gibidir. Eski adrese gelen herkes (kullanıcı ve
 
 **İlgili terimler:** Canonical Etiketi, Kanibalizasyon, İndeksleme
 
+**Doğrulanmış kaynaklar.**
+
+- [Google — yönlendirmeler ve site taşıma](https://developers.google.com/search/docs/crawling-indexing/301-redirects)
+
 ---
 
 ### Canonical Etiketi (rel=canonical)
@@ -1502,6 +1538,10 @@ Yanlış canonical, sayfanın hiç dizine girmemesine yol açabilir — üstelik
 **"Canonical koyunca kopya içerik sorunu biter."** Bitmez; Google öneriyi yok sayabilir ve iki sayfa da zayıf kalabilir.
 
 **İlgili terimler:** 301 Yönlendirme, Kanibalizasyon, İndeksleme
+
+**Doğrulanmış kaynaklar.**
+
+- [Google — kopya URL'lerin birleştirilmesi (canonical)](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls)
 
 ---
 
@@ -1546,6 +1586,12 @@ Performans, eşit kalitedeki iki içerik arasında ayrım yapan bir faktördür;
 **"Core Web Vitals sıralamanın en önemli faktörüdür."** Değil; alaka ve kalite önce gelir. **"100/100 almak şart."** Şart değil; eşiklerin "iyi" bandında olmak yeterlidir.
 
 **İlgili terimler:** İndeksleme, Erişilebilirlik
+
+**Doğrulanmış kaynaklar.**
+
+- [web.dev — Web Vitals eşikleri](https://web.dev/articles/vitals)
+- [web.dev — INP](https://web.dev/articles/inp)
+- [Google — Core Web Vitals ve Arama](https://developers.google.com/search/docs/appearance/core-web-vitals)
 
 ---
 
@@ -1631,6 +1677,12 @@ Yazıda gerçek bir SSS bölümü yokken `FAQPage` eklemek ihlaldir. Doğrusu: �
 
 **İlgili terimler:** GEO, İndeksleme, E-E-A-T
 
+**Doğrulanmış kaynaklar.**
+
+- [FAQ zengin sonuçlarının kaldırılması (7 May 2026)](https://www.searchenginejournal.com/google-drops-faq-rich-results-from-search/574429/)
+- [Google — Article yapılandırılmış veri gereksinimleri](https://developers.google.com/search/docs/appearance/structured-data/article)
+- [Google — zengin sonuç tiplerinin tam listesi](https://developers.google.com/search/docs/appearance/structured-data/search-gallery)
+
 ---
 
 ### Yetim Sayfa (Orphan Page)
@@ -1710,5 +1762,10 @@ Doğru sunum: "llms.txt ekledik; standart olmadığı ve ölçülebilir bir geti
 **"llms.txt SEO'nun geleceğidir."** Doğrulanmamış bir iddiadır — Mayıs 2026 ölçümünde dosyaların %97'si hiç okunmamıştı. **"llms.txt olmadan AI motorları içeriğini göremez."** Yanlış; motorlar sayfaları normal tarama yollarıyla görür. **"Google artık destekliyor."** Aramada desteklemiyor; Chrome'un Lighthouse denetimi bunu değiştirmez.
 
 **İlgili terimler:** GEO, İndeksleme, Yapılandırılmış Veri
+
+**Doğrulanmış kaynaklar.**
+
+- [Google Aramanın llms.txt'i desteklemediği açıklaması](https://baselinelabs.ai/blog/llms-txt-google-search)
+- [Ahrefs ölçümü: dosyaların %97'si hiç istek almadı (May 2026)](https://mecanik.dev/en/posts/does-llms-txt-do-anything-yet/)
 
 ---

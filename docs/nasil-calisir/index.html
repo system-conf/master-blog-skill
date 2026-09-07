@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Skills Nasıl Çalışır — Master Blog Skill</title>
+<meta name="description" content="Claude Skill nedir, dosya yapısı nasıldır, kademeli açılım nasıl işler ve iyi bir skill neye benzer — hiç bilmeyen biri için baştan sona.">
+<link rel="canonical" href="https://system-conf.github.io/master-blog-skill/nasil-calisir/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Master Blog Skill">
+<meta property="og:title" content="Claude Skills Nasıl Çalışır — Master Blog Skill">
+<meta property="og:description" content="Claude Skill nedir, dosya yapısı nasıldır, kademeli açılım nasıl işler ve iyi bir skill neye benzer — hiç bilmeyen biri için baştan sona.">
+<meta property="og:url" content="https://system-conf.github.io/master-blog-skill/nasil-calisir/">
+<meta property="og:locale" content="tr_TR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Claude Skills Nasıl Çalışır — Master Blog Skill">
+<meta name="twitter:description" content="Claude Skill nedir, dosya yapısı nasıldır, kademeli açılım nasıl işler ve iyi bir skill neye benzer — hiç bilmeyen biri için baştan sona.">
+<meta name="theme-color" content="#050505">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+
+<a class="skip" href="#app">İçeriğe atla</a>
+<header class="top">
+  <div class="topin">
+    <a class="logo" href="/master-blog-skill/"><span class="sq">&gt;_</span> master-blog</a>
+    <nav class="main" id="nav">
+      <a href="/master-blog-skill/skill/">Skill</a>
+      <a href="/master-blog-skill/nasil-calisir/">Nasıl Çalışır</a>
+      <a href="/master-blog-skill/terimler/">Terimler</a>
+      <a href="/master-blog-skill/kurulum/">Kurulum</a>
+      <a href="/master-blog-skill/kaynaklar/">Kaynaklar</a>
+    </nav>
+    <div class="topright">
+      <button class="searchbtn" id="openCp" aria-label="Ara">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="lbl">Skill ve terim ara</span>
+        <span class="kbd" style="margin-left:auto">⌘K</span>
+      </button>
+      <a class="btn" href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer" aria-label="GitHub deposu">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.8 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.5-1.5 7.8-5.8 7.8-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+        <span class="hidesm">GitHub</span></a>
+      <button class="btn pri" id="openInstall">Claude'a Ekle</button>
+    </div>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"><div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">Bölümler</div>
+      <a href="/master-blog-skill/nasil-calisir/#skill-nedir">Skill nedir</a>
+      <a href="/master-blog-skill/nasil-calisir/#yapi">Dosya yapısı</a>
+      <a href="/master-blog-skill/nasil-calisir/#yukleme">Nasıl yükleniyor</a>
+      <a href="/master-blog-skill/nasil-calisir/#iyi-skill">İyi skill neye benzer</a>
+      <a href="/master-blog-skill/nasil-calisir/#sinir">Sınırlar</a></aside>
+    <div class="prose">
+      <span class="eyebrow">Rehber</span>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em;margin-top:12px">Claude Skills nasıl çalışır</h1>
+      <p style="color:var(--fg2);font-size:16.5px;margin-top:14px;max-width:64ch">
+        Skill kavramını hiç duymamış biri için, baştan sona.</p>
+
+      <h2 id="skill-nedir">Skill nedir?</h2>
+      <p>Bir skill, Claude'a belirli bir iş için nasıl davranacağını öğreten talimat paketidir. En basit hâliyle bir <code>SKILL.md</code> dosyasıdır: üstte kısa bir tanıtım (frontmatter), altında Markdown ile yazılmış süreç.</p><p>Prompt ile farkı kalıcılıktır. Prompt tek konuşmalıktır; skill dosyada durur, ilgili iş geldiğinde devreye girer ve her seferinde aynı standardı uygular.</p>
+      <div class="callout"><p><strong>Üç adımda özet:</strong> <strong>01 Tanımla</strong> — skill'in amacı, süreci ve yasakları yazılır. <strong>02 Etkinleş</strong> — Claude, gelen isteği skill'in açıklamasıyla eşleştirir ve dosyayı okur. <strong>03 Yürüt</strong> — skill, Claude'un o görevdeki yaklaşımını ve adım sırasını yönlendirir.</p></div>
+
+      <h2 id="yapi">Dosya yapısı</h2>
+      <pre class="fence">master-blog/
+  SKILL.md
+  references/</pre>
+      <div class="tblwrap"><table><thead><tr><th>Öğe</th><th>Zorunlu</th><th>Ne işe yarar</th></tr></thead><tbody>
+        <tr><td class="mono">SKILL.md</td><td>Evet</td><td>Frontmatter + sürecin kendisi</td></tr>
+        <tr><td class="mono">name</td><td>Evet</td><td>kebab-case; dizin adıyla aynı olmalı</td></tr>
+        <tr><td class="mono">description</td><td>Evet</td><td>En kritik alan: ne yaptığı <em>ve</em> ne zaman kullanılacağı</td></tr>
+        <tr><td class="mono">argument-hint</td><td>Hayır</td><td>Slash komutu olarak çağrıldığında beklenen argüman</td></tr>
+        <tr><td class="mono">references/</td><td>Hayır</td><td>Yalnızca gerektiğinde okunan derin referanslar</td></tr>
+        <tr><td class="mono">scripts/</td><td>Hayır</td><td>Çalıştırılabilir yardımcılar (ör. kelime sayacı)</td></tr>
+      </tbody></table></div>
+
+      <h2 id="yukleme">Nasıl yükleniyor?</h2>
+      <p>Skill'in tamamı her zaman bellekte durmaz. Kademeli açılım şöyle işler:</p><ol><li><strong>Her zaman yüklü:</strong> yalnızca <code>name</code> ve <code>description</code>. Birkaç yüz token.</li><li><strong>Eşleşince yüklenir:</strong> iş, açıklamayla örtüştüğünde <code>SKILL.md</code> gövdesi okunur.</li><li><strong>Gerektiğinde açılır:</strong> <code>references/</code> altındaki dosyalar ancak o adımda okunur.</li></ol><p>Bu yüzden iyi skill tasarımı &quot;her şeyi ana dosyaya yaz&quot; değil, &quot;hangi bilginin ne zaman gerektiğini tasarla&quot;dır.</p>
+
+      <h2 id="iyi-skill">İyi bir skill neye benzer?</h2>
+      <ul><li><strong>Açıklaması tetikleyicidir.</strong> &quot;Blog yazar&quot; değil; hangi cümlelerde devreye gireceğini ve hangi durumda devreye <strong>girmeyeceğini</strong> söyler.</li><li><strong>Eşikleri sayıdır.</strong> &quot;Çok benzerse&quot; değil, &quot;örtüşme %50 ve üzeriyse&quot;.</li><li><strong>Kapıları vardır.</strong> Atlanamaz adımlar açıkça işaretlenir.</li><li><strong>Yasakları yazılıdır.</strong> Ne yapmayacağı, ne yapacağı kadar nettir.</li><li><strong>Örnek verir.</strong> Üslup kuralla değil, zayıf/güçlü karşılaştırmasıyla aktarılır.</li><li><strong>Bölünmüştür.</strong> Uzun listeler referans dosyalarına taşınır.</li></ul>
+
+      <h2 id="sinir">Sınırlar</h2>
+      <p>Skill sihir değildir. Model yine model olarak kalır: bilgi kesim tarihi vardır, halüsinasyon üretebilir, araç çıktısını yanlış okuyabilir. Skill'in yaptığı şey, <strong>hata yapma olasılığı yüksek yerlere kontrol koymaktır</strong> — doğrulama adımı, sayısal eşik, insan onayı.</p><p>Bu yüzden bu skill &quot;sıralama garantisi&quot; gibi ölçülemeyen bir vaat vermez; yalnızca sürecin tekrarlanabilir ve denetlenebilir olmasını sağlar.</p>
+      <div class="relrow" style="margin-top:24px">
+        <a href="/master-blog-skill/terim/claude-skill/">Skill</a><a href="/master-blog-skill/terim/progressive-disclosure/">Kademeli Açılım</a><a href="/master-blog-skill/terim/context-window/">Bağlam Penceresi</a><a href="/master-blog-skill/terim/agentic-workflow/">Ajanik İş Akışı</a><a href="/master-blog-skill/terim/hallucination/">Halüsinasyon</a>
+      </div>
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Hızlı başlangıç</div>
+        <div style="padding:14px 15px;font-size:13.5px;color:var(--fg2);display:grid;gap:10px">
+          <span>Skill'i kur, sonra Claude'a şunu yaz:</span>
+          <code class="mono" style="background:var(--code);border:1px solid var(--codeline);border-radius:8px;padding:9px 11px;color:var(--or3);font-size:11.5px;display:block">master-blog skill'iyle<br>yeni yazı hazırla</code>
+        </div>
+      </div>
+      <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
+    </aside>
+  </div></div></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a class="logo" href="/master-blog-skill/"><span class="sq">&gt;_</span> master-blog</a>
+        <p style="color:var(--fg2);margin-top:14px;max-width:38ch">Claude için üretilmiş, uçtan uca SEO/GEO blog üretim skill'i — ve arkasındaki terminolojinin tam sözlüğü.</p>
+      </div>
+      <div><h5>Skill</h5>
+        <a href="/master-blog-skill/skill/">Genel bakış</a><a href="/master-blog-skill/skill/#dosyalar">SKILL.md</a>
+        <a href="/master-blog-skill/skill/#promptlar">Örnek promptlar</a><a href="/master-blog-skill/kurulum/">Kurulum</a>
+        <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer">GitHub deposu</a></div>
+      <div><h5>Öğren</h5>
+        <a href="/master-blog-skill/nasil-calisir/">Skill nasıl çalışır</a><a href="/master-blog-skill/terimler/">Terim sözlüğü</a>
+        <a href="/master-blog-skill/terim/kanibalizasyon/">Kanibalizasyon</a><a href="/master-blog-skill/kaynaklar/">Kaynaklar</a></div>
+      <div><h5>Kategoriler</h5>
+        <a href="/master-blog-skill/terimler/?k=SEO">SEO</a><a href="/master-blog-skill/terimler/?k=Claude">Claude &amp; AI</a>
+        <a href="/master-blog-skill/terimler/?k=Teknik">Teknik</a><a href="/master-blog-skill/terimler/?k=İçerik">İçerik</a></div>
+    </div>
+    <div class="fbot">
+      <span>v1.0 · MIT Lisansı · <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer" style="color:var(--or3)">github.com/system-conf/master-blog-skill</a></span>
+      <span>Claude kullanıcıları için yazıldı.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Claude'a Ekle" inert></aside>
+<div class="cp" id="cp" role="dialog" aria-label="Komut paleti" inert>
+  <div class="cpin">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fg3)" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="cpq" placeholder="Skill, terim, sayfa ara…" autocomplete="off" spellcheck="false">
+    <span class="kbd">ESC</span>
+  </div>
+  <div class="cplist" id="cplist"></div>
+  <div class="cpfoot"><span>↑↓ gez</span><span>↵ aç</span><span>esc kapat</span></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

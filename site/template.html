@@ -8,7 +8,7 @@
   --bg:#050505; --bg2:#0A0A0A; --card:#101010; --card2:#151515;
   --line:#242424; --line2:#2E2A27; --code:#0B0B0B; --codeline:#202020;
   --or:#FF6A00; --or2:#FF7A00; --or3:#FF9A4D; --or-dim:rgba(255,106,0,.12); --or-dim2:rgba(255,106,0,.06);
-  --fg:#FFFFFF; --fg2:#A8A29E; --fg3:#78716C;
+  --fg:#FFFFFF; --fg2:#A8A29E; --fg3:#8A837D;   /* 4.5:1 · WCAG AA (eski #78716C kart uzerinde 3.97:1 idi) */
   --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171;
   --d:Archivo,"Helvetica Neue",Arial,sans-serif;
   --b:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -31,6 +31,10 @@ h1,h2,h3,h4{font-family:var(--d);font-weight:700;letter-spacing:-.022em;text-wra
 p{margin:0}
 .wrap{max-width:var(--w);margin:0 auto;padding:0 24px;position:relative;z-index:1}
 .mono{font-family:var(--m)}
+.skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--or);color:#100600;
+  padding:10px 16px;border-radius:0 0 var(--rb) 0;font-weight:600;font-size:13.5px}
+.skip:focus{left:0}
+#app:focus{outline:none}
 .eyebrow{font-family:var(--m);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg3)}
 .acc{color:var(--or)}
 
@@ -249,6 +253,7 @@ a.card:hover,.card.hov:hover{border-color:#3A2A18;background:var(--card2);transf
 /* install drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(3px);z-index:90;opacity:0;pointer-events:none;
   transition:opacity .2s}
+[inert]{pointer-events:none}
 .scrim.on{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--bg2);border-left:1px solid var(--line);
   z-index:91;transform:translateX(102%);transition:transform .26s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
@@ -333,6 +338,7 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
 @keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 </style>
 
+<a class="skip" href="#app">İçeriğe atla</a>
 <header class="top">
   <div class="topin">
     <a class="logo" href="#/"><span class="sq">&gt;_</span> master-blog</a>
@@ -385,8 +391,8 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
 </footer>
 
 <div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Claude'a Ekle"></aside>
-<div class="cp" id="cp" role="dialog" aria-modal="true" aria-label="Komut paleti">
+<aside class="drawer" id="drawer" role="dialog" aria-label="Claude'a Ekle" inert></aside>
+<div class="cp" id="cp" role="dialog" aria-label="Komut paleti" inert>
   <div class="cpin">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fg3)" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     <input id="cpq" placeholder="Skill, terim, sayfa ara…" autocomplete="off" spellcheck="false">
@@ -1184,10 +1190,41 @@ references/ altına yaz.</code>
       <p style="color:var(--fg3);font-size:13px;border-top:1px solid var(--line);padding-top:16px">
         Bir skill'i kurmadan önce içeriğini oku. Skill, Claude'un davranışını değiştirir — ne yaptığını bilmediğin bir talimat setini yükleme.</p>
     </div>`;
-  $('#drawer').classList.add('on'); $('#scrim').classList.add('on');
+  modalAc($('#drawer'));
+  $('#scrim').classList.add('on');
   document.body.style.overflow='hidden';
 }
-function closeInstall(){ $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on'); document.body.style.overflow=''; }
+function closeInstall(){
+  if(!$('#drawer').classList.contains('on')) return;
+  modalKapat($('#drawer'));
+  if(!$('#cp').classList.contains('on')) $('#scrim').classList.remove('on');
+  document.body.style.overflow='';
+}
+
+/* odak yonetimi: acan ogeyi hatirla, kapaninca geri ver, acikken Tab'i iceride tut */
+let SONODAK=null;
+function odaklanabilirler(el){
+  return [...el.querySelectorAll('a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(x=>!x.disabled && x.offsetParent!==null);
+}
+function modalAc(el){
+  SONODAK = document.activeElement;
+  el.removeAttribute('inert'); el.setAttribute('aria-modal','true'); el.classList.add('on');
+  const ilk = odaklanabilirler(el)[0]; if(ilk) ilk.focus();
+}
+function modalKapat(el){
+  el.classList.remove('on'); el.setAttribute('inert',''); el.removeAttribute('aria-modal');
+  if(SONODAK && document.contains(SONODAK)){ SONODAK.focus(); SONODAK=null; }
+}
+function tabTuzagi(e){
+  const acik = $('#cp').classList.contains('on') ? $('#cp')
+             : $('#drawer').classList.contains('on') ? $('#drawer') : null;
+  if(!acik || e.key!=='Tab') return;
+  const o=odaklanabilirler(acik); if(!o.length) return;
+  const ilk=o[0], son=o[o.length-1];
+  if(e.shiftKey && document.activeElement===ilk){ e.preventDefault(); son.focus(); }
+  else if(!e.shiftKey && document.activeElement===son){ e.preventDefault(); ilk.focus(); }
+}
 
 /* ---------- komut paleti ---------- */
 const PAGES=[
@@ -1202,8 +1239,18 @@ const PAGES=[
   {t:'GitHub deposu',h:'https://github.com/system-conf/master-blog-skill',s:'Açık kaynak · MIT'}
 ];
 let CPI=0, CPR=[];
-function cpOpen(){ $('#cp').classList.add('on'); $('#scrim').classList.add('on'); const q=$('#cpq'); q.value=''; cpRender(''); q.focus(); }
-function cpClose(){ $('#cp').classList.remove('on'); if(!$('#drawer').classList.contains('on')) $('#scrim').classList.remove('on'); }
+function cpOpen(){
+  SONODAK = document.activeElement;
+  const cp=$('#cp');
+  cp.removeAttribute('inert'); cp.setAttribute('aria-modal','true'); cp.classList.add('on');
+  $('#scrim').classList.add('on');
+  const q=$('#cpq'); q.value=''; cpRender(''); q.focus();
+}
+function cpClose(){
+  const cp=$('#cp'); if(!cp.classList.contains('on')) return;
+  modalKapat(cp);
+  if(!$('#drawer').classList.contains('on')) $('#scrim').classList.remove('on');
+}
 function cpRender(q){
   q=(q||'').toLowerCase().trim();
   const pages=PAGES.filter(p=>!q||(p.t+' '+p.s).toLowerCase().includes(q)).map(p=>({g:'Sayfalar',t:p.t,s:p.s,h:p.h}));
@@ -1230,28 +1277,63 @@ function cpMove(d){
 }
 function cpGo(i){ const r=CPR[i]; if(!r) return; if(r.f!==undefined) VF=r.f; cpClose();
   if(/^https?:/.test(r.h)){ window.open(r.h,'_blank','noopener'); return; }
-  location.hash=r.h; }
+  nav(r.h); }
 
 /* ---------- yönlendirici ---------- */
+/* MODE='spa'  -> tek dosya, hash yonlendirme (artifact surumu)
+   MODE='static'-> her sayfa gercek bir URL (GitHub Pages surumu) */
 function route(){
-  const raw=location.hash.replace(/^#/,'')||'/';
-  const [pathQ,anchor]=raw.split('#');
+  let pathQ, anchor;
+  if(MODE==='static'){
+    let p = location.pathname;
+    if(p.startsWith(BASE)) p = p.slice(BASE.length);
+    p = p.replace(/index\.html$/,'').replace(/\/+$/,'');
+    pathQ = '/' + p + (location.search||'');
+    anchor = location.hash.replace(/^#/,'') || undefined;
+  } else {
+    const raw=location.hash.replace(/^#/,'')||'/';
+    [pathQ,anchor]=raw.split('#');
+  }
   const [path,qs]=pathQ.split('?');
   return {path:path||'/',anchor,params:new URLSearchParams(qs||'')};
 }
+
+/* '#/terim/x' -> '/master-blog-skill/terim/x/' */
+function statikUrl(h){
+  const s=h.replace(/^#/,'');
+  const [pq,frag]=s.split('#');
+  const [p,qs]=pq.split('?');
+  const yol=p.replace(/^\//,'');
+  return BASE + (yol?yol+'/':'') + (qs?'?'+qs:'') + (frag?'#'+frag:'');
+}
+function nav(h){
+  if(MODE==='static'){ history.pushState({},'',statikUrl(h)); render(); }
+  else location.hash=h;
+}
+function linkify(){
+  if(MODE!=='static') return;
+  document.querySelectorAll('a[href^="#/"]').forEach(a=>{
+    a.setAttribute('href', statikUrl(a.getAttribute('href')));
+  });
+}
+let ILK_YUKLEME=true;
 function render(){
   const {path,anchor,params}=route();
   const seg=path.split('/').filter(Boolean);
-  let html, nav='';
-  if(seg[0]==='skill'){ html=vSkill(); nav='#/skill'; }
-  else if(seg[0]==='terimler'){ html=vTerms(params); nav='#/terimler'; }
-  else if(seg[0]==='terim'){ html=vTerm(seg[1]); nav='#/terimler'; }
-  else if(seg[0]==='nasil-calisir'){ html=vHow(); nav='#/nasil-calisir'; }
-  else if(seg[0]==='kurulum'){ html=vInstall(); nav='#/kurulum'; }
-  else if(seg[0]==='kaynaklar'){ html=vSources(); nav='#/kaynaklar'; }
+  let html, navHref='';
+  if(seg[0]==='skill'){ html=vSkill(); navHref='#/skill'; }
+  else if(seg[0]==='terimler'){ html=vTerms(params); navHref='#/terimler'; }
+  else if(seg[0]==='terim'){ html=vTerm(seg[1]); navHref='#/terimler'; }
+  else if(seg[0]==='nasil-calisir'){ html=vHow(); navHref='#/nasil-calisir'; }
+  else if(seg[0]==='kurulum'){ html=vInstall(); navHref='#/kurulum'; }
+  else if(seg[0]==='kaynaklar'){ html=vSources(); navHref='#/kaynaklar'; }
   else { html=vHome(); }
   const app=$('#app'); app.innerHTML=html; app.classList.remove('fade'); void app.offsetWidth; app.classList.add('fade');
-  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')===nav));
+  linkify();
+  document.querySelectorAll('#nav a').forEach(a=>{
+    const h=a.getAttribute('href');
+    a.classList.toggle('on', h===navHref || (MODE==='static' && h===statikUrl(navHref)));
+  });
   const tq=$('#tq');
   if(tq){ tq.oninput=e=>{ TQ=e.target.value; const p=e.target.selectionStart; render();
     const n=$('#tq'); if(n){ n.focus(); try{n.setSelectionRange(p,p);}catch(_){ } } }; }
@@ -1260,16 +1342,32 @@ function render(){
   if(anchor){ const el=document.getElementById(anchor);
     if(el) setTimeout(()=>el.scrollIntoView({block:'start',behavior:'auto'}),0); }
   else window.scrollTo(0,0);
+  if(ILK_YUKLEME){ ILK_YUKLEME=false; }
+  else {
+    const bas=app.querySelector('h1')||app;
+    bas.setAttribute('tabindex','-1'); bas.focus({preventScroll:true});
+  }
   const t=TERMS.find(x=>x.slug===seg[1]);
   document.title = seg[0]==='terim'&&t ? t.name+' — Master Blog Skill'
     : seg[0]==='terimler' ? 'Terim Sözlüğü — Master Blog Skill'
     : seg[0]==='kurulum' ? 'Kurulum — Master Blog Skill'
-    : seg[0]==='kaynaklar' ? 'Kaynaklar — Master Blog Skill'
+    : seg[0]==='kaynaklar' ? 'Kaynaklar ve Doğrulama Kaydı — Master Blog Skill'
     : seg[0]==='nasil-calisir' ? 'Claude Skills Nasıl Çalışır — Master Blog Skill'
+    : seg[0]==='skill' ? 'Skill Dokümantasyonu — Master Blog Skill'
     : 'Master Blog Skill';
 }
 
-window.addEventListener('hashchange',render);
+window.addEventListener('hashchange',()=>{ if(MODE!=='static') render(); });
+window.addEventListener('popstate',()=>{ if(MODE==='static') render(); });
+document.addEventListener('click',e=>{
+  if(MODE!=='static') return;
+  const a=e.target.closest && e.target.closest('a'); if(!a) return;
+  const href=a.getAttribute('href')||'';
+  if(a.target || e.metaKey || e.ctrlKey || e.shiftKey || !href.startsWith(BASE)) return;
+  const [yol,frag]=href.split('#');
+  if(yol===location.pathname+location.search && frag) return;   /* sayfa ici capa */
+  e.preventDefault(); history.pushState({},'',href); render();
+});
 $('#scrim').onclick=()=>{ closeInstall(); cpClose(); };
 $('#openInstall').onclick=()=>openInstall();
 $('#openCp').onclick=cpOpen;
@@ -1277,6 +1375,7 @@ $('#cpq').addEventListener('input',e=>cpRender(e.target.value));
 document.addEventListener('keydown',e=>{
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); $('#cp').classList.contains('on')?cpClose():cpOpen(); return; }
   if(e.key==='Escape'){ cpClose(); closeInstall(); return; }
+  tabTuzagi(e);
   if($('#cp').classList.contains('on')){
     if(e.key==='ArrowDown'){ e.preventDefault(); cpMove(1); }
     if(e.key==='ArrowUp'){ e.preventDefault(); cpMove(-1); }
