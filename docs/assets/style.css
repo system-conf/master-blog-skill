@@ -163,6 +163,8 @@ a.card:hover,.card.hov:hover{border-color:#3A2A18;background:var(--card2);transf
 .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin:0 0 20px}
 .tblwrap table{margin:0}
 .tblwrap th,.tblwrap td{padding:10px 14px}
+.prose a.anchorlink{color:var(--or3);border-bottom:1px solid rgba(255,154,77,.3)}
+.prose a.anchorlink:hover{color:var(--or)}
 .prose a.xlink{color:var(--or3);border-bottom:1px solid rgba(255,154,77,.3);white-space:nowrap}
 .prose a.xlink:hover{color:var(--or);border-bottom-color:var(--or)}
 .prose a.xlink svg{margin-left:3px;opacity:.6;vertical-align:0}

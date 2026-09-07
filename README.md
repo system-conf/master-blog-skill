@@ -12,6 +12,7 @@ skill/master-blog/          ← kurulacak skill (bu klasörü kopyala)
     terimler-sozlugu.md       ÜRETİLİR — elle düzenleme
     schema-ve-geo.md          yapılandırılmış veri + AI motoru notları
     kaynaklar.md              zamana bağlı iddiaların kaynak kaydı (3 ayda bir tazele)
+    kullanim-senaryolari.md   6 proje profili, çalışma modu, eşik uyarlama tablosu
   scripts/
     kontrol.py                mekanik yayın öncesi kontrol (Aşama 10a)
 
@@ -90,6 +91,27 @@ kelime içi tirelerin sayımı şişirmesi, BOM'lu dosya, iç link önek eşleş
 
 `.github/workflows/ci.yml` her push'ta testleri ve build determinizmini denetler;
 3 ayda bir de `kaynaklar.md` içindeki dış bağlantıların hâlâ 200 döndüğünü kontrol eder.
+
+## Çalışma modu — repo yoksa ne olur?
+
+Skill dosya okur ve komut çalıştırır. Erişim yoksa bazı aşamalar çalışamaz ve skill
+bunu **gizlemez**:
+
+| Mod | Koşul | Sonuç |
+|---|---|---|
+| **TAM** | İçerik dosyaları çalışma dizininde (Astro, Next, Hugo, düz Markdown) | Bütün aşamalar |
+| **KISITLI** | İçerik panelde (WordPress, Wix, Shopify) | Kanibalizasyon kapısı, mekanik kontrol ve canlı doğrulama çalışmaz |
+
+Kısıtlı modda skill kapıları "geçti" saymaz; rapora `DENETLENEMEDİ (kısıtlı mod)` yazar.
+Sahte onay vermek, hiç kontrol etmemekten daha zararlıdır.
+
+## Proje profilleri
+
+`references/kullanim-senaryolari.md` altı profil tanımlar ve her biri için sürecin nerede
+saptığını yazar: **yerel hizmet** (tesisatçı, klima servisi), **üretici/B2B**,
+**e-ticaret**, **SaaS**, **klinik/sağlık (YMYL)**, **ajans/çok müşterili kurulum**.
+Aynı dosyada eşik uyarlama tablosu var — yeni bir sitede `IC_LINK_MIN = 4` sürekli blokaj
+üretir, 2'ye indirilmesi gerekir.
 
 ## Mekanik kontrol
 

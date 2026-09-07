@@ -31,7 +31,7 @@ Aşamalar sırayla çalışır. **Aşama 3 (kanibalizasyon) ve Aşama 10 (öz de
 geçilmeden ilerlenmez.
 
 ```
-0  Proje keşfi          →  Bu proje nasıl bir yapı? İçerik nerede yaşıyor?
+0  Proje keşfi          →  Yapı, içerik kaynağı, ÇALIŞMA MODU ve proje profili
 1  Konu + gerekçe        →  Neden bu yazı? Hangi veri söylüyor?
 2  Niyet + SERP          →  Bu sorguyu yazan insan ne istiyor?
 3  KANİBALİZASYON KAPISI →  Bu yazı kendi sayfalarımızı yer mi?      [ATLANAMAZ]
@@ -75,6 +75,28 @@ oturum boyunca elinde kalır.
 
 > **Kural:** Frontmatter şemasını tahmin etme. Şema dosyası varsa alanları birebir oradan
 > al; yoksa mevcut 3 yazının frontmatter'ının **kesişimini** şema kabul et.
+
+### 0a — Çalışma modu (ilk belirlenecek şey)
+
+Skill dosya okur ve komut çalıştırır. Erişim yoksa bazı aşamalar **çalışamaz** ve bu
+gizlenmez:
+
+| Mod | Koşul | Sonuç |
+|---|---|---|
+| **TAM** | İçerik dosyaları çalışma dizininde | Bütün aşamalar çalışır |
+| **KISITLI** | İçerik panelde (WordPress, Wix, Shopify, erişimi olmayan CMS) | Aşama 0 envanteri, Aşama 3 kapısı, Aşama 10a ve Aşama 11 çalışmaz |
+
+Kısıtlı moddaysan **ilk cümlede söyle** ve kapıları "geçti" sayma; rapora
+`Kanibalizasyon: DENETLENEMEDİ (kısıtlı mod)` yaz. Kullanıcıdan mevcut yazıların başlık ve
+hedef kelime listesini iste — gelirse Aşama 3 elle çalıştırılır. Ayrıntı:
+`references/kullanim-senaryolari.md`.
+
+### 0b — Proje profili
+
+Projeyi altı profilden birine yerleştir: yerel hizmet · üretici/B2B · e-ticaret · SaaS ·
+klinik/sağlık (YMYL) · ajans kurulumu. Profil, sonraki aşamalarda hangi eşiğin ve hangi
+kuralın değişeceğini belirler; `references/kullanim-senaryolari.md` dosyasındaki ilgili
+bölümü oku. **Hiçbirine uymuyorsa profil uydurma**, genel akışı uygula.
 
 ---
 
@@ -416,4 +438,5 @@ Bu dosyalar gerektiğinde okunur; hepsini baştan yükleme.
 | `references/terimler-sozlugu.md` | Terim netleştirmek gerektiğinde, kullanıcıya açıklarken |
 | `references/schema-ve-geo.md` | Aşama 6 ve 9'da, schema/AI motoru kararlarında |
 | `references/kaynaklar.md` | Zamana bağlı bir iddia yazılacağında, her seferinde |
+| `references/kullanim-senaryolari.md` | Aşama 0'da profil belirlenirken; eşik uyarlanırken |
 | `scripts/kontrol.py` | Aşama 10a'da çalıştırılır (okunmaz, çalıştırılır) |

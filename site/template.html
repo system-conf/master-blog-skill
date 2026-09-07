@@ -167,6 +167,8 @@ a.card:hover,.card.hov:hover{border-color:#3A2A18;background:var(--card2);transf
 .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin:0 0 20px}
 .tblwrap table{margin:0}
 .tblwrap th,.tblwrap td{padding:10px 14px}
+.prose a.anchorlink{color:var(--or3);border-bottom:1px solid rgba(255,154,77,.3)}
+.prose a.anchorlink:hover{color:var(--or)}
 .prose a.xlink{color:var(--or3);border-bottom:1px solid rgba(255,154,77,.3);white-space:nowrap}
 .prose a.xlink:hover{color:var(--or);border-bottom-color:var(--or)}
 .prose a.xlink svg{margin-left:3px;opacity:.6;vertical-align:0}
@@ -344,6 +346,7 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
     <a class="logo" href="#/"><span class="sq">&gt;_</span> master-blog</a>
     <nav class="main" id="nav">
       <a href="#/skill">Skill</a>
+      <a href="#/senaryolar">Senaryolar</a>
       <a href="#/nasil-calisir">Nasıl Çalışır</a>
       <a href="#/terimler">Terimler</a>
       <a href="#/kurulum">Kurulum</a>
@@ -377,7 +380,7 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
         <a href="#/skill#promptlar">Örnek promptlar</a><a href="#/kurulum">Kurulum</a>
         <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer">GitHub deposu</a></div>
       <div><h5>Öğren</h5>
-        <a href="#/nasil-calisir">Skill nasıl çalışır</a><a href="#/terimler">Terim sözlüğü</a>
+        <a href="#/senaryolar">Kullanım senaryoları</a><a href="#/nasil-calisir">Skill nasıl çalışır</a><a href="#/terimler">Terim sözlüğü</a>
         <a href="#/terim/kanibalizasyon">Kanibalizasyon</a><a href="#/kaynaklar">Kaynaklar</a></div>
       <div><h5>Kategoriler</h5>
         <a href="#/terimler?k=SEO">SEO</a><a href="#/terimler?k=Claude">Claude &amp; AI</a>
@@ -446,6 +449,7 @@ async function download(name,text){
 /* mini markdown: paragraf, liste, tablo, **kalın**, `kod` */
 function md(src){
   const inline = t => esc(t)
+    .replace(/\[([^\]]+)\]\((#[^)\s]+)\)/g,'<a class="anchorlink" href="$2">$1</a>')
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
       '<a class="xlink" href="$2" target="_blank" rel="noopener noreferrer">$1<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>')
     .replace(/`([^`]+)`/g,'<code>$1</code>')
@@ -456,11 +460,14 @@ function md(src){
     const l=lines[i];
     if(!l.trim()){ i++; continue; }
     if(/^#{2,6}\s/.test(l)){
-      const lvl=(l.match(/^#+/)[0].length); const txt=l.replace(/^#+\s*/,'');
+      const lvl=(l.match(/^#+/)[0].length);
+      let txt=l.replace(/^#+\s*/,''); let ozelId=null;
+      const mid=txt.match(/\s*\{#([a-z0-9-]+)\}\s*$/);
+      if(mid){ ozelId=mid[1]; txt=txt.slice(0,mid.index).trim(); }
       const tag=lvl<=2?'h2':lvl===3?'h3':'h4';
       const id=txt.toLowerCase().replace(/[çğıöşü]/g,c=>({'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u'}[c]))
         .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-      out+='<'+tag+' id="'+id+'">'+inline(txt)+'</'+tag+'>'; i++; continue;
+      out+='<'+tag+' id="'+(ozelId||id)+'">'+inline(txt)+'</'+tag+'>'; i++; continue;
     }
     if(/^---+\s*$/.test(l)){ out+='<hr style="border:none;border-top:1px solid var(--line);margin:32px 0">'; i++; continue; }
     if(/^>\s?/.test(l)){
@@ -544,6 +551,7 @@ const PHASES=[
  {n:'11',t:'Yayın ve canlı doğrulama',d:'Build, deploy, URL 200 kontrolü, sitemap doğrulaması, indeksleme talebi ve tek ekranlık yayın raporu.'},
  {n:'12',t:'Ölçüm ve tazeleme',d:'28 gün sonra gösterim/tıklama/pozisyon okunur; karar tablosuna göre başlık revizyonu, derinleştirme veya niyet düzeltmesi yapılır.'}
 ];
+const PROFILLER=[["Yerel hizmet", "profil-1", "Tesisatçı, klima servisi, çilingir", "Ticari sorguyu blogla hedefleme tuzağı; doorway riski yüksek"], ["Üretici / B2B", "profil-2", "Makine, ekipman, mühendislik", "Şartname tablosu zorunlu; standart numarası uydurulmaz"], ["E-ticaret", "profil-3", "Ürün kataloğu, çok kategori", "Kategori sayfasını kanibalize etmek en pahalı hata"], ["SaaS", "profil-4", "Yazılım ürünü, dokümantasyonlu", "Envantere dokümanlar da girer; blog ↔ doküman çakışması"], ["Klinik / sağlık", "profil-5", "YMYL — çıta yükselir", "İsimli uzman, resmî kaynak, garanti dili yasak"], ["Ajans", "profil-6", "Çok müşterili kurulum", "Kişisel değil, proje dizinine kur — eşikler müşteriye özel"]];
 const PROMPTS=[
  {t:'Sıfırdan yazı',p:'master-blog skill\'ini kullan.\n\nHedef kelime: oyun grubu güvenlik mesafesi\n\nÖnce projeyi keşfet, sonra kanibalizasyon kapısını çalıştır.\nBrief\'i bana onaya getir; onaylamadan gövdeyi yazma.'},
  {t:'Veriden konu seçimi',p:'master-blog skill\'iyle bu ay için 3 içerik adayı çıkar.\n\nAdayları Search Console verisindeki 8-30 pozisyon bandından seç.\nHer aday için: hedef sorgu, veri sinyali, niyet etiketi ve\nmevcut içerikle kanibalizasyon riski yaz.'},
@@ -1113,6 +1121,54 @@ function vSources(){
   </div></div>`;
 }
 
+/* ---------- senaryolar ---------- */
+function vScenarios(){
+  const f=FILES.find(x=>x.name==='kullanim-senaryolari.md');
+  const govde=f.text.split('\n');
+  const bas=govde.findIndex(l=>l.startsWith('## İçindekiler'));
+  const son=govde.findIndex(l=>l.startsWith('---'));
+  const kalan=govde.slice(0,bas).slice(1).concat(govde.slice(son));
+  return `<div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">Profiller</div>
+      <a href="#/senaryolar#calisma-modu">Çalışma modu</a>
+      <a href="#/senaryolar#ilk-hafta">İlk hafta planı</a>
+      ${PROFILLER.map(p=>`<a href="#/senaryolar#${p[1]}">${esc(p[0])}</a>`).join('')}
+      <a href="#/senaryolar#esikler">Eşik uyarlama</a></aside>
+    <div class="prose">
+      <span class="eyebrow">Senaryolar</span>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em;margin-top:12px">Hangi projede nasıl davranır?</h1>
+      <p style="color:var(--fg2);font-size:16.5px;margin:14px 0 26px;max-width:64ch">
+        Skill projeye özel değil — ama her proje tipi aynı tuzağa düşmez. Altı profil için sürecin
+        nerede saptığı, hangi eşiğin değişeceği ve ilk hafta ne yapılacağı.</p>
+      <div class="grid3" style="margin-bottom:30px">
+        ${PROFILLER.map(p=>`<a class="card" href="#/senaryolar#${p[1]}">
+          <div class="tagrow" style="margin:0 0 10px"><span class="tag o">${esc(p[2])}</span></div>
+          <h3>${esc(p[0])}</h3><p>${esc(p[3])}</p></a>`).join('')}
+      </div>
+      ${md(kalan.join('\n'))}
+      <div style="display:flex;gap:10px;margin-top:30px;flex-wrap:wrap">
+        <button class="btn" onclick="copy(FILES.find(x=>x.name==='kullanim-senaryolari.md').text,'kullanim-senaryolari.md kopyalandı')">Dosyayı kopyala</button>
+        <button class="btn" onclick="download('kullanim-senaryolari.md',FILES.find(x=>x.name==='kullanim-senaryolari.md').text)">İndir</button>
+      </div>
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Çalışma modu</div>
+        <div class="mrow"><span>Repo / dosya erişimi</span><b style="color:var(--ok)">TAM</b></div>
+        <div class="mrow"><span>Panel / CMS (WordPress)</span><b style="color:var(--warn)">KISITLI</b></div>
+        <div style="padding:12px 15px;font-size:12.5px;color:var(--fg3);border-top:1px solid #1A1A1A">
+          Kısıtlı modda kanibalizasyon kapısı ve mekanik kontrol çalışmaz — skill bunu gizlemez,
+          "DENETLENEMEDİ" yazar.</div>
+      </div>
+      <div class="metabox"><div class="mh">İlk iş yazı yazmak değil</div>
+        <div style="padding:13px 15px;font-size:13px;color:var(--fg2)">
+          Envanter çıkar → geriye dönük kanibalizasyon tara → eşikleri uyarla → sonra yaz.
+          <a href="#/senaryolar#ilk-hafta" class="acc" style="display:block;margin-top:8px;font-size:12.5px">İlk hafta planı →</a></div>
+      </div>
+      <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
+    </aside>
+  </div></div>`;
+}
+
 /* ---------- kurulum paneli ---------- */
 function openInstall(mode){
   const dl = mode && String(mode).startsWith('dl:') ? String(mode).slice(3) : null;
@@ -1235,6 +1291,8 @@ const PAGES=[
   {t:'Claude Skills nasıl çalışır',h:'#/nasil-calisir',s:'Rehber'},
   {t:'Terim sözlüğü',h:'#/terimler',s:'Tüm terimler'},
   {t:'Kurulum',h:'#/kurulum',s:'Claude\'a ekleme yöntemleri'},
+  {t:'Kullanım senaryoları',h:'#/senaryolar',s:'Altı proje profili + eşik uyarlama'},
+  {t:'Çalışma modu: tam / kısıtlı',h:'#/senaryolar#calisma-modu',s:'Repo yoksa ne olur'},
   {t:'Kaynaklar ve doğrulama kaydı',h:'#/kaynaklar',s:'Zamana bağlı iddiaların kanıtı'},
   {t:'GitHub deposu',h:'https://github.com/system-conf/master-blog-skill',s:'Açık kaynak · MIT'}
 ];
@@ -1327,6 +1385,7 @@ function render(){
   else if(seg[0]==='nasil-calisir'){ html=vHow(); navHref='#/nasil-calisir'; }
   else if(seg[0]==='kurulum'){ html=vInstall(); navHref='#/kurulum'; }
   else if(seg[0]==='kaynaklar'){ html=vSources(); navHref='#/kaynaklar'; }
+  else if(seg[0]==='senaryolar'){ html=vScenarios(); navHref='#/senaryolar'; }
   else { html=vHome(); }
   const app=$('#app'); app.innerHTML=html; app.classList.remove('fade'); void app.offsetWidth; app.classList.add('fade');
   linkify();
@@ -1352,6 +1411,7 @@ function render(){
     : seg[0]==='terimler' ? 'Terim Sözlüğü — Master Blog Skill'
     : seg[0]==='kurulum' ? 'Kurulum — Master Blog Skill'
     : seg[0]==='kaynaklar' ? 'Kaynaklar ve Doğrulama Kaydı — Master Blog Skill'
+    : seg[0]==='senaryolar' ? 'Kullanım Senaryoları — Master Blog Skill'
     : seg[0]==='nasil-calisir' ? 'Claude Skills Nasıl Çalışır — Master Blog Skill'
     : seg[0]==='skill' ? 'Skill Dokümantasyonu — Master Blog Skill'
     : 'Master Blog Skill';

@@ -125,6 +125,7 @@ ORDER = ["SKILL.md",
          "references/terimler-sozlugu.md",
          "references/schema-ve-geo.md",
          "references/kaynaklar.md",
+         "references/kullanim-senaryolari.md",
          "scripts/kontrol.py"]
 HEREDOC = "MASTERBLOG_EOF"
 
@@ -165,6 +166,9 @@ SAYFALAR = [
     ("skill",          "Skill Dokümantasyonu — Master Blog Skill",
      "master-blog skill'inin 13 aşamalı süreci, iki atlanamaz kapısı, altı dosyası, örnek promptları "
      "ve mekanik kontrol scripti: ne yaptığı ve ne yapmadığı."),
+    ("senaryolar",     "Kullanım Senaryoları — Master Blog Skill",
+     "master-blog skill'i hangi proje tipinde nasıl davranır: yerel hizmet, üretici/B2B, e-ticaret, "
+     "SaaS, klinik ve ajans profilleri; çalışma modu, ilk hafta planı ve eşik uyarlama tablosu."),
     ("nasil-calisir",  "Claude Skills Nasıl Çalışır — Master Blog Skill",
      "Claude Skill nedir, dosya yapısı nasıldır, kademeli açılım nasıl işler ve iyi bir skill neye benzer — "
      "hiç bilmeyen biri için baştan sona."),
