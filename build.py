@@ -5,7 +5,7 @@ import json, subprocess, pathlib, sys
 ROOT   = pathlib.Path(__file__).parent
 SKILL  = ROOT / "skill" / "master-blog"
 SITE   = ROOT / "site"
-DIST   = ROOT / "dist"
+DIST   = ROOT / "docs"   # GitHub Pages kaynağı (main dalı /docs)
 TERMSJS = SITE / "data" / "terms.js"
 
 # 1) terms.js -> JSON
@@ -75,5 +75,5 @@ DIST.mkdir(exist_ok=True)
 (DIST / "index.html").write_text(out, encoding="utf-8")
 
 kb = len(out.encode("utf-8")) / 1024
-print(f"dist/index.html · {kb:.0f} KB · {len(terms)} terim · {len(files)} dosya · "
+print(f"docs/index.html · {kb:.0f} KB · {len(terms)} terim · {len(files)} dosya · "
       f"{sum(len(f['text'].splitlines()) for f in files)} satir skill")

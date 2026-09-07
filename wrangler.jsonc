@@ -1,10 +1,11 @@
 {
   // master-blog · statik tek dosyalık site (Cloudflare Workers Static Assets)
-  // Yayınlamak için:  npx wrangler login  →  npx wrangler deploy
+  // NOT: Bu proje GitHub Pages'te yayınlanıyor; bu dosya yalnızca alternatif olarak duruyor.
+  // Cloudflare'de yayınlamak istersen:  npx wrangler login  →  npx wrangler deploy
   "name": "master-blog-skill",
   "compatibility_date": "2026-09-07",
   "assets": {
-    "directory": "./dist",
+    "directory": "./docs",
     "not_found_handling": "single-page-application"
   }
 }

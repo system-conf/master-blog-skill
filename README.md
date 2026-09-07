@@ -20,7 +20,7 @@ site/
   data/terms.js             terim sözlüğünün TEK doğruluk kaynağı
 
 build.py                    terms.js + skill dosyaları → dist/index.html
-dist/index.html             yayınlanabilir tek dosyalık site (~425 KB)
+docs/index.html             yayınlanabilir tek dosyalık site (GitHub Pages kaynağı)
 ```
 
 ## Kurulum (skill)
@@ -75,12 +75,20 @@ işi değildir; onları model değerlendirir.
 
 ## Yayın
 
-Site tek dosyadır (`dist/index.html`). Cloudflare Workers ile yayınlamak için:
+Site tek dosyadır ve **GitHub Pages** üzerinden yayınlanır:
+<https://system-conf.github.io/master-blog-skill/>
+
+Pages kaynağı: `main` dalı, `/docs` klasörü. Yayın akışı:
 
 ```bash
-npx wrangler login     # bir kez, tarayıcı açar
-npx wrangler deploy    # wrangler.jsonc dist/ klasörünü yayınlar
+python3 build.py     # docs/index.html üretir
+git add -A && git commit -m "site güncellendi" && git push
 ```
+
+Push'tan ~1 dakika sonra canlıya çıkar. Ayrı bir CI adımı yoktur.
+
+Alternatif olarak `wrangler.jsonc` ile Cloudflare Workers'a da dağıtılabilir
+(`npx wrangler deploy`); şu an kullanılmıyor.
 
 ## Bilgi tazeliği
 
@@ -90,7 +98,7 @@ geçir; güncellediğinde `build.py` çalıştır — site de tazelenir.
 
 ## Notlar
 
-- Site tek dosyadır; herhangi bir statik sunucuya `dist/index.html` olarak konabilir.
+- Site tek dosyadır; herhangi bir statik sunucuya `docs/index.html` olarak konabilir.
 - Sitedeki "İndir" düğmesi gömülü çerçevede (iframe) çalışmaz — o durumda kopyalama
   paneli açılır. Kendi sunucunda barındırıldığında normal indirme çalışır.
 - Lisans: MIT.
