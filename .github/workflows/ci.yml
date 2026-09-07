@@ -16,18 +16,29 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
 
+      - name: Plugin ve eval tanımları geçerli JSON mu
+        run: |
+          python3 -c "import json;[json.load(open(f)) for f in ['.claude-plugin/plugin.json','.claude-plugin/marketplace.json','skills/master-blog/evals/evals.json']];print('ok')"
+          python3 -c "
+          import json
+          p=json.load(open('.claude-plugin/plugin.json'))
+          s=open('skills/master-blog/SKILL.md').read()
+          assert f'surum: \"{p[\"version\"]}\"' in s, 'plugin.json ve SKILL.md sürümleri uyuşmuyor'
+          assert p['version'] in open('CHANGELOG.md').read(), 'CHANGELOG sürümü eksik'
+          print('sürümler tutarlı:', p['version'])"
+
       - name: Regresyon testleri (kontrol.py)
         run: python3 tests/calistir.py
 
       - name: Mekanik kontrol temiz fixture üzerinde
-        run: python3 skill/master-blog/scripts/kontrol.py tests/fixtures/temiz.md --kelime "güvenlik mesafesi"
+        run: python3 skills/master-blog/scripts/kontrol.py tests/fixtures/temiz.md --kelime "güvenlik mesafesi"
 
       - name: Build (veri doğrulama + site üretimi)
         run: python3 build.py
 
       - name: Üretilen çıktı commit'lenenle aynı mı
         run: |
-          git diff --exit-code -- docs dist skill/master-blog/references/terimler-sozlugu.md \
+          git diff --exit-code -- docs dist skills/master-blog/references/terimler-sozlugu.md \
             || { echo "::error::build.py çıktısı commit'lenmiş dosyalarla uyuşmuyor. 'python3 build.py' çalıştırıp sonucu commit'le."; exit 1; }
 
   dis-linkler:
@@ -38,7 +49,7 @@ jobs:
       - name: kaynaklar.md içindeki dış bağlantılar hâlâ yaşıyor mu
         run: |
           fail=0
-          for u in $(grep -o 'https://[^)]*' skill/master-blog/references/kaynaklar.md | sort -u); do
+          for u in $(grep -o 'https://[^)]*' skills/master-blog/references/kaynaklar.md | sort -u); do
             code=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 20 -A "Mozilla/5.0" "$u" || echo 000)
             [ "$code" = "200" ] || { echo "::warning::$code $u"; fail=1; }
           done

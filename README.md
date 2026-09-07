@@ -13,8 +13,10 @@ skill/master-blog/          ← kurulacak skill (bu klasörü kopyala)
     schema-ve-geo.md          yapılandırılmış veri + AI motoru notları
     kaynaklar.md              zamana bağlı iddiaların kaynak kaydı (3 ayda bir tazele)
     kullanim-senaryolari.md   6 proje profili, çalışma modu, eşik uyarlama tablosu
-  scripts/
-    kontrol.py                mekanik yayın öncesi kontrol (Aşama 10a)
+    yazim-katmanlari.md       Aşama 5-9: SEO, GEO, E-E-A-T, bağlantı, teknik
+    yayin-ve-olcum.md         Aşama 11-12 + arşiv kararı + güncelleme modu
+  scripts/kontrol.py          mekanik yayın öncesi kontrol (Aşama 10a)
+  evals/evals.json            tetikleme ve davranış senaryoları
 
 site/
   template.html             site kabuğu (CSS + JS)
@@ -31,13 +33,39 @@ docs/                       GitHub Pages: 47 statik sayfa, her terim kendi URL's
 dist/artifact.html          tek dosyalık sürüm (Claude Artifact için, iskeletsiz)
 ```
 
-## Kurulum (skill)
+## Kurulum
+
+**Plugin olarak (önerilen — sürüm alır, güncellenir):**
+
+```
+/plugin marketplace add system-conf/master-blog-skill
+/plugin install master-blog@master-blog-marketplace
+```
+
+**Dosya olarak:**
 
 ```bash
-cp -r skill/master-blog ~/.claude/skills/          # kişisel
+cp -r skills/master-blog ~/.claude/skills/          # kişisel
 # veya
-cp -r skill/master-blog <proje>/.claude/skills/    # projeye özel
+cp -r skills/master-blog <proje>/.claude/skills/    # projeye özel, ekiple paylaşılır
 ```
+
+Dosya kurulumunda güncelleme almazsın; `kaynaklar.md` 3 ayda bir tazelendiği için
+plugin kurulumu bu proje özelinde belirgin avantajlıdır.
+
+### Eşikleri projene göre ayarla
+
+Skill dizinindeki `kontrol.py`'yi **düzenleme** — güncellemede silinir. Projenin köküne
+`master-blog.toml` koy:
+
+```toml
+[esikler]
+IC_LINK_MIN = 2      # yeni sitede 4 link verecek kadar sayfa yok
+KELIME_MIN  = 400
+PARA_MAX_KELIME = 70
+```
+
+Profil bazlı önerilen değerler: `references/kullanim-senaryolari.md` → eşik uyarlama tablosu.
 
 Sonra yeni bir Claude Code oturumu aç ve: `master-blog skill'iyle yeni yazı hazırla`
 
@@ -119,7 +147,7 @@ Aynı dosyada eşik uyarlama tablosu var — yeni bir sitede `IC_LINK_MIN = 4` s
 demesini engeller:
 
 ```bash
-python3 skill/master-blog/scripts/kontrol.py <yazi.md> --kelime "hedef kelime" --net
+python3 skills/master-blog/scripts/kontrol.py <yazi.md> --kelime "hedef kelime" --net
 ```
 
 Ölçtükleri: kelime sayısı (frontmatter/kod/URL hariç), H1 adedi, başlık hiyerarşisi
@@ -153,9 +181,24 @@ Alternatif olarak `wrangler.jsonc` ile Cloudflare Workers'a da dağıtılabilir
 
 ## Bilgi tazeliği
 
-`skill/master-blog/references/kaynaklar.md` zamana bağlı iddiaların kaynak kaydıdır
+`skills/master-blog/references/kaynaklar.md` zamana bağlı iddiaların kaynak kaydıdır
 (son doğrulama: 7 Eylül 2026). SEO/GEO tarafı hızlı değiştiği için 3 ayda bir gözden
 geçir; güncellediğinde `build.py` çalıştır — site de tazelenir.
+
+## Bilerek yapılmayanlar
+
+Denetimlerde önerilen ama **gerekçeyle uygulanmayan** üç şey:
+
+- **`terms.js` → JSON'a taşınmadı.** `eval` bir enjeksiyon havuzudur, doğru; ama burada
+  okunan dosya deponun kendi kaynak dosyası, kullanıcı girdisi değil. JSON'a taşımak
+  çok satırlı Türkçe metinleri `\n` kaçışlarına gömer ve elle düzenlemeyi pratikte
+  bitirir. Asıl risk olan **doğrulama eksikliği** `build.py` içinde çözüldü: zorunlu
+  alanlar, slug biçimi, seviye enum'ı, kırık `related` ve bozuk `src` build'i durduruyor.
+- **`og:image` yok.** Uydurma bir görsel koymak yerine eksik bırakıldı; sosyal paylaşımda
+  kart görselsiz görünüyor. Gerçek bir kapak görseli üretildiğinde eklenecek.
+- **İngilizce sürüm yok.** Altyapı maliyeti orta, içerik maliyeti kalıcı: 41 terim × 6 uzun
+  alan + 19 KB `SKILL.md`, ve her güncelleme iki dilde bakım demek. Talep gelirse
+  `kullanim-senaryolari.md` içindeki dil profili yaklaşımıyla kademeli yapılabilir.
 
 ## Notlar
 
@@ -163,3 +206,5 @@ geçir; güncellediğinde `build.py` çalıştır — site de tazelenir.
 - Sitedeki "İndir" düğmesi gömülü çerçevede (iframe) çalışmaz — o durumda kopyalama
   paneli açılır. Kendi sunucunda barındırıldığında normal indirme çalışır.
 - Lisans: MIT.
+- Katkı: [CONTRIBUTING.md](CONTRIBUTING.md) · Güvenlik: [SECURITY.md](SECURITY.md) ·
+  Değişiklikler: [CHANGELOG.md](CHANGELOG.md)

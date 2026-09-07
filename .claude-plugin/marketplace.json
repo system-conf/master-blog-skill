@@ -1,0 +1,11 @@
+{
+  "name": "master-blog-marketplace",
+  "owner": { "name": "system-conf", "url": "https://github.com/system-conf" },
+  "plugins": [
+    {
+      "name": "master-blog",
+      "source": "./",
+      "description": "Claude için uçtan uca SEO/GEO blog üretim skill'i — 13 aşama, 2 atlanamaz kapı, mekanik denetçi, kaynaklı terim sözlüğü."
+    }
+  ]
+}

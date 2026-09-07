@@ -1,0 +1,28 @@
+name: kontrol.py yanlış sonuç veriyor
+description: Mekanik denetçinin yanlış geçtiği ya da haksız blokaj verdiği bir durum
+labels: ["hata", "kontrol.py"]
+body:
+  - type: textarea
+    id: markdown
+    attributes:
+      label: Örnek markdown dosyası
+      description: Sorunu üreten en küçük dosya (frontmatter dâhil).
+      render: markdown
+    validations: { required: true }
+  - type: input
+    id: komut
+    attributes:
+      label: Çalıştırdığın komut
+      placeholder: "python3 kontrol.py yazi.md --kelime 'hedef kelime' --net"
+    validations: { required: true }
+  - type: textarea
+    id: gozlenen
+    attributes: { label: Gözlenen çıktı, render: shell }
+    validations: { required: true }
+  - type: textarea
+    id: beklenen
+    attributes: { label: Beklenen çıktı ve neden }
+    validations: { required: true }
+  - type: input
+    id: surum
+    attributes: { label: Python sürümü, placeholder: "3.12" }

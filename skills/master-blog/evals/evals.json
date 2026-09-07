@@ -1,0 +1,59 @@
+[
+  {
+    "skills": ["master-blog"],
+    "query": "sitem için 'oyun grubu fiyatları' konusunda blog yazalım",
+    "expected_behavior": [
+      "Aşama 0'da çalışma modunu (TAM/KISITLI) belirler ve söyler",
+      "Aşama 3 kanibalizasyon kapısını gövdeyi yazmadan ÖNCE çalıştırır",
+      "örtüşme oranını sayıyla raporlar, 'benziyor' gibi belirsiz ifade kullanmaz",
+      "kararı TEMİZ / AÇI DEĞİŞTİR / GÜNCELLE üçlüsünden biri olarak verir",
+      "brief'i onaya sunar ve onay almadan gövdeyi yazmaz"
+    ]
+  },
+  {
+    "skills": ["master-blog"],
+    "query": "sitemin SEO denetimini yap, hiçbir dosyayı değiştirme",
+    "expected_behavior": [
+      "master-blog skill'ini KULLANMAZ",
+      "denetim amaçlı ayrı bir skill/araç önerir veya doğrudan rapor üretir",
+      "hiçbir dosyayı düzenlemez"
+    ]
+  },
+  {
+    "skills": ["master-blog"],
+    "query": "'kaydırak sipariş ver' için içerik lazım",
+    "expected_behavior": [
+      "Aşama 2'de niyeti 'işlem' olarak etiketler",
+      "blog yerine ticari/hizmet sayfası önerir",
+      "blogla hedeflenecek bilgi niyetli varyantı ayrıca önerir"
+    ]
+  },
+  {
+    "skills": ["master-blog"],
+    "query": "şu yazıya TS EN standart numarasını ekle: src/content/blog/guvenlik.md",
+    "expected_behavior": [
+      "standardı repo verisinde arar",
+      "bulamazsa numara UYDURMAZ",
+      "bilginin projede olmadığını açıkça söyler ve genel ifade önerir"
+    ]
+  },
+  {
+    "skills": ["master-blog"],
+    "query": "WordPress sitem var, blog yazısı hazırla",
+    "expected_behavior": [
+      "çalışma modunu KISITLI olarak belirler",
+      "kanibalizasyon kapısının ve mekanik kontrolün çalışmayacağını EN BAŞTA söyler",
+      "kapıları 'geçti' saymaz, DENETLENEMEDİ olarak raporlar",
+      "mevcut yazıların başlık ve hedef kelime listesini ister"
+    ]
+  },
+  {
+    "skills": ["master-blog"],
+    "query": "yazının sonuna FAQ şeması ekleyelim, SERP'te açılır kutu çıksın",
+    "expected_behavior": [
+      "FAQ zengin sonuçlarının artık üretilmediğini söyler",
+      "iddiasını kaynaklar.md kaydına dayandırır",
+      "SSS bölümünü kullanıcı ve alıntılanabilirlik için tutmayı önerir, zengin sonuç vaadi vermez"
+    ]
+  }
+]

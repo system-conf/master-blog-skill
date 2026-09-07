@@ -71,13 +71,15 @@
       <div class="callout"><p><strong>Dürüstlük notu:</strong> Bu sayfa &quot;tek tıkla Claude'a kur&quot; bağlantısı sunmaz, çünkü herkes için çalışan genel bir kurulum bağlantısı (deep link) mevcut değildir. Aşağıdaki yöntemlerin hepsi gerçek dosya kurulumudur.</p></div>
 
       <h2 id="yontem">Yöntemler</h2>
-      <p><strong>1 · Tek komut (en hızlı).</strong> &quot;Tek komutu kopyala&quot; düğmesi, dört dosyayı da <code>~/.claude/skills/master-blog/</code> altında oluşturan bir kabuk komutu panoya alır. Terminale yapıştırıp çalıştırman yeterli. Komut yalnızca dizin oluşturur ve dosya yazar; başka bir şey yapmaz — yapıştırmadan önce okuyabilirsin.</p><p><strong>2 · Claude'a yaptır.</strong> Dosyaları kopyalayıp Claude Code'a şu isteği ver: &quot;Bu içeriği <code>~/.claude/skills/master-blog/SKILL.md</code> olarak kaydet.&quot; Referans dosyaları için aynısını <code>references/</code> altına tekrarla.</p><p><strong>3 · Elle.</strong> Dosyaları indir, dizini kendin oluştur ve dosyaları içine koy. Dizin adı <code>master-blog</code> olmalı — frontmatter'daki <code>name</code> ile aynı.</p><p><strong>4 · Claude uygulaması (web / masaüstü).</strong> Uygulama tarafında özel skill yükleme, Ayarlar içindeki yetenekler/skills bölümünden yapılır ve genellikle skill klasörünün sıkıştırılmış hâlini (zip) ister. Bu arayüz ve plan gereksinimleri zamanla değişebildiği için buradan adım adım ekran tarifi vermiyoruz; uygulamandaki güncel Ayarlar bölümünü kontrol et.</p>
+      <p><strong>0 · Plugin olarak (önerilen).</strong> Claude Code içinde <code>/plugin marketplace add system-conf/master-blog-skill</code> ardından <code>/plugin install master-blog@master-blog-marketplace</code>. Tek avantajı kolaylık değil: dosya kurulumunda <strong>güncelleme almazsın</strong>, oysa bu skill'in kaynak kaydı 3 ayda bir tazeleniyor.</p><p><strong>1 · Tek komut (dosya kurulumu).</strong> &quot;Tek komutu kopyala&quot; düğmesi, dört dosyayı da <code>~/.claude/skills/master-blog/</code> altında oluşturan bir kabuk komutu panoya alır. Terminale yapıştırıp çalıştırman yeterli. Komut yalnızca dizin oluşturur ve dosya yazar; başka bir şey yapmaz — yapıştırmadan önce okuyabilirsin.</p><p><strong>2 · Claude'a yaptır.</strong> Dosyaları kopyalayıp Claude Code'a şu isteği ver: &quot;Bu içeriği <code>~/.claude/skills/master-blog/SKILL.md</code> olarak kaydet.&quot; Referans dosyaları için aynısını <code>references/</code> altına tekrarla.</p><p><strong>3 · Elle.</strong> Dosyaları indir, dizini kendin oluştur ve dosyaları içine koy. Dizin adı <code>master-blog</code> olmalı — frontmatter'daki <code>name</code> ile aynı.</p><p><strong>4 · Claude uygulaması (web / masaüstü).</strong> Uygulama tarafında özel skill yükleme, Ayarlar içindeki yetenekler/skills bölümünden yapılır ve genellikle skill klasörünün sıkıştırılmış hâlini (zip) ister. Bu arayüz ve plan gereksinimleri zamanla değişebildiği için buradan adım adım ekran tarifi vermiyoruz; uygulamandaki güncel Ayarlar bölümünü kontrol et.</p>
 
       <h2 id="dogrula">Kurulumu doğrula</h2>
       <ol><li>Yeni bir Claude Code oturumu başlat (mevcut oturum eski listeyi taşır).</li><li><code>ls ~/.claude/skills/master-blog</code> — dört dosya görünmeli.</li><li>Claude'a &quot;master-blog skill'iyle bir içerik adayı çıkar&quot; yaz. Skill devredeyse ilk iş proje keşfi olur ve aday için veri gerekçesi ister.</li></ol>
 
       <h2 id="sss">Sık sorulanlar</h2>
-      <p><strong>Skill her mesajda mı yükleniyor?</strong> Hayır. Normalde yalnızca adı ve açıklaması bağlamda durur; iş eşleştiğinde tam dosya okunur.</p><p><strong>Mevcut blog skill'imle çakışır mı?</strong> Açıklamaları farklıysa çakışmaz. Aynı işi yapan iki skill varsa, birinin açıklamasına &quot;şu durumda diğerini kullan&quot; satırı eklemek en temiz çözümdür.</p><p><strong>Projeye özel mi, kişisel mi kuralım?</strong> Ekip aynı süreci kullanacaksa projeye özel kurulum daha iyidir: repoda sürümlenir, herkeste aynı olur.</p><p><strong>Değiştirebilir miyim?</strong> Evet, MIT lisanslı. Eşikleri (kelime bandı, örtüşme oranı, iç link sayısı) kendi projene göre uyarlaman zaten beklenen kullanımdır.</p>
+      <p><strong>Skill her mesajda mı yükleniyor?</strong> Hayır. Normalde yalnızca adı ve açıklaması bağlamda durur; iş eşleştiğinde tam dosya okunur.</p><p><strong>Mevcut blog skill'imle çakışır mı?</strong> Açıklamaları farklıysa çakışmaz. Aynı işi yapan iki skill varsa, birinin açıklamasına &quot;şu durumda diğerini kullan&quot; satırı eklemek en temiz çözümdür.</p><p><strong>Projeye özel mi, kişisel mi kuralım?</strong> Ekip aynı süreci kullanacaksa projeye özel kurulum daha iyidir: repoda sürümlenir, herkeste aynı olur.</p><p><strong>Değiştirebilir miyim?</strong> Evet, MIT lisanslı. Ama eşikleri skill dosyasını düzenleyerek değiştirme — güncellemede silinir. Projenin köküne <code>master-blog.toml</code> koy:</p><pre class="fence">[esikler]
+IC_LINK_MIN = 2
+KELIME_MIN = 400</pre><p>Profil bazlı önerilen değerler için <a class="anchorlink" href="/master-blog-skill/senaryolar/#esikler">kullanım senaryolarına</a> bak.</p>
     </div>
     <aside class="side">
       <div class="metabox"><div class="mh">Hedef dizin</div>
@@ -89,13 +91,16 @@
       </div>
       <div class="metabox"><div class="mh">Dosyalar</div>
         <div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/SKILL.md</span>
-          <b>443 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yayin-oncesi-kontrol.md</span>
-          <b>87 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/terimler-sozlugu.md</span>
+          <b>378 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yayin-oncesi-kontrol.md</span>
+          <b>97 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/terimler-sozlugu.md</span>
           <b>1772 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/schema-ve-geo.md</span>
           <b>140 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/kaynaklar.md</span>
           <b>129 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/kullanim-senaryolari.md</span>
-          <b>243 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/scripts/kontrol.py</span>
-          <b>330 sr</b></div>
+          <b>243 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yazim-katmanlari.md</span>
+          <b>185 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yayin-ve-olcum.md</span>
+          <b>126 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/scripts/kontrol.py</span>
+          <b>373 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/evals/evals.json</span>
+          <b>60 sr</b></div>
       </div>
       <button class="btn pri" onclick="openInstall()">Kurulum paneli</button>
     </aside>

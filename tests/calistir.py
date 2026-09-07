@@ -10,7 +10,7 @@ import json, pathlib, subprocess, sys
 
 KOK = pathlib.Path(__file__).resolve().parent.parent
 FIX = KOK / "tests" / "fixtures"
-KONTROL = KOK / "skill" / "master-blog" / "scripts" / "kontrol.py"
+KONTROL = KOK / "skills" / "master-blog" / "scripts" / "kontrol.py"
 
 sonuc = {"gecti": 0, "kaldi": 0}
 hatalar = []
@@ -99,6 +99,30 @@ def t_temiz():
         "; ".join(m["ad"] + ": " + m["detay"] for m in r["maddeler"] if m["durum"] == "blokaj")
     assert kod == 0, f"çıkış kodu 0 bekleniyordu, {kod}"
 
+# --- Eşikler config dosyasından okunmalı (skill dizini düzenlenmeden) ---
+def t_config():
+    cfg = FIX / "esik.toml"
+    cfg.write_text("[esikler]\nIC_LINK_MIN = 2\nKELIME_MIN = 400\n", encoding="utf-8")
+    try:
+        r, _ = calistir("tireli-kelimeler.md", "--config", str(cfg))
+        assert r["esikler"]["IC_LINK_MIN"] == 2, "config'teki IC_LINK_MIN uygulanmadı"
+        assert r["esikler"]["KELIME_MIN"] == 400, "config'teki KELIME_MIN uygulanmadı"
+        assert r["esik_kaynagi"].endswith("esik.toml"), "eşik kaynağı raporlanmadı"
+    finally:
+        cfg.unlink(missing_ok=True)
+
+# --- Bilinmeyen eşik sessizce yutulmamalı ---
+def t_config_bilinmeyen():
+    cfg = FIX / "kotu.toml"
+    cfg.write_text("[esikler]\nOLMAYAN = 1\n", encoding="utf-8")
+    try:
+        p = subprocess.run([sys.executable, str(KONTROL), str(FIX / "temiz.md"),
+                            "--config", str(cfg)], capture_output=True, text=True)
+        assert p.returncode == 2, f"çıkış kodu 2 bekleniyordu, {p.returncode}"
+        assert "OLMAYAN" in p.stderr, "hangi eşiğin bilinmediği yazılmadı"
+    finally:
+        cfg.unlink(missing_ok=True)
+
 # --- Blokajlı yazı gerçekten 1 döndürmeli ---
 def t_blokaj_kodu():
     r, kod = calistir("tireli-kelimeler.md")
@@ -116,6 +140,8 @@ for ad, fn in [
     ("madde 36 · iç link tam eşleşme arıyor", t_onek_link),
     ("eksik dosyada çıkış kodu 2 (blokaj değil)", t_eksik_dosya),
     ("temiz yazı blokaj almıyor", t_temiz),
+    ("eşikler config dosyasından okunuyor", t_config),
+    ("bilinmeyen eşik reddediliyor (kod 2)", t_config_bilinmeyen),
     ("blokajlı yazı çıkış kodu 1 döndürüyor", t_blokaj_kodu),
 ]:
     test(ad, fn)

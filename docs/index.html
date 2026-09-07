@@ -56,7 +56,7 @@
   <div>
     <a class="badge" href="/master-blog-skill/kaynaklar/"><span class="dot"></span>Açık kaynak · v1.0 · Son doğrulama 7 Eyl 2026</a>
     <h1 class="big">Blog yazan değil,<br><em>yayına hazırlayan</em> skill.</h1>
-    <p class="lede">master-blog, Claude'a bir web projesinde içerik üretmenin tam sürecini öğretir: veriden konu seçimi, kanibalizasyon denetimi, SEO + GEO + E-E-A-T katmanları, 40 maddelik yayın öncesi kapı ve canlı doğrulama.</p>
+    <p class="lede">master-blog, Claude'a bir web projesinde içerik üretmenin tam sürecini öğretir: veriden konu seçimi, kanibalizasyon denetimi, SEO + GEO + E-E-A-T katmanları, 43 maddelik yayın öncesi kapı ve canlı doğrulama.</p>
     <div class="ctarow">
       <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
       <a class="btn" href="/master-blog-skill/skill/">Skill'i incele</a>
@@ -83,9 +83,9 @@
 
 <div class="wrap"><div class="stats">
   <div class="stat"><b>13</b><span>Aşama · 2 kapı</span></div>
-  <div class="stat"><b>40</b><span>Denetim maddesi</span></div>
+  <div class="stat"><b>43</b><span>Denetim maddesi</span></div>
   <div class="stat"><b>41</b><span>Açıklanan terim</span></div>
-  <div class="stat"><b>3.144</b><span>Satır talimat</span></div>
+  <div class="stat"><b>3.503</b><span>Satır talimat</span></div>
 </div></div>
 
 <section><div class="wrap">
@@ -107,7 +107,7 @@
       <li>Kanibalizasyon oranı hesaplanır; %50 üstü yazıyı durdurur.</li>
       <li>Teknik bilgi yalnızca proje verisinden alınır; kaynağı yoksa yazılmaz.</li>
       <li>4-6 tanımlayıcı iç bağlantı + doğrulanmış dış kaynak zorunludur.</li>
-      <li>40 maddelik kapı geçilmeden yayın yapılmaz, URL canlı doğrulanır.</li>
+      <li>43 maddelik kapı geçilmeden yayın yapılmaz, URL canlı doğrulanır.</li>
     </ul></div>
   </div>
 </div></section>
@@ -123,14 +123,14 @@
       <div><h4>Proje keşfi</h4><p>Framework, içerik kaynağı, frontmatter şeması, sitemap/robots, yönlendirme tanımları ve içerik envanteri çıkarılır. Hiçbir şey varsayılmaz.</p></div></div>
     <div class="step"><div class="no">01</div>
       <div><h4>Konu ve veri gerekçesi</h4><p>Aday konular Search Console, reklam arama terimleri, kapsam boşluğu ve gerçek müşteri sorularından üretilir. "Güzel konu" gerekçe sayılmaz.</p></div></div>
+    <div class="step"><div class="no">1.5</div>
+      <div><h4>Arşiv kararı</h4><p>Envanterde 15+ içerik varsa: yeni yazı mı, mevcut beş yazıyı tazelemek mi? TAZELE / BİRLEŞTİR / BIRAK / KALDIR kuyruğu çıkarılır.</p></div></div>
     <div class="step"><div class="no">02</div>
       <div><h4>Arama niyeti ve SERP</h4><p>Sorgu dört niyet sınıfından biriyle etiketlenir; SERP formatı okunur. Niyet işlemselse blog değil ticari sayfa önerilir.</p></div></div>
     <div class="step gate"><div class="no">03</div>
       <div><h4>Kanibalizasyon kapısı<span class="gatechip">KAPI</span></h4><p>Planlanan H2 iskeleti mevcut içerikle karşılaştırılır, örtüşme oranı sayıyla hesaplanır. %50 ve üzeri kanibaldir.</p></div></div>
     <div class="step"><div class="no">04</div>
       <div><h4>Brief ve onay</h4><p>15 satırlık brief: hedef sorgu, niyet, vaat, H2 iskeleti, iç link hedefleri, kanıt kaynakları, kelime bandı. Onaysız gövde yazılmaz.</p></div></div>
-    <div class="step"><div class="no">05</div>
-      <div><h4>SEO katmanı</h4><p>Title, meta, hiyerarşi, ilk 100 kelime, semantik alan, okunabilirlik ve kalıcı slug. Kelime istifleme yasak.</p></div></div>
     <div class="step"><div class="no">…</div><div><h4 style="color:var(--fg2)">Kalan 7 aşama</h4>
       <p>SEO, GEO ve E-E-A-T katmanları, bağlantı mimarisi, teknik paket, öz denetim kapısı, yayın ve ölçüm.
       <a class="acc" href="/master-blog-skill/skill/">Tümünü aç →</a></p></div></div>
@@ -195,7 +195,7 @@
 <section style="border-bottom:none"><div class="wrap">
   <div class="card hov" style="padding:38px;display:grid;gap:18px;justify-items:start;background:linear-gradient(180deg,#121212,#0C0C0C)">
     <span class="eyebrow">Kurulum</span>
-    <h2 style="font-size:clamp(22px,3vw,30px);max-width:24ch">7 dosya, tek dizin. Claude gerisini kendi yönetir.</h2>
+    <h2 style="font-size:clamp(22px,3vw,30px);max-width:24ch">10 dosya, tek dizin. Claude gerisini kendi yönetir.</h2>
     <p style="color:var(--fg2);max-width:58ch">Skill'i indir ya da kopyala, <code class="mono" style="color:var(--or3)">~/.claude/skills/master-blog/</code> altına koy. Claude, blog isteği geldiğinde açıklamayı okuyup skill'i kendisi yükler.</p>
     <div class="ctarow" style="margin-top:4px">
       <button class="btn pri" onclick="openInstall()">Kurulum seçeneklerini gör</button>

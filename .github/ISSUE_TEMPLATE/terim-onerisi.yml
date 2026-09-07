@@ -1,0 +1,39 @@
+name: Terim önerisi
+description: Sözlüğe yeni bir terim eklenmesini öner
+labels: ["terim"]
+body:
+  - type: input
+    id: ad
+    attributes: { label: Terim adı (Türkçe), placeholder: "Kanibalizasyon" }
+    validations: { required: true }
+  - type: input
+    id: en
+    attributes: { label: İngilizce karşılığı, placeholder: "Keyword Cannibalization" }
+    validations: { required: true }
+  - type: dropdown
+    id: cat
+    attributes: { label: Kategori, options: ["Claude", "SEO", "İçerik", "Teknik", "diğer"] }
+    validations: { required: true }
+  - type: dropdown
+    id: level
+    attributes: { label: Seviye, options: ["Başlangıç", "Orta", "İleri", "Uzman"] }
+    validations: { required: true }
+  - type: textarea
+    id: tanim
+    attributes:
+      label: Tanım
+      description: Tek cümlelik, bağlamdan koparıldığında da anlamlı bir tanım.
+    validations: { required: true }
+  - type: textarea
+    id: kaynak
+    attributes:
+      label: Kaynak
+      description: |
+        Zamana bağlı bir iddia içeriyorsa kaynak zorunludur. URL + tarih + sınıf
+        (BİRİNCİL / ÖLÇÜM / SEKTÖR). URL'in 200 döndüğünü doğrula.
+  - type: textarea
+    id: neden
+    attributes:
+      label: Skill'de nerede işe yarar?
+      description: Hangi aşamada bu terime ihtiyaç duyuluyor?
+    validations: { required: true }

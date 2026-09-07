@@ -6,7 +6,7 @@ Cikis kodlari: 0 basarili · 1 veri/dogrulama hatasi · 2 ortam hatasi (node yok
 import json, re, subprocess, pathlib, sys
 
 ROOT    = pathlib.Path(__file__).parent
-SKILL   = ROOT / "skill" / "master-blog"
+SKILL   = ROOT / "skills" / "master-blog"
 SITE    = ROOT / "site"
 DOCS    = ROOT / "docs"          # GitHub Pages: her sayfa gercek bir URL
 DIST    = ROOT / "dist"          # Artifact: tek dosya, hash yonlendirme
@@ -126,7 +126,10 @@ ORDER = ["SKILL.md",
          "references/schema-ve-geo.md",
          "references/kaynaklar.md",
          "references/kullanim-senaryolari.md",
-         "scripts/kontrol.py"]
+         "references/yazim-katmanlari.md",
+         "references/yayin-ve-olcum.md",
+         "scripts/kontrol.py",
+         "evals/evals.json"]
 HEREDOC = "MASTERBLOG_EOF"
 
 
@@ -142,7 +145,7 @@ def dosyalari_topla():
 
 
 def kurulum_komutu(files):
-    cmd = ["mkdir -p ~/.claude/skills/master-blog/references ~/.claude/skills/master-blog/scripts"]
+    cmd = ["mkdir -p ~/.claude/skills/master-blog/{references,scripts,evals}"]
     for rel, f in zip(ORDER, files):
         if HEREDOC in f["text"]:      # assert degil: python3 -O ile devre disi kalmasin
             hata(f"heredoc sinirlayicisi dosyada geciyor: {rel}")

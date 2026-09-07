@@ -26,14 +26,53 @@ def tr_kucult(s):
     bu, hedef kelime aramalarını sessizce bozar."""
     return unicodedata.normalize("NFC", str(s).replace("İ", "i").replace("I", "ı")).lower()
 
-# ---------- eşikler (projene göre uyarlanabilir) ----------
-TITLE_MAX   = 60
-DESC_MIN, DESC_MAX = 140, 160
-KELIME_MIN  = 600          # altına düşerse "dur ve oku" tetikleyicisi
-IC_LINK_MIN = 4
-DIS_LINK_MAX = 2
-SORU_ORANI  = 0.5          # H2'lerin en az yarısı soru/karar başlığı
-PARA_MAX_KELIME = 90
+# ---------- eşikler ----------
+# VARSAYILANLAR orta ölçekli, yerleşik bir site içindir.
+# Projene göre uyarlamak için skill dizinindeki bu dosyayı DEĞİL, projenin kökünde
+# bir `master-blog.toml` (veya `.master-blog.json`) oluştur — skill güncellendiğinde
+# uyarlaman silinmez. Profil bazlı önerilen değerler:
+# references/kullanim-senaryolari.md → eşik uyarlama tablosu.
+VARSAYILAN = {
+    "TITLE_MAX": 60,        # SERP'te kırpılma sınırı
+    "DESC_MIN": 140,        # kırpılmadan bilgi verebilen alt sınır
+    "DESC_MAX": 160,        # üstünde kesilme riski
+    "KELIME_MIN": 600,      # bulgu DEĞİL, "dur ve oku" tetikleyicisi
+    "IC_LINK_MIN": 4,       # yeni sitelerde 2'ye indirilir; 4 link verecek sayfa olmayabilir
+    "DIS_LINK_MAX": 2,      # fazlası dikkat dağıtır; B2B/SaaS'ta 3-4 makul
+    "SORU_ORANI": 0.5,      # H2'lerin en az yarısı soru/karar başlığı (GEO)
+    "PARA_MAX_KELIME": 90,  # üstü okunabilirliği düşürür; yerel hizmette 70
+}
+E = dict(VARSAYILAN)        # yürürlükteki eşikler; main() içinde config ile güncellenir
+E_KAYNAK = "varsayılan"
+
+
+def esikleri_yukle(yol=None):
+    """--config, ./master-blog.toml, ./.master-blog.json sırasıyla aranır."""
+    global E, E_KAYNAK
+    adaylar = [yol] if yol else ["master-blog.toml", ".master-blog.json"]
+    for a in adaylar:
+        if not a or not os.path.exists(a):
+            continue
+        try:
+            if a.endswith(".json"):
+                veri = json.load(open(a, encoding="utf-8"))
+            else:
+                import tomllib
+                veri = tomllib.load(open(a, "rb"))
+            veri = veri.get("esikler", veri)
+        except Exception as e:
+            print(f"HATA: '{a}' okunamadi: {e}", file=sys.stderr)
+            sys.exit(2)
+        bilinmeyen = [k for k in veri if k not in VARSAYILAN]
+        if bilinmeyen:
+            print(f"HATA: '{a}' icinde bilinmeyen esik: {', '.join(bilinmeyen)}", file=sys.stderr)
+            sys.exit(2)
+        E.update({k: veri[k] for k in veri})
+        E_KAYNAK = a
+        return
+    if yol:
+        print(f"HATA: config dosyasi bulunamadi: {yol}", file=sys.stderr)
+        sys.exit(2)
 JENERIK_ANCHOR = ["buraya tıkla", "buraya tıklayın", "tıklayın", "buradan", "bu link",
                   "click here", "read more", "devamı", "detaylı bilgi için tıkla"]
 TITLE_ALAN = ["seoBaslik", "seoTitle", "title", "seo_title", "baslik"]
@@ -132,7 +171,9 @@ def main():
     ap.add_argument("--net", action="store_true")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--icerik-dizini", default="")
+    ap.add_argument("--config", default="", help="esik dosyasi (toml/json)")
     a = ap.parse_args()
+    esikleri_yukle(a.config or None)
 
     try:
         raw = open(a.dosya, encoding="utf-8-sig").read()   # utf-8-sig: BOM'lu dosyalar
@@ -153,8 +194,8 @@ def main():
         r.ekle(14, "Title", "blokaj", "frontmatter'da title alanı bulunamadı")
     else:
         n = len(title)
-        if n > TITLE_MAX:
-            r.ekle(14, "Title uzunluğu", "blokaj", f"{n} karakter (üst sınır {TITLE_MAX})")
+        if n > E['TITLE_MAX']:
+            r.ekle(14, "Title uzunluğu", "blokaj", f"{n} karakter (üst sınır {E['TITLE_MAX']})")
         else:
             r.ekle(14, "Title uzunluğu", "gecti", f"{n} karakter")
         if kelime:
@@ -172,8 +213,8 @@ def main():
         r.ekle(15, "Meta description", "uyari", "frontmatter'da açıklama alanı yok")
     else:
         n = len(desc)
-        durum = "gecti" if DESC_MIN <= n <= DESC_MAX else "uyari"
-        r.ekle(15, "Meta description uzunluğu", durum, f"{n} karakter (hedef {DESC_MIN}-{DESC_MAX})")
+        durum = "gecti" if E['DESC_MIN'] <= n <= E['DESC_MAX'] else "uyari"
+        r.ekle(15, "Meta description uzunluğu", durum, f"{n} karakter (hedef {E['DESC_MIN']}-{E['DESC_MAX']})")
 
     # --- 16 · tek H1 ---
     h1 = re.findall(r"^#\s+(.+)$", body, re.M)
@@ -206,8 +247,8 @@ def main():
     soru = [h for h in h2 if soru_mu(h)]
     if h2:
         oran = len(soru) / len(h2)
-        r.ekle(19, "Soru/karar biçimli H2", "gecti" if oran >= SORU_ORANI else "uyari",
-               f"{len(soru)}/{len(h2)} = %{oran*100:.0f} (hedef ≥%{SORU_ORANI*100:.0f})")
+        r.ekle(19, "Soru/karar biçimli H2", "gecti" if oran >= E['SORU_ORANI'] else "uyari",
+               f"{len(soru)}/{len(h2)} = %{oran*100:.0f} (hedef ≥%{E['SORU_ORANI']*100:.0f})")
     else:
         r.ekle(19, "H2 başlıkları", "blokaj", "hiç H2 yok")
 
@@ -232,8 +273,8 @@ def main():
 
     # --- 22 · kelime sayısı ---
     kw = kelime_say(duz)
-    r.ekle(22, "Kelime sayısı", "gecti" if kw >= KELIME_MIN else "uyari",
-           f"{kw} kelime" + ("" if kw >= KELIME_MIN else f" — {KELIME_MIN} altı: DUR VE OKU, konu gerçekten kapandı mı?"))
+    r.ekle(22, "Kelime sayısı", "gecti" if kw >= E['KELIME_MIN'] else "uyari",
+           f"{kw} kelime" + ("" if kw >= E['KELIME_MIN'] else f" — {E['KELIME_MIN']} altı: DUR VE OKU, konu gerçekten kapandı mı?"))
 
     # --- 25 · tablo / yapılandırılmış karşılaştırma ---
     tablo = len(re.findall(r"^\s*\|.*\|\s*$", body, re.M)) >= 3
@@ -249,8 +290,8 @@ def main():
     ic  = [(t, u) for t, u in linkler if not u.startswith(("http://", "https://", "mailto:"))]
     dis = [(t, u) for t, u in linkler if u.startswith(("http://", "https://"))]
 
-    r.ekle(33, "İç bağlantı sayısı", "gecti" if len(ic) >= IC_LINK_MIN else "blokaj",
-           f"{len(ic)} adet (en az {IC_LINK_MIN})")
+    r.ekle(33, "İç bağlantı sayısı", "gecti" if len(ic) >= E['IC_LINK_MIN'] else "blokaj",
+           f"{len(ic)} adet (en az {E['IC_LINK_MIN']})")
 
     jenerik = [t for t, _ in linkler if tr_kucult(t.strip()) in JENERIK_ANCHOR]
     anchorlar = [tr_kucult(t.strip()) for t, _ in ic]
@@ -261,8 +302,8 @@ def main():
     r.ekle(34, "Anchor metinleri", "gecti" if not sorun else "uyari",
            "tanımlayıcı ve çeşitli" if not sorun else " · ".join(sorun))
 
-    if len(dis) > DIS_LINK_MAX:
-        r.ekle(35, "Dış link sayısı", "uyari", f"{len(dis)} adet (önerilen üst sınır {DIS_LINK_MAX})")
+    if len(dis) > E['DIS_LINK_MAX']:
+        r.ekle(35, "Dış link sayısı", "uyari", f"{len(dis)} adet (önerilen üst sınır {E['DIS_LINK_MAX']})")
     if not dis:
         r.ekle(35, "Dış link doğrulaması", "gecti", "dış link yok")
     elif not a.net:
@@ -305,21 +346,23 @@ def main():
                f"{len(gorseller)} görsel, hepsi tarif ediyor" if not d else " · ".join(d))
 
     # --- ek: uzun paragraf ---
-    uzun = [p for p in re.split(r"\n\s*\n", duz) if kelime_say(p) > PARA_MAX_KELIME]
+    uzun = [p for p in re.split(r"\n\s*\n", duz) if kelime_say(p) > E['PARA_MAX_KELIME']]
     r.ekle(0, "Paragraf uzunluğu", "gecti" if not uzun else "uyari",
-           "tamamı okunabilir" if not uzun else f"{len(uzun)} paragraf {PARA_MAX_KELIME}+ kelime")
+           "tamamı okunabilir" if not uzun else f"{len(uzun)} paragraf {E['PARA_MAX_KELIME']}+ kelime")
 
     # --- ek: frontmatter tarih ---
     tarih = next((fm[k] for k in TARIH_ALAN if fm.get(k)), "")
     r.ekle(0, "Yayın tarihi alanı", "gecti" if tarih else "uyari", tarih or "yok")
 
     if a.json:
-        print(json.dumps({"dosya": a.dosya, "kelime_sayisi": kw, "ic_link": len(ic),
+        print(json.dumps({"dosya": a.dosya, "esikler": E, "esik_kaynagi": E_KAYNAK,
+                          "kelime_sayisi": kw, "ic_link": len(ic),
                           "dis_link": len(dis), "h2": len(h2), "blokaj": r.blokaj,
                           "uyari": r.uyari, "gecti": r.gecti, "maddeler": r.satir},
                          ensure_ascii=False, indent=2))
     else:
         print(f"master-blog mekanik kontrol · {a.dosya}")
+        print(f"eşikler: {E_KAYNAK}")
         print("-" * 78)
         r.yaz()
     sys.exit(1 if r.blokaj else 0)
