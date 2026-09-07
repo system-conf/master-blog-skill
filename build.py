@@ -354,10 +354,38 @@ def main():
                             "assets/style.css", "assets/app.js", kabuk, ld)
 
     # ---------- C) sitemap + robots ----------
-    from datetime import date
-    bugun = date.today().isoformat()
-    urls = "".join(f"  <url><loc>{SITE_URL}{(y + '/') if y else ''}</loc>"
-                   f"<lastmod>{bugun}</lastmod></url>\n" for y in yollar)
+    # lastmod BUILD TARİHİ DEĞİL, kaynağın son anlamlı değişiklik tarihidir.
+    # Build tarihi kullanmak (a) build'i deterministik olmaktan çıkarır,
+    # (b) skill'in kendi "sahte tazelik yok" kuralını çiğner.
+    # Git yoksa alan tamamen atlanır — yanlış tarih yazmaktansa yazmamak doğrudur.
+    def son_degisiklik(*yollar_):
+        tarihler = []
+        for yol in yollar_:
+            try:
+                p = subprocess.run(["git", "log", "-1", "--format=%cs", "--", yol],
+                                   capture_output=True, text=True, cwd=ROOT)
+                if p.returncode == 0 and p.stdout.strip():
+                    tarihler.append(p.stdout.strip())
+            except FileNotFoundError:
+                return None
+        return max(tarihler) if tarihler else None
+
+    SABLON, TERIMLER = "site/template.html", "site/data/terms.js"
+    KAYNAK_HARITASI = {
+        "":              [SABLON, TERIMLER, "skills/master-blog/SKILL.md"],
+        "skill":         [SABLON, "skills/master-blog"],
+        "senaryolar":    [SABLON, "skills/master-blog/references/kullanim-senaryolari.md"],
+        "nasil-calisir": [SABLON],
+        "terimler":      [SABLON, TERIMLER],
+        "kurulum":       [SABLON, "skills/master-blog"],
+        "kaynaklar":     [SABLON, "skills/master-blog/references/kaynaklar.md"],
+    }
+    urls = ""
+    for y in yollar:
+        kaynaklar = KAYNAK_HARITASI.get(y, [SABLON, TERIMLER])
+        tarih = son_degisiklik(*kaynaklar)
+        urls += (f"  <url><loc>{SITE_URL}{(y + '/') if y else ''}</loc>"
+                 + (f"<lastmod>{tarih}</lastmod>" if tarih else "") + "</url>\n")
     (DOCS / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n",
