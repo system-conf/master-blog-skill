@@ -349,6 +349,9 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
         <span class="lbl">Skill ve terim ara</span>
         <span class="kbd" style="margin-left:auto">⌘K</span>
       </button>
+      <a class="btn" href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer" aria-label="GitHub deposu">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.8 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.5-1.5 7.8-5.8 7.8-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+        <span class="hidesm">GitHub</span></a>
       <button class="btn pri" id="openInstall">Claude'a Ekle</button>
     </div>
   </div>
@@ -365,7 +368,8 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
       </div>
       <div><h5>Skill</h5>
         <a href="#/skill">Genel bakış</a><a href="#/skill#dosyalar">SKILL.md</a>
-        <a href="#/skill#promptlar">Örnek promptlar</a><a href="#/kurulum">Kurulum</a></div>
+        <a href="#/skill#promptlar">Örnek promptlar</a><a href="#/kurulum">Kurulum</a>
+        <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer">GitHub deposu</a></div>
       <div><h5>Öğren</h5>
         <a href="#/nasil-calisir">Skill nasıl çalışır</a><a href="#/terimler">Terim sözlüğü</a>
         <a href="#/terim/kanibalizasyon">Kanibalizasyon</a><a href="#/kaynaklar">Kaynaklar</a></div>
@@ -374,7 +378,7 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
         <a href="#/terimler?k=Teknik">Teknik</a><a href="#/terimler?k=İçerik">İçerik</a></div>
     </div>
     <div class="fbot">
-      <span>v1.0 · MIT Lisansı · Açık kaynak</span>
+      <span>v1.0 · MIT Lisansı · <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer" style="color:var(--or3)">github.com/system-conf/master-blog-skill</a></span>
       <span>Claude kullanıcıları için yazıldı.</span>
     </div>
   </div>
@@ -681,7 +685,7 @@ function favTog(e,slug){ e.preventDefault(); e.stopPropagation(); BM.toggle(slug
 function vSkill(){
   const toc=[['ozet','Genel bakış'],['ne-yapar','Ne yapıyor?'],['ne-zaman','Ne zaman kullanılır?'],
     ['surec','13 aşamalı süreç'],['dosyalar','Skill dosyaları'],['promptlar','Örnek promptlar'],
-    ['kalite','Kalite ve sınırlar'],['surum','Sürüm geçmişi']];
+    ['kontrol','Mekanik kontrol'],['kalite','Kalite ve sınırlar'],['surum','Sürüm geçmişi']];
   return `<div class="wrap"><div class="doc">
   <aside class="rail"><div class="lbl">İçindekiler</div>
     ${toc.map(([id,t])=>`<a href="#/skill#${id}" data-toc="${id}">${t}</a>`).join('')}</aside>
@@ -699,6 +703,7 @@ function vSkill(){
         <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
         <button class="btn" onclick="copyAll()">Tüm skill'i kopyala</button>
         <button class="btn" onclick="download(FILES[0].name,FILES[0].text)">SKILL.md indir</button>
+        <a class="btn" href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer">GitHub'da aç</a>
       </div>
     </div>
 
@@ -745,6 +750,19 @@ Skill üç şeyi aynı anda güvence altına alır: **doğruluk** (yazılan her 
     ${PROMPTS.map((p,i)=>`<div class="pblock"><div class="ph"><span>${esc(p.t)}</span>
       <button class="btn sm" style="margin-left:auto" onclick="copy(PROMPTS[${i}].p,'Prompt kopyalandı')">Kopyala</button></div>
       <pre>${esc(p.p)}</pre></div>`).join('')}
+
+    <h2 id="kontrol">Mekanik kontrol</h2>
+    ${md(`40 maddelik kapının **ölçülebilir kısmı tahmine bırakılmaz.** Skill, Aşama 10'da önce \`scripts/kontrol.py\` dosyasını çalıştırır:
+
+\`\`\`
+python3 scripts/kontrol.py yazi.md --kelime "hedef kelime" --net
+\`\`\`
+
+Script şunları gerçekten sayar: kelime sayısı (frontmatter, kod ve URL'ler düşülerek), H1 adedi, başlık hiyerarşisi sıçraması, title ve meta description karakter uzunluğu, hedef kelimenin title'daki konumu, slug formatı, soru biçimli H2 oranı, iç link sayısı, jenerik ve tekrar eden anchor metinleri, dış linklerin HTTP durumu, tablo ve özet bölümü varlığı, görsel alt metinleri, paragraf uzunluğu.
+
+Blokaj varsa çıkış kodu **1** döner ve yayın durur — CI'ya da bağlanabilir. Eşikler dosyanın başındaki sabitlerden projeye göre uyarlanır.
+
+**Sınırı açıkça yazalım:** script yalnızca sayılabilen şeyi ölçer. Arama niyeti uyumu, kanibalizasyon kararı, kaynak gerçekliği, uydurma denetimi ve E-E-A-T sinyalleri sayılamaz — onlar modelin işidir ve kontrol listesinin ikinci katmanında kalır.`)}
 
     <h2 id="kalite">Kalite ve sınırlar</h2>
     ${md(`Bu skill bir yazım şablonu değil, bir süreç sözleşmesidir. Ne yaptığı kadar **ne yapmadığı** da tanımlıdır:`)}
@@ -1134,7 +1152,17 @@ EOF</code>
       </div>
 
       <div class="opt">
-        <div class="oh"><span class="num">3</span><b>Claude'a yaptır</b></div>
+        <div class="oh"><span class="num">3</span><b>Depoyu klonla</b></div>
+        <div class="ob">
+          <span>Skill'i sürümleyerek takip etmek, eşikleri kendi projene göre değiştirmek ya da katkı vermek istiyorsan:</span>
+          <code class="cmd">git clone https://github.com/system-conf/master-blog-skill.git
+cp -r master-blog-skill/skill/master-blog ~/.claude/skills/</code>
+          <button class="btn" onclick="copy('git clone https://github.com/system-conf/master-blog-skill.git\ncp -r master-blog-skill/skill/master-blog ~/.claude/skills/','Klonlama komutu kopyalandı')">Komutu kopyala</button>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="oh"><span class="num">4</span><b>Claude'a yaptır</b></div>
         <div class="ob">
           <span>Dosyaları kopyaladıktan sonra Claude Code'a şu isteği ver:</span>
           <code class="cmd">Bu içeriği ~/.claude/skills/master-blog/SKILL.md
@@ -1144,7 +1172,7 @@ references/ altına yaz.</code>
       </div>
 
       <div class="opt">
-        <div class="oh"><span class="num">4</span><b>Nerede çalışır?</b></div>
+        <div class="oh"><span class="num">5</span><b>Nerede çalışır?</b></div>
         <div class="ob">
           <div class="mrow" style="padding:6px 0"><span>Claude Code (terminal / IDE)</span><b style="color:var(--ok)">Dosya kurulumu</b></div>
           <div class="mrow" style="padding:6px 0"><span>Claude uygulaması (web / masaüstü)</span><b style="color:var(--warn)">Ayarlardan yükleme</b></div>
@@ -1170,7 +1198,8 @@ const PAGES=[
   {t:'Claude Skills nasıl çalışır',h:'#/nasil-calisir',s:'Rehber'},
   {t:'Terim sözlüğü',h:'#/terimler',s:'Tüm terimler'},
   {t:'Kurulum',h:'#/kurulum',s:'Claude\'a ekleme yöntemleri'},
-  {t:'Kaynaklar ve doğrulama kaydı',h:'#/kaynaklar',s:'Zamana bağlı iddiaların kanıtı'}
+  {t:'Kaynaklar ve doğrulama kaydı',h:'#/kaynaklar',s:'Zamana bağlı iddiaların kanıtı'},
+  {t:'GitHub deposu',h:'https://github.com/system-conf/master-blog-skill',s:'Açık kaynak · MIT'}
 ];
 let CPI=0, CPR=[];
 function cpOpen(){ $('#cp').classList.add('on'); $('#scrim').classList.add('on'); const q=$('#cpq'); q.value=''; cpRender(''); q.focus(); }
@@ -1199,7 +1228,9 @@ function cpMove(d){
   document.querySelectorAll('.cpitem').forEach(el=>el.classList.toggle('sel',+el.dataset.i===CPI));
   const sel=document.querySelector('.cpitem.sel'); if(sel) sel.scrollIntoView({block:'nearest'});
 }
-function cpGo(i){ const r=CPR[i]; if(!r) return; if(r.f!==undefined) VF=r.f; cpClose(); location.hash=r.h; }
+function cpGo(i){ const r=CPR[i]; if(!r) return; if(r.f!==undefined) VF=r.f; cpClose();
+  if(/^https?:/.test(r.h)){ window.open(r.h,'_blank','noopener'); return; }
+  location.hash=r.h; }
 
 /* ---------- yönlendirici ---------- */
 function route(){
