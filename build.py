@@ -484,7 +484,7 @@ def main():
     # ikonlar: site/assets/ kaynaktır, docs/ köküne kopyalanır.
     # tools/favicon-uret.py ile üretilir; marka rengi degismedikce tekrar uretilmez.
     import shutil
-    for ikon in ("favicon.svg", "favicon.ico", "apple-touch-icon.png"):
+    for ikon in ("favicon.svg", "favicon.ico", "apple-touch-icon.png", "og.svg"):
         kaynak = SITE / "assets" / ikon
         if not kaynak.exists():
             hata(f"ikon bulunamadi: {kaynak} (uret: python3 tools/favicon-uret.py)")

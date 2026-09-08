@@ -233,8 +233,11 @@ Denetimlerde önerilen ama **gerekçeyle uygulanmayan** üç şey:
   çok satırlı Türkçe metinleri `\n` kaçışlarına gömer ve elle düzenlemeyi pratikte
   bitirir. Asıl risk olan **doğrulama eksikliği** `build.py` içinde çözüldü: zorunlu
   alanlar, slug biçimi, seviye enum'ı, kırık `related` ve bozuk `src` build'i durduruyor.
-- **`og:image` yok.** Uydurma bir görsel koymak yerine eksik bırakıldı; sosyal paylaşımda
-  kart görselsiz görünüyor. Gerçek bir kapak görseli üretildiğinde eklenecek.
+- **`og:image` hâlâ yok — ama kaynağı hazır.** `site/assets/og.svg` üretildi ve yayında.
+  Eksik olan güvenilir bir SVG→PNG dönüştürücü: macOS'un `qlmanage` aracı SVG'yi dikey
+  olarak geriyor (1200×630 viewBox → 1200×985 çıktı), bu yüzden kullanılmadı. Sosyal
+  kartlar çoğu platformda SVG'yi desteklemediği için alan boş bırakıldı; bozuk oranlı
+  bir kart koymaktansa koymamak doğru. Doğru rasterleştirme yapıldığında tek satırda bağlanır.
 - **İngilizce sürüm yok.** Altyapı maliyeti orta, içerik maliyeti kalıcı: 66 terim × 6 uzun
   alan + 19 KB `SKILL.md`, ve her güncelleme iki dilde bakım demek. Talep gelirse
   `kullanim-senaryolari.md` içindeki dil profili yaklaşımıyla kademeli yapılabilir.
