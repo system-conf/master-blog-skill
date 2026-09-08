@@ -28,6 +28,23 @@ jobs:
           assert p['version'] in open('CHANGELOG.md').read(), 'CHANGELOG sürümü eksik'
           print('sürümler tutarlı:', p['version'])"
 
+      - name: README dil geçişleri ve iç dosya bağlantıları
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          hata = []
+          tr, en = pathlib.Path('README.md').read_text(), pathlib.Path('README.en.md').read_text()
+          if '[English](README.en.md)' not in tr: hata.append('README.md içinde English geçişi yok')
+          if '[Türkçe](README.md)' not in en:     hata.append('README.en.md içinde Türkçe geçişi yok')
+          for ad, metin in (('README.md', tr), ('README.en.md', en)):
+              for hedef in re.findall(r'\]\((?!https?:|#)([^)]+)\)', metin):
+                  if not pathlib.Path(hedef.split('#')[0]).exists():
+                      hata.append(f'{ad}: {hedef} dosyası yok')
+          if hata:
+              print('\n'.join('::error::' + h for h in hata)); sys.exit(1)
+          print('README dosyaları tutarlı')
+          PY
+
       - name: Regresyon testleri (kontrol.py)
         run: python3 tests/calistir.py
 
