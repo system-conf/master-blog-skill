@@ -24,6 +24,8 @@ skills/master-blog/          ← kurulacak skill (bu klasörü kopyala)
 
 site/
   template.html             site kabuğu (CSS + JS)
+  assets/                   favicon.svg · favicon.ico · apple-touch-icon.png
+                            (tools/favicon-uret.py ile üretilir, bağımlılık yok)
   data/terms.js             terim sözlüğünün TEK doğruluk kaynağı
 
 tests/

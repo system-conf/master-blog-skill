@@ -287,6 +287,9 @@ def sayfa_yaz(yol, baslik, aciklama, govde, style_href, script_src, kabuk, jsonl
 <meta name="twitter:title" content="{baslik}">
 <meta name="twitter:description" content="{aciklama}">
 <meta name="theme-color" content="#050505">
+<link rel="icon" href="{derinlik}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{derinlik}favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="{derinlik}apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
@@ -345,6 +348,15 @@ def main():
     (DOCS / "assets" / "style.css").write_text(stil, encoding="utf-8")
     (DOCS / "assets" / "app.js").write_text(bundle, encoding="utf-8")
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+
+    # ikonlar: site/assets/ kaynaktır, docs/ köküne kopyalanır.
+    # tools/favicon-uret.py ile üretilir; marka rengi degismedikce tekrar uretilmez.
+    import shutil
+    for ikon in ("favicon.svg", "favicon.ico", "apple-touch-icon.png"):
+        kaynak = SITE / "assets" / ikon
+        if not kaynak.exists():
+            hata(f"ikon bulunamadi: {kaynak} (uret: python3 tools/favicon-uret.py)")
+        shutil.copyfile(kaynak, DOCS / ikon)
 
     toplam = 0
     for yol, baslik, aciklama in SAYFALAR:
