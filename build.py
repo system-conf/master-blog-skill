@@ -154,6 +154,37 @@ ORDER = ["SKILL.md",
 HEREDOC = "MASTERBLOG_EOF"
 
 
+def yazilari_oku():
+    """site/blog/*.md -> POSTS. Frontmatter + gövde; en yeni tarih önce."""
+    yazilar = []
+    dizin = SITE / "blog"
+    for p in sorted(dizin.glob("*.md")) if dizin.exists() else []:
+        ham = p.read_text(encoding="utf-8-sig")
+        m = re.match(r"^---\n(.*?)\n---\n?(.*)$", ham, re.S)
+        if not m:
+            hata(f"{p.name}: frontmatter bulunamadi")
+        fm = {}
+        for satir in m.group(1).split("\n"):
+            mm = re.match(r'^([a-zA-Z]+):\s*(.*)$', satir)
+            if mm:
+                deger = mm.group(2).strip()
+                if deger.startswith("["):
+                    deger = [x.strip().strip('"') for x in deger.strip("[]").split(",") if x.strip()]
+                else:
+                    deger = deger.strip('"')
+                fm[mm.group(1)] = deger
+        for alan in ("baslik", "seoBaslik", "ozet", "tarih"):
+            if not fm.get(alan):
+                hata(f"{p.name}: '{alan}' alani eksik")
+        if len(fm["seoBaslik"]) > 60:
+            hata(f"{p.name}: seoBaslik {len(fm['seoBaslik'])} karakter (ust sinir 60)")
+        yazilar.append({"slug": p.stem, "baslik": fm["baslik"], "seoBaslik": fm["seoBaslik"],
+                        "ozet": fm["ozet"], "tarih": fm["tarih"],
+                        "hedefKelimeler": fm.get("hedefKelimeler", []),
+                        "dakika": fm.get("dakika", ""), "govde": m.group(2).strip()})
+    return sorted(yazilar, key=lambda y: y["tarih"], reverse=True)
+
+
 def dosyalari_topla():
     files = []
     for rel in ORDER:
@@ -202,6 +233,9 @@ SAYFALAR = [
     ("kurulum",        "Kurulum — Master Blog Skill",
      "master-blog skill'ini Claude Code ve Claude uygulamasına ekleme yöntemleri: tek komut, depo klonlama "
      "ve elle kurulum."),
+    ("blog",           "Blog — Master Blog Skill",
+     "Skill'in kendi süreciyle üretilmiş yazılar: yapay zeka içeriğinde sık yapılan hatalar, "
+     "teşhis yöntemleri ve ölçüm disiplini."),
     ("kaynaklar",      "Kaynaklar ve Doğrulama Kaydı — Master Blog Skill",
      "Skill'deki zamana bağlı her iddianın tarihi, kaynak sınıfı ve doğrulanmış bağlantısı. "
      "Son doğrulama: 7 Eylül 2026."),
@@ -317,10 +351,12 @@ def main():
     dogrula(terms)
     sozluk_yaz(terms)
     files = dosyalari_topla()
+    yazilar = yazilari_oku()
 
     tpl = (SITE / "template.html").read_text(encoding="utf-8")
     veri = (TERMSJS.read_text(encoding="utf-8").rstrip().rstrip(";") + ";\n"
             + "const FILES = " + json.dumps(files, ensure_ascii=False) + ";\n"
+            + "const POSTS = " + json.dumps(yazilar, ensure_ascii=False) + ";\n"
             + "const INSTALL_CMD = " + json.dumps(kurulum_komutu(files), ensure_ascii=False) + ";\n")
 
     # ---------- A) Artifact surumu: tek dosya, iskeletsiz, hash yonlendirme ----------
@@ -341,7 +377,8 @@ def main():
     bundle = script.replace("/*__DATA__*/", js_gomme_guvenli(
         f"const MODE='static'; const BASE='{BASE}';\n" + veri))
 
-    yollar = [y for y, _, _ in SAYFALAR] + ["terim/" + t["slug"] for t in terms]
+    yollar = ([y for y, _, _ in SAYFALAR] + ["terim/" + t["slug"] for t in terms]
+              + ["blog/" + y["slug"] for y in yazilar])
     render_ = onrender(bundle, yollar)
 
     DOCS.mkdir(exist_ok=True)
@@ -372,6 +409,20 @@ def main():
         toplam += sayfa_yaz(yol, esc_attr(baslik), esc_attr(aciklama),
                             statik_linkler(render_[yol]),
                             "assets/style.css", "assets/app.js", kabuk, ld)
+
+    for y in yazilar:
+        yol = "blog/" + y["slug"]
+        ld = ('<script type="application/ld+json">' + json.dumps({
+            "@context": "https://schema.org", "@type": "BlogPosting",
+            "headline": y["seoBaslik"], "description": y["ozet"],
+            "datePublished": y["tarih"], "dateModified": y["tarih"],
+            "author": {"@type": "Organization", "name": "master-blog", "url": REPO_URL},
+            "publisher": {"@type": "Organization", "name": "master-blog", "url": SITE_URL},
+            "mainEntityOfPage": {"@type": "WebPage", "@id": SITE_URL + yol + "/"},
+            "inLanguage": "tr-TR",
+        }, ensure_ascii=False) + "</script>\n")
+        toplam += sayfa_yaz(yol, esc_attr(y["seoBaslik"] + " — master-blog"), esc_attr(y["ozet"]),
+                            statik_linkler(render_[yol]), "assets/style.css", "assets/app.js", kabuk, ld)
 
     for t in terms:
         yol = "terim/" + t["slug"]

@@ -346,6 +346,7 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
     <a class="logo" href="#/"><span class="sq">&gt;_</span> master-blog</a>
     <nav class="main" id="nav">
       <a href="#/skill">Skill</a>
+      <a href="#/blog">Blog</a>
       <a href="#/senaryolar">Senaryolar</a>
       <a href="#/nasil-calisir">Nasıl Çalışır</a>
       <a href="#/terimler">Terimler</a>
@@ -380,7 +381,7 @@ footer{padding:52px 0 60px;color:var(--fg3);font-size:13.5px}
         <a href="#/skill#promptlar">Örnek promptlar</a><a href="#/kurulum">Kurulum</a>
         <a href="https://github.com/system-conf/master-blog-skill" target="_blank" rel="noopener noreferrer">GitHub deposu</a></div>
       <div><h5>Öğren</h5>
-        <a href="#/senaryolar">Kullanım senaryoları</a><a href="#/nasil-calisir">Skill nasıl çalışır</a><a href="#/terimler">Terim sözlüğü</a>
+        <a href="#/blog">Blog</a><a href="#/senaryolar">Kullanım senaryoları</a><a href="#/nasil-calisir">Skill nasıl çalışır</a><a href="#/terimler">Terim sözlüğü</a>
         <a href="#/terim/kanibalizasyon">Kanibalizasyon</a><a href="#/kaynaklar">Kaynaklar</a></div>
       <div><h5>Kategoriler</h5>
         <a href="#/terimler?k=SEO">SEO</a><a href="#/terimler?k=Claude">Claude &amp; AI</a>
@@ -1159,6 +1160,65 @@ function vSources(){
   </div></div>`;
 }
 
+/* ---------- blog ---------- */
+function vBlog(){
+  return `<div class="wrap"><div style="padding:44px 0 20px">
+    <span class="eyebrow">Blog</span>
+    <h1 style="font-size:clamp(30px,4.4vw,44px);letter-spacing:-.035em;margin-top:12px">Skill'in kendi ürettiği yazılar</h1>
+    <p style="color:var(--fg2);max-width:66ch;margin-top:14px;font-size:16px">
+      Bu yazıların hepsi master-blog skill'inin 13 aşamalı süreciyle üretildi: kanibalizasyon kapısı
+      çalıştırıldı, brief onaylandı, 43 maddelik kapıdan geçirildi. Her yazının denetim çıktısı sonunda duruyor.</p>
+  </div>
+  ${POSTS.length ? `<div class="grid3" style="padding-bottom:70px">${POSTS.map(p=>`
+    <a class="card" href="#/blog/${p.slug}">
+      <div class="tagrow" style="margin:0 0 12px"><span class="tag o">${esc(p.tarih)}</span>
+        ${p.dakika?`<span class="tag">${esc(p.dakika)} dk</span>`:''}</div>
+      <h3>${esc(p.baslik)}</h3><p>${esc(p.ozet)}</p></a>`).join('')}</div>`
+   : `<div class="empty" style="margin-bottom:70px"><b>Henüz yazı yok</b>
+      İlk yazı yayınlandığında burada listelenecek.</div>`}
+  </div>`;
+}
+
+function vPost(slug){
+  const p=POSTS.find(x=>x.slug===slug);
+  if(!p) return `<div class="wrap"><div class="empty" style="margin:80px 0"><b>Yazı bulunamadı</b>
+    <a class="acc" href="#/blog">Bloga dön →</a></div></div>`;
+  const i=POSTS.indexOf(p), digerleri=POSTS.filter(x=>x!==p).slice(0,2);
+  return `<div class="wrap"><div class="doc">
+    <aside class="rail"><div class="lbl">Bu yazı</div>
+      ${[...p.govde.matchAll(/^##\s+(.+)$/gm)].map(m=>{
+        const id=m[1].toLowerCase().replace(/[çğıöşü]/g,c=>({'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u'}[c]))
+          .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+        return `<a href="#/blog/${p.slug}#${id}">${esc(m[1])}</a>`;}).join('')}
+    </aside>
+    <div class="prose">
+      <a href="#/blog" class="mono" style="font-size:12px;color:var(--fg3)">← Blog</a>
+      <div class="tagrow" style="margin:16px 0 12px"><span class="tag o">${esc(p.tarih)}</span>
+        ${p.dakika?`<span class="tag">${esc(p.dakika)} dakika</span>`:''}</div>
+      <h1 style="font-size:clamp(28px,4vw,42px);letter-spacing:-.035em">${esc(p.baslik)}</h1>
+      <p style="font-size:17px;color:#E7E5E4;margin:16px 0 30px;max-width:64ch">${esc(p.ozet)}</p>
+      ${md(p.govde)}
+      <div class="callout" style="margin-top:34px">${md(`**Bu yazı skill'in kendi kapısından geçti.** Kanibalizasyon denetimi: 5 mevcut sayfaya karşı en yüksek örtüşme %0 → TEMİZ. Mekanik kontrol: 18 madde geçti, 0 uyarı, 0 blokaj. Denetçiyi kendin çalıştırmak istersen: [kurulum](#/kurulum).`)}</div>
+      ${digerleri.length?`<h2 style="font-size:20px;margin:36px 0 14px">Diğer yazılar</h2>
+      <div class="relrow">${digerleri.map(x=>`<a href="#/blog/${x.slug}">${esc(x.baslik)}</a>`).join('')}</div>`:''}
+    </div>
+    <aside class="side">
+      <div class="metabox"><div class="mh">Yazı bilgisi</div>
+        <div class="mrow"><span>Yayın</span><b>${esc(p.tarih)}</b></div>
+        ${p.dakika?`<div class="mrow"><span>Okuma</span><b>${esc(p.dakika)} dk</b></div>`:''}
+        <div class="mrow"><span>Üretim</span><b>master-blog v1.3</b></div>
+      </div>
+      ${p.hedefKelimeler&&p.hedefKelimeler.length?`<div class="metabox"><div class="mh">Hedef sorgular</div>
+        <div style="padding:12px 15px;display:grid;gap:7px;font-family:var(--m);font-size:11.5px;color:var(--fg2)">
+        ${p.hedefKelimeler.map(k=>`<span>${esc(k)}</span>`).join('')}</div></div>`:''}
+      <div style="display:grid;gap:8px">
+        <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
+        <button class="btn" onclick="copy(location.href,'Bağlantı kopyalandı')">Bağlantıyı paylaş</button>
+      </div>
+    </aside>
+  </div></div>`;
+}
+
 /* ---------- senaryolar ---------- */
 function vScenarios(){
   const f=FILES.find(x=>x.name==='kullanim-senaryolari.md');
@@ -1340,6 +1400,7 @@ const PAGES=[
   {t:'Claude Skills nasıl çalışır',h:'#/nasil-calisir',s:'Rehber'},
   {t:'Terim sözlüğü',h:'#/terimler',s:'Tüm terimler'},
   {t:'Kurulum',h:'#/kurulum',s:'Claude\'a ekleme yöntemleri'},
+  {t:'Blog',h:'#/blog',s:'Skill\'in kendi ürettiği yazılar'},
   {t:'Kullanım senaryoları',h:'#/senaryolar',s:'Altı proje profili + eşik uyarlama'},
   {t:'Çalışma modu: tam / kısıtlı',h:'#/senaryolar#calisma-modu',s:'Repo yoksa ne olur'},
   {t:'Kaynaklar ve doğrulama kaydı',h:'#/kaynaklar',s:'Zamana bağlı iddiaların kanıtı'},
@@ -1435,6 +1496,7 @@ function render(){
   else if(seg[0]==='kurulum'){ html=vInstall(); navHref='#/kurulum'; }
   else if(seg[0]==='kaynaklar'){ html=vSources(); navHref='#/kaynaklar'; }
   else if(seg[0]==='senaryolar'){ html=vScenarios(); navHref='#/senaryolar'; }
+  else if(seg[0]==='blog'){ html=seg[1]?vPost(seg[1]):vBlog(); navHref='#/blog'; }
   else { html=vHome(); }
   const app=$('#app'); app.innerHTML=html; app.classList.remove('fade'); void app.offsetWidth; app.classList.add('fade');
   linkify();
@@ -1461,6 +1523,7 @@ function render(){
     : seg[0]==='kurulum' ? 'Kurulum — Master Blog Skill'
     : seg[0]==='kaynaklar' ? 'Kaynaklar ve Doğrulama Kaydı — Master Blog Skill'
     : seg[0]==='senaryolar' ? 'Kullanım Senaryoları — Master Blog Skill'
+    : seg[0]==='blog' ? ((POSTS.find(x=>x.slug===seg[1])||{}).seoBaslik || 'Blog') + ' — master-blog'
     : seg[0]==='nasil-calisir' ? 'Claude Skills Nasıl Çalışır — Master Blog Skill'
     : seg[0]==='skill' ? 'Skill Dokümantasyonu — Master Blog Skill'
     : 'Master Blog Skill';

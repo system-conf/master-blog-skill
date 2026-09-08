@@ -3,6 +3,28 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.4.0] — 2026-09-08
+
+Skill ilk kez **gerçek bir yazıda** uçtan uca çalıştırıldı ve süreç kendi kusurlarını buldu.
+
+### Eklendi
+- **Blog altyapısı.** `site/blog/*.md` → `docs/blog/<slug>/`; liste sayfası, BlogPosting
+  schema, sitemap kaydı, okuma süresi ve hedef sorgu kutusu.
+- **İlk yazı:** "Yapay Zekâ İçeriği Neden Sıralanmıyor? 4 Sessiz Hata" — skill'in kendi
+  13 aşamalı süreciyle üretildi. Kanibalizasyon kapısı 5 mevcut sayfaya karşı çalıştırıldı
+  (en yüksek örtüşme %0 → TEMİZ), mekanik kontrol 18/18 geçti.
+- CI kapısı: `site/blog/*.md` altındaki her yazı `kontrol.py`'den geçmek zorunda.
+
+### Düzeltildi
+- **`kontrol.py` şapkalı harfleri katlamıyordu.** "Yapay Zekâ" başlığında "yapay zeka"
+  hedef kelimesi bulunamıyordu; Türkçede ikisi aynı kelimedir. Denetçi bunu kendi
+  yazımızda yakaladı — dogfooding'in ilk somut getirisi. (14. test eklendi.)
+
+### Yazım sürecinde denetçinin yakaladıkları
+İlk taslak 4 uyarı aldı ve dördü de gerçekti: meta description 172 karakter (sınır 160),
+soru biçimli H2 oranı %29 (hedef ≥%50), ilk 100 kelimede hedef kelime yok, başlıkta
+hedef kelime bulunamıyor. Düzeltme sonrası 18 madde geçti, 0 uyarı.
+
 ## [1.3.0] — 2026-09-08
 
 ### Eklendi

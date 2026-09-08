@@ -75,6 +75,14 @@ jobs:
       - name: Mekanik kontrol temiz fixture üzerinde
         run: python3 skills/master-blog/scripts/kontrol.py tests/fixtures/temiz.md --kelime "güvenlik mesafesi"
 
+      - name: Blog yazıları kendi denetçisinden geçiyor mu
+        run: |
+          for f in site/blog/*.md; do
+            [ -e "$f" ] || continue
+            echo "--- $f"
+            python3 skills/master-blog/scripts/kontrol.py "$f" || exit 1
+          done
+
       - name: Build (veri doğrulama + site üretimi)
         run: python3 build.py
 

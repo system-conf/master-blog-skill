@@ -63,6 +63,31 @@ def t_turkce_i():
     m18 = madde(r, 18, "ilk 100")
     assert m18["durum"] == "gecti", f"madde 18 ilk 100 kelimede bulamadı: {m18['detay']}"
 
+# --- Şapkalı harf: "zekâ" ile "zeka" aynı kelimedir ---
+def t_sapka():
+    f = FIX / "sapkali.md"
+    f.write_text("""---
+baslik: "Yapay Zekâ Testi"
+seoBaslik: "Yapay Zekâ İçeriği Nedir?"
+ozet: "Şapkalı harflerin hedef kelime aramasını bozup bozmadığını ölçen fixture dosyasıdır bu."
+tarih: 2026-09-08
+---
+
+## Bölüm
+
+Yapay zekâ içeriği hakkında kısa bir metin.
+
+| A | B |
+|---|---|
+| 1 | 2 |
+""", encoding="utf-8")
+    try:
+        r, _ = calistir("sapkali.md", "--kelime", "yapay zeka")
+        m = madde(r, 14, "title")
+        assert m["durum"] == "gecti", f"'zekâ' başlığında 'zeka' bulunamadı: {m['detay']}"
+    finally:
+        f.unlink(missing_ok=True)
+
 # --- Hata 3: soru sezgiseli alt dize araması yapıyordu ---
 def t_sahte_soru():
     r, _ = calistir("sahte-soru-h2.md")
@@ -162,6 +187,7 @@ print("-" * 60)
 for ad, fn in [
     ("madde 16 · seoBaslik alanı H1 kaynağı sayılıyor", t_seo_baslik),
     ("madde 14+18 · Türkçe İ ile başlayan hedef kelime", t_turkce_i),
+    ("madde 14 · şapkalı harf katlanıyor (zekâ = zeka)", t_sapka),
     ("madde 19 · sahte soru başlıkları soru sayılmıyor", t_sahte_soru),
     ("madde 22 · kelime içi tireler sayımı şişirmiyor", t_tire),
     ("BOM'lu dosyada frontmatter okunuyor", t_bom),

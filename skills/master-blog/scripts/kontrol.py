@@ -21,10 +21,17 @@ Bayraklar:
 import argparse, json, os, re, sys, unicodedata, urllib.request, urllib.error
 
 
+SAPKA = str.maketrans("âÂîÎûÛ", "aAiIuU")
+
+
 def tr_kucult(s):
-    """Türkçeye duyarlı küçültme. Python'un lower()'ı 'İ' -> 'i'+U+0307 üretir;
-    bu, hedef kelime aramalarını sessizce bozar."""
-    return unicodedata.normalize("NFC", str(s).replace("İ", "i").replace("I", "ı")).lower()
+    """Türkçeye duyarlı küçültme + şapka katlaması.
+
+    İki tuzak: (1) Python'un lower()'ı 'İ' -> 'i'+U+0307 üretir, bu hedef kelime
+    aramalarını sessizce bozar. (2) Türkçede 'zekâ' ve 'zeka' aynı kelimedir ama
+    farklı kod noktalarıdır; katlanmazsa başlıkta geçen kelime 'geçmiyor' sayılır."""
+    s = str(s).translate(SAPKA).replace("İ", "i").replace("I", "ı")
+    return unicodedata.normalize("NFC", s).lower()
 
 # ---------- eşikler ----------
 # VARSAYILANLAR orta ölçekli, yerleşik bir site içindir.
