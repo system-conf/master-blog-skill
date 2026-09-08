@@ -1,14 +1,18 @@
 # master-blog
 
-Claude için uçtan uca SEO/GEO blog üretim skill'i + skill'i anlatan tek dosyalık web sitesi.
+[![CI](https://github.com/system-conf/master-blog-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/system-conf/master-blog-skill/actions/workflows/ci.yml)
+
+**Türkçe** · [English](README.en.md)
+
+Claude için uçtan uca SEO/GEO içerik üretim skill'i + onu anlatan dokümantasyon sitesi.
 
 ## Klasör yapısı
 
 ```
-skill/master-blog/          ← kurulacak skill (bu klasörü kopyala)
+skills/master-blog/          ← kurulacak skill (bu klasörü kopyala)
   SKILL.md                    13 aşamalı süreç, 2 atlanamaz kapı
   references/
-    yayin-oncesi-kontrol.md   40 maddelik denetim listesi
+    yayin-oncesi-kontrol.md   43 maddelik denetim listesi
     terimler-sozlugu.md       ÜRETİLİR — elle düzenleme
     schema-ve-geo.md          yapılandırılmış veri + AI motoru notları
     kaynaklar.md              zamana bağlı iddiaların kaynak kaydı (3 ayda bir tazele)
@@ -143,7 +147,7 @@ Aynı dosyada eşik uyarlama tablosu var — yeni bir sitede `IC_LINK_MIN = 4` s
 
 ## Mekanik kontrol
 
-40 maddelik listenin ölçülebilir kısmını gerçekten sayar — modelin "muhtemelen tamam"
+43 maddelik listenin ölçülebilir kısmını gerçekten sayar — modelin "muhtemelen tamam"
 demesini engeller:
 
 ```bash

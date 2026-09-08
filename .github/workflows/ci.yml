@@ -45,6 +45,15 @@ jobs:
           print('README dosyaları tutarlı')
           PY
 
+      - name: README'lerde ölü dizin referansı var mı
+        run: |
+          for f in README.md README.en.md CONTRIBUTING.md; do
+            if grep -qE '(^|[^s])skill/master-blog' "$f"; then
+              echo "::error::$f içinde eski 'skill/master-blog' yolu var (doğrusu: skills/)"; exit 1
+            fi
+          done
+          echo "dizin referansları güncel"
+
       - name: Regresyon testleri (kontrol.py)
         run: python3 tests/calistir.py
 
