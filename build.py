@@ -229,6 +229,34 @@ def dosyalari_topla():
     return files
 
 
+AYLAR_TR = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"]
+
+
+def tarih_tr(iso):
+    """2026-09-08 -> 8 Eyl 2026"""
+    if not iso:
+        return ""
+    y, a, g = iso.split("-")
+    return f"{int(g)} {AYLAR_TR[int(a) - 1]} {y}"
+
+
+def degisiklikleri_oku():
+    """CHANGELOG.md -> [{surum, tarih, ozet}] — sürüm geçmişi tablosu buradan üretilir."""
+    p = ROOT / "CHANGELOG.md"
+    if not p.exists():
+        return []
+    kayitlar = []
+    for blok in re.split(r"^## ", p.read_text(encoding="utf-8"), flags=re.M)[1:]:
+        bas = re.match(r"\[([\d.]+)\]\s*—\s*(\S+)", blok)
+        if not bas:
+            continue
+        maddeler = re.findall(r"^- \*\*(.+?)\*\*|^- (.+)$", blok, re.M)
+        ozet = [(a or b).rstrip(".").strip() for a, b in maddeler[:3]]
+        kayitlar.append({"surum": bas.group(1), "tarih": bas.group(2),
+                         "ozet": [re.sub(r"`|\*\*", "", x)[:110] for x in ozet]})
+    return kayitlar
+
+
 def kur_scripti():
     """~2 KB, okunabilir kurulum scripti. Dosyaları docs/paket/ altından çeker,
     yani her zaman YAYINLANMIŞ GÜNCEL sürümü kurar (240 KB'lık pano yöntemi
@@ -441,10 +469,23 @@ def main():
     files = dosyalari_topla()
     yazilar = yazilari_oku()
 
+    plugin_bilgi = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+    _skill_metni = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+    fm_bilgi = {k: v for k, v in re.findall(r'^\s*([a-zA-Z-]+):\s*"([^"]+)"\s*$',
+                                            _skill_metni.split("---")[1], re.M)}
+
     tpl = (SITE / "template.html").read_text(encoding="utf-8")
     veri = (TERMSJS.read_text(encoding="utf-8").rstrip().rstrip(";") + ";\n"
             + "const FILES = " + json.dumps(files, ensure_ascii=False) + ";\n"
             + "const POSTS = " + json.dumps(yazilar, ensure_ascii=False) + ";\n"
+            + "const SURUM = " + json.dumps({
+                "surum": plugin_bilgi["version"],
+                "tazelik": fm_bilgi.get("bilgi-tazeligi", ""),
+                "tazelikTR": tarih_tr(fm_bilgi.get("bilgi-tazeligi", "")),
+                "sonrakiTR": tarih_tr(fm_bilgi.get("sonraki-gozden-gecirme", "")),
+                "lisans": plugin_bilgi.get("license", "MIT"),
+            }, ensure_ascii=False) + ";\n"
+            + "const CHANGELOG = " + json.dumps(degisiklikleri_oku(), ensure_ascii=False) + ";\n"
             + "const INSTALL_CMD = " + json.dumps(kurulum_komutu(files), ensure_ascii=False) + ";\n")
 
     # ---------- A) Artifact surumu: tek dosya, iskeletsiz, hash yonlendirme ----------
@@ -457,6 +498,19 @@ def main():
     (DIST / "artifact.html").write_text(spa, encoding="utf-8")
 
     # ---------- B) GitHub Pages surumu: sayfa basina gercek URL ----------
+    # Sablonda sabit surum/tarih yasak: bu sinif uc kez sessizce bayatladi.
+    govde_tpl = tpl.split("<script>", 1)[1] if "<script>" in tpl else tpl
+    yasak = []
+    for kalip, ad in ((r"v\d+\.\d+", "sabit sürüm (v1.2 gibi)"),
+                      (r"\b\d{1,2}\s+(?:Oca|Şub|Mar|Nis|May|Haz|Tem|Ağu|Eyl|Eki|Kas|Ara)\s+20\d\d", "sabit tarih"),
+                      (r'"\d+\.\d+\.\d+"', "sabit sürüm dizesi")):
+        for m in re.finditer(kalip, govde_tpl):
+            satir = govde_tpl[:m.start()].count("\n") + tpl[:tpl.index("<script>")].count("\n") + 1
+            yasak.append(f"satir ~{satir}: {ad} -> '{m.group(0)}'")
+    if yasak:
+        hata("template.html icinde sabit surum/tarih var. SURUM nesnesini kullan:\n  - "
+             + "\n  - ".join(yasak))
+
     stil   = re.search(r"<style>(.*?)</style>", tpl, re.S).group(1)
     script = re.search(r"<script>(.*)</script>", tpl, re.S).group(1)
     kabuk  = tpl.split("</style>", 1)[1].split("<script>", 1)[0]
@@ -577,10 +631,7 @@ def main():
         encoding="utf-8")
     # surum.json: skill'in "daha yeni sürüm var mı" sorusunu sorabileceği kanonik uç nokta.
     # scripts/surum-kontrol.py bunu okur. Kaynak: plugin.json + SKILL.md frontmatter.
-    plugin = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
-    skill_metni = (SKILL / "SKILL.md").read_text(encoding="utf-8")
-    fm = {k: v for k, v in re.findall(r'^\s*([a-zA-Z-]+):\s*"([^"]+)"\s*$',
-                                      skill_metni.split("---")[1], re.M)}
+    plugin, fm = plugin_bilgi, fm_bilgi
     if plugin["version"] != fm.get("surum"):
         hata(f"surum uyusmazligi: plugin.json {plugin['version']} != SKILL.md {fm.get('surum')}")
     (DOCS / "surum.json").write_text(json.dumps({

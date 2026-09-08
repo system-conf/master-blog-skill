@@ -3,6 +3,24 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.8.0] — 2026-09-08
+
+Sürüm ve tarih bilgisi sitede **12 yerde sabit yazılmıştı** ve sürümler v1.0'dan v1.3'e
+kadar dağılmıştı — hero rozeti hâlâ "v1.0 · Son doğrulama 7 Eyl 2026" diyordu.
+`skill-denetim.py` bu sınıfı skill dosyaları için kapatıyordu ama **site tarafını
+denetleyen hiçbir şey yoktu.**
+
+### Değişti
+- Sitedeki tüm sürüm ve tarih bilgisi `SURUM` nesnesinden geliyor; kaynak
+  `plugin.json` + `SKILL.md` frontmatter. Elle güncellenecek yer kalmadı.
+- Sürüm geçmişi tablosu artık `CHANGELOG.md`'den üretiliyor — tek satırlık, bayatlamış
+  bir "1.0" kaydı yerine gerçek geçmiş.
+
+### Eklendi
+- **Build kapısı:** `template.html` içinde sabit sürüm (`v1.2` gibi), sabit tarih
+  (`8 Eyl 2026` gibi) ya da sabit sürüm dizesi bulunursa build **satır numarasıyla
+  durur**. Sürüklenme artık mümkün değil, unutulabilir de değil.
+
 ## [1.7.0] — 2026-09-08
 
 ### Eklendi
