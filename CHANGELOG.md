@@ -3,6 +3,23 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.3.0] — 2026-09-08
+
+### Eklendi
+- **`scripts/surum-kontrol.py`** — skill artık kendi yaşını bildiriyor. Aşama 0a-3'te
+  oturum başına bir kez çalışır ve dört durumdan birini üretir:
+  `GUNCEL` (≤90 gün) · `YENI SURUM` · `TAZELENMELI` (91-180 gün) · `ESKIMIS` (>180 gün).
+  **Eskimiş kopyada arama motoru davranışına dair iddia doğrulanmadan yazılmaz.**
+  Ağ yoksa `--cevrimdisi` ile yalnızca tazelik ölçülür; bu hata değil, raporda belirtilir.
+- **`docs/surum.json`** — yayınlanmış sürümün kanonik uç noktası (Pages'ten servis edilir).
+  `plugin.json` + SKILL.md frontmatter'ından üretilir; ikisi çelişirse build durur.
+- Site kurulum sayfasına "Güncel kalmak" bölümü ve sürüm/tazelik kutusu
+- İki test daha (13): taze kopya `GUNCEL`, 180 gün üstü kopya `ESKIMIS` ve çıkış kodu 1
+
+### Düzeltildi
+- SKILL.md açıklamasında "40 maddelik öz denetim kapısı" yazıyordu; liste 43 oldu.
+  Açıklama tetiklemeyi belirleyen alan olduğu için bu kozmetik değil.
+
 ## [1.2.0] — 2026-09-08
 
 ### Eklendi

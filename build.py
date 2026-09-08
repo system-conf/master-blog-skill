@@ -149,6 +149,7 @@ ORDER = ["SKILL.md",
          "references/yazim-katmanlari.md",
          "references/yayin-ve-olcum.md",
          "scripts/kontrol.py",
+         "scripts/surum-kontrol.py",
          "evals/evals.json"]
 HEREDOC = "MASTERBLOG_EOF"
 
@@ -423,6 +424,25 @@ def main():
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n",
         encoding="utf-8")
+    # surum.json: skill'in "daha yeni sürüm var mı" sorusunu sorabileceği kanonik uç nokta.
+    # scripts/surum-kontrol.py bunu okur. Kaynak: plugin.json + SKILL.md frontmatter.
+    plugin = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+    skill_metni = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+    fm = {k: v for k, v in re.findall(r'^\s*([a-zA-Z-]+):\s*"([^"]+)"\s*$',
+                                      skill_metni.split("---")[1], re.M)}
+    if plugin["version"] != fm.get("surum"):
+        hata(f"surum uyusmazligi: plugin.json {plugin['version']} != SKILL.md {fm.get('surum')}")
+    (DOCS / "surum.json").write_text(json.dumps({
+        "surum": plugin["version"],
+        "bilgi_tazeligi": fm.get("bilgi-tazeligi"),
+        "sonraki_gozden_gecirme": fm.get("sonraki-gozden-gecirme"),
+        "kontrol_maddesi": 43,
+        "terim_sayisi": len(terms),
+        "degisiklikler_url": REPO_URL + "/blob/main/CHANGELOG.md",
+        "guncelleme_komutu": "/plugin update master-blog   (dosya kurulumunda: depoyu yeniden kopyala)",
+        "kurulum_url": SITE_URL + "kurulum/",
+    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     (DOCS / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}sitemap.xml\n", encoding="utf-8")
 

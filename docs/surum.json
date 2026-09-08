@@ -1,0 +1,10 @@
+{
+  "surum": "1.3.0",
+  "bilgi_tazeligi": "2026-09-08",
+  "sonraki_gozden_gecirme": "2026-12-08",
+  "kontrol_maddesi": 43,
+  "terim_sayisi": 66,
+  "degisiklikler_url": "https://github.com/system-conf/master-blog-skill/blob/main/CHANGELOG.md",
+  "guncelleme_komutu": "/plugin update master-blog   (dosya kurulumunda: depoyu yeniden kopyala)",
+  "kurulum_url": "https://system-conf.github.io/master-blog-skill/kurulum/"
+}

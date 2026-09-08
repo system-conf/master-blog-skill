@@ -20,6 +20,7 @@ skills/master-blog/          ← kurulacak skill (bu klasörü kopyala)
     yazim-katmanlari.md       Aşama 5-9: SEO, GEO, E-E-A-T, bağlantı, teknik
     yayin-ve-olcum.md         Aşama 11-12 + arşiv kararı + güncelleme modu
   scripts/kontrol.py          mekanik yayın öncesi kontrol (Aşama 10a)
+  scripts/surum-kontrol.py    sürüm ve bilgi tazeliği kontrolü (Aşama 0a-3)
   evals/evals.json            tetikleme ve davranış senaryoları
 
 site/
@@ -184,6 +185,25 @@ Push'tan ~1 dakika sonra canlıya çıkar. Ayrı bir CI adımı yoktur.
 
 Alternatif olarak `wrangler.jsonc` ile Cloudflare Workers'a da dağıtılabilir
 (`npx wrangler deploy`); şu an kullanılmıyor.
+
+## Güncel kalmak
+
+Skill her oturumun başında kendi yaşını kontrol eder:
+
+```bash
+python3 skills/master-blog/scripts/surum-kontrol.py
+```
+
+| Durum | Anlamı | Davranış |
+|---|---|---|
+| `GUNCEL` | ≤ 90 gün | Sessizce devam eder |
+| `YENI SURUM` | Yayınlanmış daha yeni sürüm var | Tek satır bildirir |
+| `TAZELENMELI` | 91-180 gün | Zamana bağlı iddia yazılmadan önce kaynak kaydı tazelenir |
+| `ESKIMIS` | > 180 gün | Uyarır ve izin ister; doğrulanmamış iddia yazmaz |
+
+Yayınlanmış sürüm <https://system-conf.github.io/master-blog-skill/surum.json> adresinden
+okunur. Plugin kurulumunda güncelleme `/plugin update master-blog`; dosya kurulumunda
+skill "yeni sürüm var" der ama kopyalamayı sen yaparsın.
 
 ## Bilgi tazeliği
 

@@ -6,11 +6,12 @@ Her test, geçmişte gerçekten görülmüş bir hatayı temsil eder. Çalışt�
     python3 tests/calistir.py
 Çıkış kodu: başarısız test varsa 1.
 """
-import json, pathlib, subprocess, sys
+import json, pathlib, re, subprocess, sys
 
 KOK = pathlib.Path(__file__).resolve().parent.parent
 FIX = KOK / "tests" / "fixtures"
 KONTROL = KOK / "skills" / "master-blog" / "scripts" / "kontrol.py"
+SURUM   = KOK / "skills" / "master-blog" / "scripts" / "surum-kontrol.py"
 
 sonuc = {"gecti": 0, "kaldi": 0}
 hatalar = []
@@ -123,6 +124,33 @@ def t_config_bilinmeyen():
     finally:
         cfg.unlink(missing_ok=True)
 
+# --- Sürüm kontrolü: taze kopya GUNCEL demeli, çıkış kodu 0 ---
+def t_surum_taze():
+    p = subprocess.run([sys.executable, str(SURUM), "--cevrimdisi", "--json"],
+                       capture_output=True, text=True)
+    r = json.loads(p.stdout)
+    assert r["yerel_surum"] != "bilinmiyor", "SKILL.md frontmatter'ından sürüm okunamadı"
+    assert r["bilgi_tazeligi"], "bilgi-tazeligi alanı okunamadı"
+    assert r["durum"] == "guncel", f"taze kopyada durum '{r['durum']}' çıktı"
+    assert p.returncode == 0, f"çıkış kodu 0 bekleniyordu, {p.returncode}"
+
+# --- Sürüm kontrolü: eski tarihli kopya ESKIMIS demeli ---
+def t_surum_eski():
+    import shutil, tempfile
+    kaynak = KOK / "skills" / "master-blog"
+    with tempfile.TemporaryDirectory() as t:
+        hedef = pathlib.Path(t) / "master-blog"
+        shutil.copytree(kaynak, hedef)
+        md = hedef / "SKILL.md"
+        md.write_text(re.sub(r'(?m)^(\s*bilgi-tazeligi:\s*)"[^"]*"',
+                             r'\g<1>"2020-01-01"', md.read_text(encoding="utf-8"), count=1),
+                      encoding="utf-8")
+        p = subprocess.run([sys.executable, str(hedef / "scripts" / "surum-kontrol.py"),
+                            "--cevrimdisi", "--json"], capture_output=True, text=True)
+        r = json.loads(p.stdout)
+        assert r["durum"] == "eskimis", f"180 gün üstü kopyada durum '{r['durum']}'"
+        assert p.returncode == 1, f"çıkış kodu 1 bekleniyordu, {p.returncode}"
+
 # --- Blokajlı yazı gerçekten 1 döndürmeli ---
 def t_blokaj_kodu():
     r, kod = calistir("tireli-kelimeler.md")
@@ -142,6 +170,8 @@ for ad, fn in [
     ("temiz yazı blokaj almıyor", t_temiz),
     ("eşikler config dosyasından okunuyor", t_config),
     ("bilinmeyen eşik reddediliyor (kod 2)", t_config_bilinmeyen),
+    ("sürüm kontrolü: taze kopya GUNCEL", t_surum_taze),
+    ("sürüm kontrolü: eski kopya ESKIMIS", t_surum_eski),
     ("blokajlı yazı çıkış kodu 1 döndürüyor", t_blokaj_kodu),
 ]:
     test(ad, fn)

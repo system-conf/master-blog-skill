@@ -60,6 +60,15 @@ jobs:
           git diff --exit-code -- site/assets \
             || { echo "::error::favicon üretimi commit'lenenle uyuşmuyor"; exit 1; }
 
+      - name: surum.json plugin.json ile tutarlı mı
+        run: |
+          python3 -c "
+          import json
+          a=json.load(open('.claude-plugin/plugin.json')); b=json.load(open('docs/surum.json'))
+          assert a['version']==b['surum'], f\"surum.json {b['surum']} != plugin.json {a['version']}\"
+          assert b['bilgi_tazeligi'] and b['terim_sayisi']>0
+          print('surum.json tutarli:', b['surum'], b['bilgi_tazeligi'])"
+
       - name: Regresyon testleri (kontrol.py)
         run: python3 tests/calistir.py
 

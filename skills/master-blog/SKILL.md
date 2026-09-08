@@ -1,15 +1,16 @@
 ---
 name: master-blog
-description: "Herhangi bir web projesi için uçtan uca blog/içerik üretir: veriden konu seçer, arama niyetini çözer, YAZMADAN ÖNCE kanibalizasyon denetimi yapar, brief çıkarır, SEO + GEO + E-E-A-T katmanlarını tek tek uygular, iç bağlantı ve schema paketini kurar, 40 maddelik öz denetim kapısından geçirir, yayınlar ve canlı doğrular. Şu isteklerde kullan: 'blog yazalım', 'yeni içerik ekle', 'şu kelime için yazı lazım', 'bu yazıyı güncelle/tazele', 'içerik planı çıkar', 'bu konuyu kim yiyor'. SADECE DENETİM istendiğinde (rapor, dosya değiştirmeden) bunu değil seo-denetim skill'ini kullan."
+description: "Herhangi bir web projesi için uçtan uca blog/içerik üretir: veriden konu seçer, arama niyetini çözer, YAZMADAN ÖNCE kanibalizasyon denetimi yapar, brief çıkarır, SEO + GEO + E-E-A-T katmanlarını tek tek uygular, iç bağlantı ve schema paketini kurar, 43 maddelik öz denetim kapısından geçirir, yayınlar ve canlı doğrular. Şu isteklerde kullan: 'blog yazalım', 'yeni içerik ekle', 'şu kelime için yazı lazım', 'bu yazıyı güncelle/tazele', 'içerik planı çıkar', 'bu konuyu kim yiyor'. SADECE DENETİM istendiğinde (rapor, dosya değiştirmeden) bunu değil seo-denetim skill'ini kullan."
 argument-hint: "[konu | hedef kelime | mevcut yazı yolu] (boşsa veriden aday çıkarır)"
 license: MIT
 metadata:
-  surum: "1.2.0"
+  surum: "1.3.0"
   bilgi-tazeligi: "2026-09-08"
   sonraki-gozden-gecirme: "2026-12-08"
 allowed-tools: >-
   Read Glob Grep WebSearch AskUserQuestion
-  Bash(python3 *kontrol.py *) Bash(curl -sI *) Bash(find * -name *)
+  Bash(python3 *kontrol.py *) Bash(python3 *surum-kontrol.py*)
+  Bash(curl -sI *) Bash(find * -name *)
 ---
 
 <!-- allowed-tools notu: yalnızca OKUMA ve DOĞRULAMA araçları ön onaylıdır.
@@ -18,7 +19,7 @@ allowed-tools: >-
      önce bu satırı okumak kullanıcının hakkıdır. İzin bir sonraki mesajda düşer;
      kalıcı istiyorsan projenin permissions ayarını kullan. -->
 
-# Master Blog Skill (v1.2)
+# Master Blog Skill (v1.3)
 
 Sen, üzerinde çalıştığın projenin **içerik editörü ve SEO/GEO stratejistisin**. Çıktı dili
 varsayılan **Türkçe**; proje başka dilde yayın yapıyorsa projenin dilini kullan.
@@ -46,7 +47,7 @@ geçilmeden ilerlenmez.
 
 | # | Aşama | Çıktı |
 |---|---|---|
-| 0 | Proje keşfi | Yapı, içerik kaynağı, **çalışma modu**, profil, önizleme direktifleri |
+| 0 | Proje keşfi | Yapı, içerik kaynağı, **çalışma modu**, **sürüm/tazelik**, profil, önizleme direktifleri |
 | 1 | Konu + veri gerekçesi | Aday konu + hangi verinin söylediği |
 | 1.5 | Arşiv kararı | Yeni yazı mı, mevcut içerikleri tazelemek mi (15+ içerikte) |
 | 2 | Niyet + SERP | Niyet etiketi + doğru format kararı |
@@ -114,6 +115,31 @@ grep -rn "nosnippet\|max-snippet\|data-nosnippet\|noindex" <şablon ve layout di
 Ayrıca `robots.txt` ve varsa `X-Robots-Tag` başlığına bak. Bulgu varsa kullanıcıya bildir
 ve **bunun bilinçli bir karar olup olmadığını sor** — kaldırmayı kendi başına önerme, bu
 bir iş kararı olabilir. Sonucu Aşama 12 raporunda taşı.
+
+### 0a-3 — Sürüm ve bilgi tazeliği (oturum başına bir kez)
+
+Bu skill'in bilgi tabanı zamanla bayatlar: zengin sonuç tipleri kaldırılır, rapor alanları
+değişir, bot adları eklenir. Dosya olarak kurulmuş bir kopya güncelleme almaz — bu yüzden
+**yaşını kendisi bildirmek zorundadır.**
+
+```bash
+python3 <skill_dizini>/scripts/surum-kontrol.py
+```
+
+| Durum | Anlamı | Davranış |
+|---|---|---|
+| `GUNCEL` | ≤ 90 gün | Devam et, bir şey söyleme |
+| `YENI SURUM` | Yayınlanmış daha yeni sürüm var | Tek satır bildir, kullanıcı karar versin |
+| `TAZELENMELI` | 91-180 gün | Bildir; zamana bağlı iddia yazılacaksa **önce** `kaynaklar.md` tazelenir |
+| `ESKIMIS` | > 180 gün | **Uyar ve iznini al.** Arama motoru davranışına dair hiçbir iddia doğrulanmadan yazılmaz |
+
+Script çalışmazsa aynı hesabı elle yap: frontmatter'daki `metadata.bilgi-tazeligi` ile
+bugünün tarihi arasındaki farka bak. Ağ yoksa `--cevrimdisi` ile yalnızca tazelik ölçülür;
+bu bir hata değildir, raporda belirtilir.
+
+**Kural:** Bu kontrol sessizce geçilmez. Skill eskimişse ve kullanıcı yine de devam etmek
+istiyorsa, yayın raporuna `Bilgi tabanı N gün eski — zamana bağlı iddialar doğrulandı/yazılmadı`
+satırı düşülür.
 
 ### 0b — Proje profili
 
@@ -375,3 +401,4 @@ Bu dosyalar gerektiğinde okunur; hepsini baştan yükleme.
 | `references/kaynaklar.md` | Zamana bağlı bir iddia yazılacağında, her seferinde |
 | `references/kullanim-senaryolari.md` | Aşama 0'da profil belirlenirken; eşik uyarlanırken |
 | `scripts/kontrol.py` | Aşama 10a'da çalıştırılır (okunmaz, çalıştırılır) |
+| `scripts/surum-kontrol.py` | Aşama 0a-3'te çalıştırılır (oturum başına bir kez) |

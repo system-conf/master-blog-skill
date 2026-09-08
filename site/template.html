@@ -1018,6 +1018,7 @@ function vInstall(){
       <a href="#/kurulum#nasil">Nasıl çalışır</a>
       <a href="#/kurulum#yontem">Yöntemler</a>
       <a href="#/kurulum#dogrula">Doğrulama</a>
+      <a href="#/kurulum#guncelleme">Güncel kalmak</a>
       <a href="#/kurulum#sss">Sık sorulanlar</a></aside>
     <div class="prose">
       <span class="eyebrow">Kurulum</span>
@@ -1054,6 +1055,24 @@ Dosyalar yerine konduğunda Claude, yeni oturumda skill'in adını ve açıklama
 2. \`ls ~/.claude/skills/master-blog\` — dört dosya görünmeli.
 3. Claude'a "master-blog skill'iyle bir içerik adayı çıkar" yaz. Skill devredeyse ilk iş proje keşfi olur ve aday için veri gerekçesi ister.`)}
 
+      <h2 id="guncelleme">Güncel kalmak</h2>
+      ${md(`Bu skill'in bilgi tabanı zamanla bayatlar: zengin sonuç tipleri kaldırılır, rapor alanları değişir, bot adları eklenir. **Skill bunu kendisi bildirir** — her oturumun başında yaşını kontrol eder:
+
+\`\`\`
+python3 scripts/surum-kontrol.py
+\`\`\`
+
+| Durum | Anlamı | Ne olur |
+|---|---|---|
+| GUNCEL | ≤ 90 gün | Sessizce devam eder |
+| YENI SURUM | Yayınlanmış daha yeni sürüm var | Tek satır bildirir, kararı sana bırakır |
+| TAZELENMELI | 91-180 gün | Zamana bağlı iddia yazılacaksa önce kaynak kaydını tazeler |
+| ESKIMIS | > 180 gün | Uyarır ve iznini alır; doğrulanmamış iddia yazmaz |
+
+Script, yayınlanmış sürümü [surum.json](https://system-conf.github.io/master-blog-skill/surum.json) adresinden okur. Ağ yoksa \`--cevrimdisi\` ile yalnızca tazelik ölçülür — bu bir hata değil, raporda belirtilir.
+
+**Plugin kurulumunda** güncelleme tek komut: \`/plugin update master-blog\`. **Dosya kurulumunda** güncelleme gelmez; skill sana "yeni sürüm var" der ama kopyalamayı sen yaparsın. Bu proje özelinde plugin kurulumunun asıl avantajı budur.`)}
+
       <h2 id="sss">Sık sorulanlar</h2>
       ${md(`**Skill her mesajda mı yükleniyor?** Hayır. Normalde yalnızca adı ve açıklaması bağlamda durur; iş eşleştiğinde tam dosya okunur.
 
@@ -1078,6 +1097,13 @@ Profil bazlı önerilen değerler için [kullanım senaryolarına](#/senaryolar#
           <span style="color:var(--fg3)">veya</span>
           <code class="mono" style="color:var(--or3)">&lt;proje&gt;/.claude/skills/master-blog/</code>
         </div>
+      </div>
+      <div class="metabox"><div class="mh">Bu sürüm</div>
+        <div class="mrow"><span>Sürüm</span><b>1.2.0</b></div>
+        <div class="mrow"><span>Bilgi tazeliği</span><b>8 Eyl 2026</b></div>
+        <div class="mrow"><span>Sonraki gözden geçirme</span><b>8 Ara 2026</b></div>
+        <div style="padding:11px 15px;font-size:12.5px;color:var(--fg3);border-top:1px solid #1A1A1A">
+          Skill her oturumda yaşını kontrol eder; 180 günü geçerse doğrulanmamış iddia yazmaz.</div>
       </div>
       <div class="metabox"><div class="mh">Dosyalar</div>
         ${FILES.map(f=>`<div class="mrow"><span style="font-family:var(--m);font-size:11.5px">${esc(f.path)}</span>

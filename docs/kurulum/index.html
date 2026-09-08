@@ -58,6 +58,7 @@
       <a href="/master-blog-skill/kurulum/#nasil">Nasıl çalışır</a>
       <a href="/master-blog-skill/kurulum/#yontem">Yöntemler</a>
       <a href="/master-blog-skill/kurulum/#dogrula">Doğrulama</a>
+      <a href="/master-blog-skill/kurulum/#guncelleme">Güncel kalmak</a>
       <a href="/master-blog-skill/kurulum/#sss">Sık sorulanlar</a></aside>
     <div class="prose">
       <span class="eyebrow">Kurulum</span>
@@ -79,6 +80,9 @@
       <h2 id="dogrula">Kurulumu doğrula</h2>
       <ol><li>Yeni bir Claude Code oturumu başlat (mevcut oturum eski listeyi taşır).</li><li><code>ls ~/.claude/skills/master-blog</code> — dört dosya görünmeli.</li><li>Claude'a &quot;master-blog skill'iyle bir içerik adayı çıkar&quot; yaz. Skill devredeyse ilk iş proje keşfi olur ve aday için veri gerekçesi ister.</li></ol>
 
+      <h2 id="guncelleme">Güncel kalmak</h2>
+      <p>Bu skill'in bilgi tabanı zamanla bayatlar: zengin sonuç tipleri kaldırılır, rapor alanları değişir, bot adları eklenir. <strong>Skill bunu kendisi bildirir</strong> — her oturumun başında yaşını kontrol eder:</p><pre class="fence">python3 scripts/surum-kontrol.py</pre><div class="tblwrap"><table><thead><tr><th>Durum</th><th>Anlamı</th><th>Ne olur</th></tr></thead><tbody><tr><td>GUNCEL</td><td>≤ 90 gün</td><td>Sessizce devam eder</td></tr><tr><td>YENI SURUM</td><td>Yayınlanmış daha yeni sürüm var</td><td>Tek satır bildirir, kararı sana bırakır</td></tr><tr><td>TAZELENMELI</td><td>91-180 gün</td><td>Zamana bağlı iddia yazılacaksa önce kaynak kaydını tazeler</td></tr><tr><td>ESKIMIS</td><td>&gt; 180 gün</td><td>Uyarır ve iznini alır; doğrulanmamış iddia yazmaz</td></tr></tbody></table></div><p>Script, yayınlanmış sürümü <a class="xlink" href="https://system-conf.github.io/master-blog-skill/surum.json" target="_blank" rel="noopener noreferrer">surum.json<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a> adresinden okur. Ağ yoksa <code>--cevrimdisi</code> ile yalnızca tazelik ölçülür — bu bir hata değil, raporda belirtilir.</p><p><strong>Plugin kurulumunda</strong> güncelleme tek komut: <code>/plugin update master-blog</code>. <strong>Dosya kurulumunda</strong> güncelleme gelmez; skill sana &quot;yeni sürüm var&quot; der ama kopyalamayı sen yaparsın. Bu proje özelinde plugin kurulumunun asıl avantajı budur.</p>
+
       <h2 id="sss">Sık sorulanlar</h2>
       <p><strong>Skill her mesajda mı yükleniyor?</strong> Hayır. Normalde yalnızca adı ve açıklaması bağlamda durur; iş eşleştiğinde tam dosya okunur.</p><p><strong>Mevcut blog skill'imle çakışır mı?</strong> Açıklamaları farklıysa çakışmaz. Aynı işi yapan iki skill varsa, birinin açıklamasına &quot;şu durumda diğerini kullan&quot; satırı eklemek en temiz çözümdür.</p><p><strong>Projeye özel mi, kişisel mi kuralım?</strong> Ekip aynı süreci kullanacaksa projeye özel kurulum daha iyidir: repoda sürümlenir, herkeste aynı olur.</p><p><strong>Değiştirebilir miyim?</strong> Evet, MIT lisanslı. Ama eşikleri skill dosyasını düzenleyerek değiştirme — güncellemede silinir. Projenin köküne <code>master-blog.toml</code> koy:</p><pre class="fence">[esikler]
 IC_LINK_MIN = 2
@@ -92,9 +96,16 @@ KELIME_MIN = 400</pre><p>Profil bazlı önerilen değerler için <a class="ancho
           <code class="mono" style="color:var(--or3)">&lt;proje&gt;/.claude/skills/master-blog/</code>
         </div>
       </div>
+      <div class="metabox"><div class="mh">Bu sürüm</div>
+        <div class="mrow"><span>Sürüm</span><b>1.2.0</b></div>
+        <div class="mrow"><span>Bilgi tazeliği</span><b>8 Eyl 2026</b></div>
+        <div class="mrow"><span>Sonraki gözden geçirme</span><b>8 Ara 2026</b></div>
+        <div style="padding:11px 15px;font-size:12.5px;color:var(--fg3);border-top:1px solid #1A1A1A">
+          Skill her oturumda yaşını kontrol eder; 180 günü geçerse doğrulanmamış iddia yazmaz.</div>
+      </div>
       <div class="metabox"><div class="mh">Dosyalar</div>
         <div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/SKILL.md</span>
-          <b>378 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yayin-oncesi-kontrol.md</span>
+          <b>405 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yayin-oncesi-kontrol.md</span>
           <b>97 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/terimler-sozlugu.md</span>
           <b>2907 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/schema-ve-geo.md</span>
           <b>140 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/kaynaklar.md</span>
@@ -102,7 +113,8 @@ KELIME_MIN = 400</pre><p>Profil bazlı önerilen değerler için <a class="ancho
           <b>243 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yazim-katmanlari.md</span>
           <b>185 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/references/yayin-ve-olcum.md</span>
           <b>126 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/scripts/kontrol.py</span>
-          <b>373 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/evals/evals.json</span>
+          <b>373 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/scripts/surum-kontrol.py</span>
+          <b>137 sr</b></div><div class="mrow"><span style="font-family:var(--m);font-size:11.5px">master-blog/evals/evals.json</span>
           <b>60 sr</b></div>
       </div>
       <button class="btn pri" onclick="openInstall()">Kurulum paneli</button>
