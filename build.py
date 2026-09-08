@@ -156,6 +156,37 @@ ORDER = ["SKILL.md",
 HEREDOC = "MASTERBLOG_EOF"
 
 
+def gorsel_yollari(yazilar, mod):
+    """Blog gorsel yollarini hedef ortama gore yeniden yazar.
+
+    Kaynak markdown 'gorseller/x.svg' yazar (yazarin gorecegi en dogal bicim).
+    - static : BASE + 'blog/gorseller/x.svg'  (goreli yol sayfa dizinine gore kayardi)
+    - spa    : data: URI  (Artifact CSP'si dis kaynakli gorseli engelliyor)
+    """
+    import base64, urllib.parse
+    kopya = []
+    for y in yazilar:
+        govde = y["govde"]
+
+        def cev(m):
+            ad = m.group(1)
+            if mod == "static":
+                return "](" + BASE + "blog/gorseller/" + ad
+            p = SITE / "blog" / "gorseller" / ad
+            if not p.exists():
+                hata(f"gorsel bulunamadi: {p}")
+            if p.suffix == ".svg":
+                return "](data:image/svg+xml," + urllib.parse.quote(p.read_text(encoding="utf-8"))
+            tur = {".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp"}.get(p.suffix)
+            if not tur:
+                hata(f"desteklenmeyen gorsel turu: {p.name}")
+            return "](data:" + tur + ";base64," + base64.b64encode(p.read_bytes()).decode()
+
+        govde = re.sub(r"\]\(gorseller/([^)\s\"]+)", cev, govde)
+        kopya.append({**y, "govde": govde})
+    return kopya
+
+
 def yazilari_oku():
     """site/blog/*.md -> POSTS. Frontmatter + gövde; en yeni tarih önce."""
     yazilar = []
@@ -417,8 +448,11 @@ def main():
             + "const INSTALL_CMD = " + json.dumps(kurulum_komutu(files), ensure_ascii=False) + ";\n")
 
     # ---------- A) Artifact surumu: tek dosya, iskeletsiz, hash yonlendirme ----------
+    veri_spa = veri.replace(
+        "const POSTS = " + json.dumps(yazilar, ensure_ascii=False),
+        "const POSTS = " + json.dumps(gorsel_yollari(yazilar, "spa"), ensure_ascii=False))
     spa = tpl.replace("/*__DATA__*/", js_gomme_guvenli(
-        "const MODE='spa'; const BASE='';\n" + veri))
+        "const MODE='spa'; const BASE='';\n" + veri_spa))
     DIST.mkdir(exist_ok=True)
     (DIST / "artifact.html").write_text(spa, encoding="utf-8")
 
@@ -431,8 +465,11 @@ def main():
     kabuk = statik_linkler(kabuk).replace("<main id=\"app\"></main>",
                                           '<main id="app" tabindex="-1"><!--__APP__--></main>')
 
+    veri_st = veri.replace(
+        "const POSTS = " + json.dumps(yazilar, ensure_ascii=False),
+        "const POSTS = " + json.dumps(gorsel_yollari(yazilar, "static"), ensure_ascii=False))
     bundle = script.replace("/*__DATA__*/", js_gomme_guvenli(
-        f"const MODE='static'; const BASE='{BASE}';\n" + veri))
+        f"const MODE='static'; const BASE='{BASE}';\n" + veri_st))
 
     yollar = ([y for y, _, _ in SAYFALAR] + ["terim/" + t["slug"] for t in terms]
               + ["blog/" + y["slug"] for y in yazilar])
@@ -481,7 +518,7 @@ def main():
         }
         # Kural: schema'daki image sayfada GERÇEKTEN görünen görsel olmalı.
         if ilk_gorsel:
-            ld_veri["image"] = SITE_URL + yol.rsplit("/", 1)[0] + "/" + ilk_gorsel.group(1)
+            ld_veri["image"] = SITE_URL + "blog/" + ilk_gorsel.group(1)
         ld = ('<script type="application/ld+json">'
               + json.dumps(ld_veri, ensure_ascii=False) + "</script>\n")
         toplam += sayfa_yaz(yol, esc_attr(y["seoBaslik"] + " — master-blog"), esc_attr(y["ozet"]),

@@ -97,6 +97,22 @@ jobs:
       - name: Mekanik kontrol temiz fixture üzerinde
         run: python3 skills/master-blog/scripts/kontrol.py tests/fixtures/temiz.md --kelime "güvenlik mesafesi"
 
+      - name: Blog görselleri gerçekten var mı
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          eksik = []
+          for f in pathlib.Path('site/blog').glob('*.md'):
+              for src in re.findall(r'!\[[^\]]*\]\(([^)\s]+)', f.read_text(encoding='utf-8')):
+                  if src.startswith(('http:', 'https:', 'data:')):
+                      continue
+                  if not (pathlib.Path('site/blog') / src).exists():
+                      eksik.append(f'{f.name} -> {src}')
+          if eksik:
+              print('\n'.join('::error::görsel yok: ' + e for e in eksik)); sys.exit(1)
+          print('tüm blog görselleri mevcut')
+          PY
+
       - name: Blog yazıları kendi denetçisinden geçiyor mu
         run: |
           for f in site/blog/*.md; do
