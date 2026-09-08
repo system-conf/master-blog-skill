@@ -3,6 +3,30 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.6.0] — 2026-09-08
+
+Üç mekanizma eklendi. Ortak noktaları: hiçbiri içerik şişirmiyor, üçü de **yazılı olan
+bir kuralı uygulanabilir hâle getiriyor**.
+
+### Eklendi
+- **`scripts/olcum.py` — ölçüm kaydı.** Aşama 12'nin üç kontrol noktası (14/28/90) ve
+  kontrol grubu yazılıydı ama mekanizması yoktu; yazı yayınlanıyor, 28 gün geçiyor,
+  kimse bakmıyordu. Artık yayın anında `olcum/<slug>.json` açılıyor ve **kontrol grubu
+  o an seçiliyor** — sonradan seçmek sonucu seçmektir. Aşama 0a-4 vadesi gelen noktaları
+  yeni yazı önerisinden önce gösteriyor; haftalık CI işi de uyarıyor.
+- **`scripts/skill-denetim.py` — iç tutarlılık denetimi.** Bu oturumda üç kez sürüklenme
+  hatası yaptık (40→43 madde, 41→66 terim, sessizce uygulanmayan README düzenlemesi).
+  Sekiz kontrol: frontmatter, atıf yapılan dosyaların varlığı, madde/terim sayısı
+  iddiaları, madde numarası atıfları, yol haritası-bölüm eşleşmesi, script sözdizimi,
+  evals geçerliliği, tarih biçimi. **İlk çalıştırmasında gerçek bir sürüklenme buldu.**
+- **`kontrol.py --url` — canlı sayfa denetimi.** Aşama 11 "URL 200 mü" diyordu ama
+  render edilmiş sayfaya bakmıyordu. Artık doctype, `lang`, viewport, tek H1, render
+  edilmiş title/meta/canonical, önizleme direktifleri ve **hedef kelimenin render
+  edilmiş gövdede bulunması** (JavaScript'te kalmışsa bulunmaz) denetleniyor.
+  Bu sitenin kendi doctype/viewport hatası tam olarak bu boşluktan geçmişti.
+- İlk ölçüm kaydı açıldı: blog yazısı, 4 sayfalık kontrol grubuyla (14. gün 22 Eylül).
+- 4 test daha (18): denetçinin temiz/sürüklenme/eksik dosya davranışı ve ölçüm döngüsü.
+
 ## [1.5.0] — 2026-09-08
 
 Kurulum sadeleştirildi. Ölçülen sorun "zor" değil, **verdiğimiz sözü tutmamamızdı**:

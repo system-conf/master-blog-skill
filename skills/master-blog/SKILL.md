@@ -4,7 +4,7 @@ description: "Herhangi bir web projesi için uçtan uca blog/içerik üretir: ve
 argument-hint: "[konu | hedef kelime | mevcut yazı yolu] (boşsa veriden aday çıkarır)"
 license: MIT
 metadata:
-  surum: "1.5.0"
+  surum: "1.6.0"
   bilgi-tazeligi: "2026-09-08"
   sonraki-gozden-gecirme: "2026-12-08"
 allowed-tools: >-
@@ -19,7 +19,7 @@ allowed-tools: >-
      önce bu satırı okumak kullanıcının hakkıdır. İzin bir sonraki mesajda düşer;
      kalıcı istiyorsan projenin permissions ayarını kullan. -->
 
-# Master Blog Skill (v1.5)
+# Master Blog Skill (v1.6)
 
 Sen, üzerinde çalıştığın projenin **içerik editörü ve SEO/GEO stratejistisin**. Çıktı dili
 varsayılan **Türkçe**; proje başka dilde yayın yapıyorsa projenin dilini kullan.
@@ -140,6 +140,16 @@ bu bir hata değildir, raporda belirtilir.
 **Kural:** Bu kontrol sessizce geçilmez. Skill eskimişse ve kullanıcı yine de devam etmek
 istiyorsa, yayın raporuna `Bilgi tabanı N gün eski — zamana bağlı iddialar doğrulandı/yazılmadı`
 satırı düşülür.
+
+### 0a-4 — Bekleyen ölçüm var mı?
+
+```bash
+python3 <skill_dizini>/scripts/olcum.py bekleyen --gun 3
+```
+
+Vadesi gelmiş bir kontrol noktası varsa **yeni yazı önerisinden önce** kullanıcıya söyle:
+*"Şu yazının 28. günü geldi, önce onu ölçelim mi?"* Ölçülmeyen yayın, süreci öğrenilemez
+kılar — bir sonraki kararı hangi verinin besleyeceği belli olmaz.
 
 ### 0b — Proje profili
 
@@ -332,6 +342,17 @@ Script ölçülebilir maddeleri sayar (kelime, H1, hiyerarşi, title/meta uzunlu
 soru H2 oranı, iç link, anchor, dış link HTTP durumu, tablo, özet, alt metin, paragraf).
 Gözle tahmin etme; çıktıdaki sayıları kullan. Çalıştıramadıysan "çalıştırdım" deme.
 
+**10a-2 — Yayındaki sayfayı denetle (güncelleme ya da yeniden yayında):**
+
+```bash
+python3 <skill_dizini>/scripts/kontrol.py <yazi.md> --kelime "<kelime>" --url <canlı URL>
+```
+
+Markdown'da doğru olan şey şablonda kaybolabilir: doctype, `lang`, viewport, tek H1,
+render edilmiş title/meta/canonical, önizleme direktifleri ve **hedef kelimenin render
+edilmiş gövdede gerçekten bulunması** (JavaScript'te kalmışsa bulunmaz). Kaynak dosyaya
+bakan hiçbir kontrol bunu göremez.
+
 **10b — Yargı gerektirenler:** `references/yayin-oncesi-kontrol.md` dosyasındaki **43
 maddelik listeyi** madde madde çalıştır. Script'in geçtiklerini tekrar sayma; onun
 bakamadıklarına bak: niyet uyumu, kanibalizasyon kararı, kaynak gerçekliği, uydurma
@@ -351,8 +372,15 @@ Rapor: `Öz denetim: 41/43 · 🔴 Blokaj: <madde> — <aksiyon> · 🟡 Uyarı:
 
 Kısaca:
 
-- **11 · Yayın:** build → deploy → canlı URL 200 → başlık/meta render doğrulaması →
-  sitemap kontrolü → indeksleme talebi → tek ekranlık yayın raporu.
+- **11 · Yayın:** build → deploy → `kontrol.py --url` ile render doğrulaması →
+  sitemap kontrolü → indeksleme talebi → **ölçüm kaydını aç** → tek ekranlık yayın raporu.
+
+  ```bash
+  python3 <skill_dizini>/scripts/olcum.py kaydet <slug> --url <url> \
+    --sorgu "<hedef sorgu>" --kontrol-grubu <3-5 dokunulmayacak yazı>
+  ```
+
+  **Kontrol grubu yayın anında seçilir.** Sonradan seçmek, sonucu seçmektir.
 - **12 · Ölçüm:** 14 / 28 / 90 gün. Yayın anında **kontrol grubu** (aynı kategoriden,
   dokunulmayacak 3-5 yazı) rapora yazılır; 28. günde hedef yazının değişimi bu grubun
   medyan değişimiyle birlikte okunur. Kontrol grubu da aynı yönde hareket ettiyse
@@ -402,3 +430,5 @@ Bu dosyalar gerektiğinde okunur; hepsini baştan yükleme.
 | `references/kullanim-senaryolari.md` | Aşama 0'da profil belirlenirken; eşik uyarlanırken |
 | `scripts/kontrol.py` | Aşama 10a'da çalıştırılır (okunmaz, çalıştırılır) |
 | `scripts/surum-kontrol.py` | Aşama 0a-3'te çalıştırılır (oturum başına bir kez) |
+| `scripts/olcum.py` | Aşama 0a-4 ve 11'de; ölçüm kaydını açar ve vadesi geleni listeler |
+| `scripts/skill-denetim.py` | Skill'in kendisi değiştirildiğinde çalıştırılır |

@@ -1,0 +1,26 @@
+{
+  "slug": "yapay-zeka-icerigi-neden-siralanmiyor",
+  "url": "https://system-conf.github.io/master-blog-skill/blog/yapay-zeka-icerigi-neden-siralanmiyor/",
+  "hedef_sorgu": "yapay zeka içeriği neden sıralanmıyor",
+  "yayin": "2026-09-08",
+  "kontrol_grubu": [
+    "terim/kanibalizasyon",
+    "terim/geo",
+    "terim/e-e-a-t",
+    "senaryolar"
+  ],
+  "noktalar": {
+    "14": {
+      "tarih": "2026-09-22",
+      "veri": null
+    },
+    "28": {
+      "tarih": "2026-10-06",
+      "veri": null
+    },
+    "90": {
+      "tarih": "2026-12-07",
+      "veri": null
+    }
+  }
+}

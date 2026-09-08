@@ -12,6 +12,8 @@ KOK = pathlib.Path(__file__).resolve().parent.parent
 FIX = KOK / "tests" / "fixtures"
 KONTROL = KOK / "skills" / "master-blog" / "scripts" / "kontrol.py"
 SURUM   = KOK / "skills" / "master-blog" / "scripts" / "surum-kontrol.py"
+DENETIM = KOK / "skills" / "master-blog" / "scripts" / "skill-denetim.py"
+OLCUM   = KOK / "skills" / "master-blog" / "scripts" / "olcum.py"
 
 sonuc = {"gecti": 0, "kaldi": 0}
 hatalar = []
@@ -176,6 +178,65 @@ def t_surum_eski():
         assert r["durum"] == "eskimis", f"180 gün üstü kopyada durum '{r['durum']}'"
         assert p.returncode == 1, f"çıkış kodu 1 bekleniyordu, {p.returncode}"
 
+# --- Skill denetçisi: temiz skill'de sorun bulmamalı ---
+def t_denetim_temiz():
+    p = subprocess.run([sys.executable, str(DENETIM), "--json"], capture_output=True, text=True)
+    r = json.loads(p.stdout)
+    assert r["sorun"] == 0, "temiz skill'de tutarsızlık: " + str(r["sorunlar"])
+    assert r["kontrol"] >= 8, f"beklenenden az kontrol çalıştı: {r['kontrol']}"
+    assert p.returncode == 0
+
+# --- Skill denetçisi: sayı sürüklenmesini yakalamalı (geçmişte 3 kez oldu) ---
+def t_denetim_suruklenme():
+    import shutil, tempfile
+    with tempfile.TemporaryDirectory() as t:
+        hedef = pathlib.Path(t) / "master-blog"
+        shutil.copytree(KOK / "skills" / "master-blog", hedef)
+        md = hedef / "SKILL.md"
+        md.write_text(md.read_text(encoding="utf-8").replace("43 maddelik", "40 maddelik"),
+                      encoding="utf-8")
+        p = subprocess.run([sys.executable, str(DENETIM), str(hedef), "--json"],
+                           capture_output=True, text=True)
+        r = json.loads(p.stdout)
+        assert any(s["kontrol"] == "sayi-suruklenmesi" for s in r["sorunlar"]), \
+            "40 vs 43 sürüklenmesi yakalanmadı"
+        assert p.returncode == 1
+
+# --- Skill denetçisi: olmayan dosyaya atfı yakalamalı ---
+def t_denetim_eksik_dosya():
+    import shutil, tempfile
+    with tempfile.TemporaryDirectory() as t:
+        hedef = pathlib.Path(t) / "master-blog"
+        shutil.copytree(KOK / "skills" / "master-blog", hedef)
+        (hedef / "references" / "yazim-katmanlari.md").unlink()
+        p = subprocess.run([sys.executable, str(DENETIM), str(hedef), "--json"],
+                           capture_output=True, text=True)
+        r = json.loads(p.stdout)
+        assert any(s["kontrol"] == "dosya-atfi" for s in r["sorunlar"]), \
+            "silinen referans dosyası yakalanmadı"
+
+# --- Ölçüm kaydı: aç, bekleyeni gör, işle ---
+def t_olcum():
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as t:
+        ort = dict(os.environ)
+        c = lambda *a: subprocess.run([sys.executable, str(OLCUM), *a],
+                                      capture_output=True, text=True, cwd=t, env=ort)
+        p = c("kaydet", "test-yazi", "--sorgu", "test sorgu",
+              "--kontrol-grubu", "a,b,c", "--yayin", "2026-01-01")
+        assert p.returncode == 0, p.stderr
+        kayit = json.loads((pathlib.Path(t) / "olcum" / "test-yazi.json").read_text(encoding="utf-8"))
+        assert kayit["noktalar"]["14"]["tarih"] == "2026-01-15", kayit["noktalar"]["14"]
+        assert kayit["kontrol_grubu"] == ["a", "b", "c"]
+        p = c("bekleyen")
+        assert p.returncode == 1 and "test-yazi" in p.stdout, "vadesi geçmiş nokta listelenmedi"
+        p = c("isle", "test-yazi", "28", "--gosterim", "100", "--kontrol-medyan", "5")
+        assert p.returncode == 0, p.stderr
+        kayit = json.loads((pathlib.Path(t) / "olcum" / "test-yazi.json").read_text(encoding="utf-8"))
+        assert kayit["noktalar"]["28"]["veri"]["gosterim"] == 100
+        # aynı slug ikinci kez açılamaz
+        assert c("kaydet", "test-yazi", "--sorgu", "x").returncode == 2
+
 # --- Blokajlı yazı gerçekten 1 döndürmeli ---
 def t_blokaj_kodu():
     r, kod = calistir("tireli-kelimeler.md")
@@ -198,6 +259,10 @@ for ad, fn in [
     ("bilinmeyen eşik reddediliyor (kod 2)", t_config_bilinmeyen),
     ("sürüm kontrolü: taze kopya GUNCEL", t_surum_taze),
     ("sürüm kontrolü: eski kopya ESKIMIS", t_surum_eski),
+    ("skill denetçisi: temiz skill'de sorun yok", t_denetim_temiz),
+    ("skill denetçisi: sayı sürüklenmesini yakalıyor", t_denetim_suruklenme),
+    ("skill denetçisi: eksik referans dosyasını yakalıyor", t_denetim_eksik_dosya),
+    ("ölçüm kaydı: aç / bekleyen / işle döngüsü", t_olcum),
     ("blokajlı yazı çıkış kodu 1 döndürüyor", t_blokaj_kodu),
 ]:
     test(ad, fn)

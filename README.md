@@ -21,6 +21,8 @@ skills/master-blog/          ← kurulacak skill (bu klasörü kopyala)
     yayin-ve-olcum.md         Aşama 11-12 + arşiv kararı + güncelleme modu
   scripts/kontrol.py          mekanik yayın öncesi kontrol (Aşama 10a)
   scripts/surum-kontrol.py    sürüm ve bilgi tazeliği kontrolü (Aşama 0a-3)
+  scripts/olcum.py            ölçüm kaydı: 14/28/90 gün + kontrol grubu (Aşama 0a-4, 11)
+  scripts/skill-denetim.py    skill'in kendi iç tutarlılığı (sayı sürüklenmesi, ölü atıf)
   evals/evals.json            tetikleme ve davranış senaryoları
 
 site/

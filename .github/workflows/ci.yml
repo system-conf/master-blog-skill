@@ -88,6 +88,9 @@ jobs:
           print(f'kur.sh {len(dosyalar)} dosya istiyor, paket eksiksiz')
           PY
 
+      - name: Skill iç tutarlılığı
+        run: python3 skills/master-blog/scripts/skill-denetim.py
+
       - name: Regresyon testleri (kontrol.py)
         run: python3 tests/calistir.py
 
@@ -109,6 +112,16 @@ jobs:
         run: |
           git diff --exit-code -- docs dist skills/master-blog/references/terimler-sozlugu.md \
             || { echo "::error::build.py çıktısı commit'lenmiş dosyalarla uyuşmuyor. 'python3 build.py' çalıştırıp sonucu commit'le."; exit 1; }
+
+  olcum-hatirlatici:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vadesi gelen ölçüm noktası var mı
+        run: |
+          python3 skills/master-blog/scripts/olcum.py bekleyen --gun 3 \
+            || echo "::warning::Vadesi gelen ölçüm noktası var — Aşama 12'yi çalıştır"
 
   dis-linkler:
     runs-on: ubuntu-latest

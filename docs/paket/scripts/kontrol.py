@@ -147,6 +147,81 @@ def http_durum(url, timeout=12):
         return 0
 
 
+def sayfa_getir(url, timeout=15):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (master-blog kontrol)"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.status, r.read().decode("utf-8", "replace")
+
+
+def canli_denetle(url, r, title, desc, kelime):
+    """Madde 40: yayindaki sayfa gercekten dogru render edildi mi?
+
+    Markdown'da dogru olan sey sablonda kaybolabilir — bu skill'in kendi sitesinde
+    tam olarak bu oldu: doctype ve viewport eksikti, sayfa quirks mode'daydi ve
+    mobil kurallari hic calismiyordu. Kaynak dosyaya bakan hicbir kontrol bunu goremez.
+    """
+    try:
+        durum, html = sayfa_getir(url)
+    except Exception as e:
+        r.ekle(40, "Canlı URL", "blokaj", f"{url} alınamadı: {type(e).__name__}")
+        return
+    if durum != 200:
+        r.ekle(40, "Canlı URL", "blokaj", f"HTTP {durum}")
+        return
+    r.ekle(40, "Canlı URL", "gecti", f"HTTP 200 · {len(html) // 1024} KB")
+
+    bas = html[:4000].lower()
+    r.ekle(40, "Belge iskeleti", "gecti" if bas.lstrip().startswith("<!doctype") else "blokaj",
+           "doctype var" if bas.lstrip().startswith("<!doctype") else "doctype YOK — sayfa quirks mode'da")
+    r.ekle(40, "lang özniteliği", "gecti" if re.search(r"<html[^>]*\slang=", bas) else "uyari",
+           "var" if re.search(r"<html[^>]*\slang=", bas) else "yok — ekran okuyucu yanlış telaffuz eder")
+    vp = re.search(r'<meta[^>]+name=["\']viewport["\']', bas)
+    r.ekle(40, "viewport meta", "gecti" if vp else "blokaj",
+           "var" if vp else "YOK — mobilde responsive kurallar çalışmaz")
+
+    h1 = re.findall(r"<h1[\s>]", html, re.I)
+    r.ekle(40, "Render edilmiş H1", "gecti" if len(h1) == 1 else "blokaj", f"{len(h1)} adet")
+
+    m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S | re.I)
+    canli_title = re.sub(r"\s+", " ", m.group(1)).strip() if m else ""
+    if not canli_title:
+        r.ekle(40, "Render edilmiş title", "blokaj", "boş")
+    elif title and tr_kucult(title) not in tr_kucult(canli_title):
+        r.ekle(40, "Render edilmiş title", "uyari",
+               f"frontmatter ile örtüşmüyor: '{canli_title[:60]}'")
+    else:
+        r.ekle(40, "Render edilmiş title", "gecti", f"{len(canli_title)} karakter")
+
+    md = re.search(r'<meta[^>]+name=["\']description["\'][^>]*content=["\'](.*?)["\']', html, re.S | re.I)
+    if not md:
+        r.ekle(40, "Render edilmiş meta description", "blokaj", "yok")
+    elif desc and tr_kucult(desc[:60]) not in tr_kucult(md.group(1)):
+        r.ekle(40, "Render edilmiş meta description", "uyari", "frontmatter ile örtüşmüyor")
+    else:
+        r.ekle(40, "Render edilmiş meta description", "gecti", f"{len(md.group(1))} karakter")
+
+    can = re.search(r'<link[^>]+rel=["\']canonical["\'][^>]*href=["\'](.*?)["\']', html, re.I)
+    if not can:
+        r.ekle(40, "Canonical", "uyari", "yok")
+    else:
+        ayni = can.group(1).rstrip("/") == url.rstrip("/")
+        r.ekle(40, "Canonical", "gecti" if ayni else "uyari",
+               "kendine işaret ediyor" if ayni else f"başka sayfaya: {can.group(1)}")
+
+    for direktif in ("nosnippet", "noindex", "max-snippet:0"):
+        if re.search(r'<meta[^>]+robots[^>]*' + re.escape(direktif), bas):
+            r.ekle(40, "Önizleme direktifi", "blokaj",
+                   f"'{direktif}' bulundu — bu sayfa arama önizlemelerinde görünmez")
+
+    govde = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", html, flags=re.S | re.I)
+    govde = re.sub(r"<[^>]+>", " ", govde)
+    if kelime and kelime not in tr_kucult(govde):
+        r.ekle(40, "Hedef kelime render edildi", "blokaj",
+               "render edilmiş gövdede yok — içerik JavaScript'te kalmış olabilir")
+    elif kelime:
+        r.ekle(40, "Hedef kelime render edildi", "gecti", "var")
+
+
 class Rapor:
     def __init__(self):
         self.satir = []
@@ -179,6 +254,7 @@ def main():
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--icerik-dizini", default="")
     ap.add_argument("--config", default="", help="esik dosyasi (toml/json)")
+    ap.add_argument("--url", default="", help="yayindaki URL: render edilmis sayfayi denetler")
     a = ap.parse_args()
     esikleri_yukle(a.config or None)
 
@@ -360,6 +436,10 @@ def main():
     # --- ek: frontmatter tarih ---
     tarih = next((fm[k] for k in TARIH_ALAN if fm.get(k)), "")
     r.ekle(0, "Yayın tarihi alanı", "gecti" if tarih else "uyari", tarih or "yok")
+
+    # --- 40 · canli URL: markdown'da dogru olan sablonda kaybolabilir ---
+    if a.url:
+        canli_denetle(a.url, r, title, desc, kelime)
 
     if a.json:
         print(json.dumps({"dosya": a.dosya, "esikler": E, "esik_kaynagi": E_KAYNAK,

@@ -150,6 +150,8 @@ ORDER = ["SKILL.md",
          "references/yayin-ve-olcum.md",
          "scripts/kontrol.py",
          "scripts/surum-kontrol.py",
+         "scripts/olcum.py",
+         "scripts/skill-denetim.py",
          "evals/evals.json"]
 HEREDOC = "MASTERBLOG_EOF"
 
