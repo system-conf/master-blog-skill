@@ -1,6 +1,9 @@
 {
-  "name": "master-blog-marketplace",
-  "owner": { "name": "system-conf", "url": "https://github.com/system-conf" },
+  "name": "system-conf",
+  "owner": {
+    "name": "system-conf",
+    "url": "https://github.com/system-conf"
+  },
   "plugins": [
     {
       "name": "master-blog",

@@ -41,8 +41,22 @@ data), **differentiation** (new content doesn't cannibalize existing rankings), 
 
 ```
 /plugin marketplace add system-conf/master-blog-skill
-/plugin install master-blog@master-blog-marketplace
+/plugin install master-blog@system-conf
 ```
+
+**One command (always installs the current release):**
+
+```bash
+curl -fsSL https://system-conf.github.io/master-blog-skill/kur.sh -o kur.sh
+less kur.sh     # 1.8 KB — don't run what you haven't read
+sh kur.sh       # project-scoped: sh kur.sh --proje
+```
+
+We deliberately don't offer a `curl | sh` one-liner: an installer that encourages running
+unread code would contradict our own security policy.
+
+**No terminal at all** — one sentence to Claude Code:
+*install skills/master-blog from github.com/system-conf/master-blog-skill into ~/.claude/skills/*
 
 **As files:**
 

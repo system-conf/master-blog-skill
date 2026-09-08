@@ -264,6 +264,15 @@ a.card:hover,.card.hov:hover{border-color:#3A2A18;background:var(--card2);transf
 .dhead h3{font-size:20px;letter-spacing:-.025em}
 .dhead p{color:var(--fg2);font-size:13.5px;margin-top:5px}
 .dbody{padding:22px 24px 40px;overflow-y:auto;display:grid;gap:16px}
+details.diger{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+details.diger>summary{padding:13px 16px;cursor:pointer;font-size:13.5px;color:var(--fg2);list-style:none;
+  display:flex;align-items:center;gap:9px}
+details.diger>summary::-webkit-details-marker{display:none}
+details.diger>summary::before{content:"+";font-family:var(--m);color:var(--or);font-size:15px}
+details.diger[open]>summary::before{content:"−"}
+details.diger>summary:hover{color:var(--fg)}
+details.diger .icerik{padding:0 16px 16px;display:grid;gap:14px;border-top:1px solid var(--line);padding-top:14px}
+.opt.pri{border-color:#3A2A18;background:linear-gradient(180deg,rgba(255,106,0,.05),transparent)}
 .opt{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
 .opt .oh{padding:13px 16px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
 .opt .num{font-family:var(--m);font-size:11px;width:22px;height:22px;border-radius:6px;background:var(--or-dim);
@@ -1041,20 +1050,37 @@ Dosyalar yerine konduğunda Claude, yeni oturumda skill'in adını ve açıklama
       <div class="callout">${md(`**Dürüstlük notu:** Bu sayfa "tek tıkla Claude'a kur" bağlantısı sunmaz, çünkü herkes için çalışan genel bir kurulum bağlantısı (deep link) mevcut değildir. Aşağıdaki yöntemlerin hepsi gerçek dosya kurulumudur.`)}</div>
 
       <h2 id="yontem">Yöntemler</h2>
-      ${md(`**0 · Plugin olarak (önerilen).** Claude Code içinde \`/plugin marketplace add system-conf/master-blog-skill\` ardından \`/plugin install master-blog@master-blog-marketplace\`. Tek avantajı kolaylık değil: dosya kurulumunda **güncelleme almazsın**, oysa bu skill'in kaynak kaydı 3 ayda bir tazeleniyor.
+      ${md(`**1 · Claude'a söyle (en az sürtünme).** Terminal sözdizimi ezberlemeye gerek yok, işletim sistemi fark etmez. Claude Code'a şu cümleyi ver:
 
-**1 · Tek komut (dosya kurulumu).** "Tek komutu kopyala" düğmesi, dört dosyayı da \`~/.claude/skills/master-blog/\` altında oluşturan bir kabuk komutu panoya alır. Terminale yapıştırıp çalıştırman yeterli. Komut yalnızca dizin oluşturur ve dosya yazar; başka bir şey yapmaz — yapıştırmadan önce okuyabilirsin.
+\`\`\`
+github.com/system-conf/master-blog-skill deposundan
+skills/master-blog klasörünü ~/.claude/skills/ altına kur
+\`\`\`
 
-**2 · Claude'a yaptır.** Dosyaları kopyalayıp Claude Code'a şu isteği ver: "Bu içeriği \`~/.claude/skills/master-blog/SKILL.md\` olarak kaydet." Referans dosyaları için aynısını \`references/\` altına tekrarla.
+**2 · Plugin (güncelleme alır).** \`/plugin marketplace add system-conf/master-blog-skill\` ardından \`/plugin install master-blog@system-conf\`. Diğer yollar **güncelleme almaz**; bu skill'in kaynak kaydı 3 ayda bir tazelendiği için fark önemli.
 
-**3 · Elle.** Dosyaları indir, dizini kendin oluştur ve dosyaları içine koy. Dizin adı \`master-blog\` olmalı — frontmatter'daki \`name\` ile aynı.
+**3 · kur.sh (tek komut).** 1,8 KB'lık okunabilir script; dosyaları siteden indirdiği için her zaman güncel sürümü kurar ve sonunda doğrulamayı kendi çalıştırır.
 
-**4 · Claude uygulaması (web / masaüstü).** Uygulama tarafında özel skill yükleme, Ayarlar içindeki yetenekler/skills bölümünden yapılır ve genellikle skill klasörünün sıkıştırılmış hâlini (zip) ister. Bu arayüz ve plan gereksinimleri zamanla değişebildiği için buradan adım adım ekran tarifi vermiyoruz; uygulamandaki güncel Ayarlar bölümünü kontrol et.`)}
+\`\`\`
+curl -fsSL https://system-conf.github.io/master-blog-skill/kur.sh -o kur.sh
+less kur.sh     # 40 satır — okumadan çalıştırma
+sh kur.sh       # projeye özel: sh kur.sh --proje
+\`\`\`
+
+\`curl | sh\` tek satırını bilerek önermiyoruz: okumadan çalıştırmayı öneren bir kurulum, kendi güvenlik politikamızla çelişirdi.
+
+**4 · Diğer yollar.** Depoyu klonlamak (eşikleri değiştirecek ya da katkı verecekseniz), dosyaları tek tek almak (ağ kısıtlı ortam) ve Claude uygulamasının Ayarlar bölümünden yükleme. Ayrıntılar kurulum panelinde.`)}
 
       <h2 id="dogrula">Kurulumu doğrula</h2>
-      ${md(`1. Yeni bir Claude Code oturumu başlat (mevcut oturum eski listeyi taşır).
-2. \`ls ~/.claude/skills/master-blog\` — dört dosya görünmeli.
-3. Claude'a "master-blog skill'iyle bir içerik adayı çıkar" yaz. Skill devredeyse ilk iş proje keşfi olur ve aday için veri gerekçesi ister.`)}
+      ${md(`Hangi yolu seçersen seç, son adım aynı:
+
+\`\`\`
+python3 ~/.claude/skills/master-blog/scripts/surum-kontrol.py
+\`\`\`
+
+Sürümü, bilgi tazeliğini ve güncelleme gerekip gerekmediğini yazar. \`kur.sh\` bunu zaten kendisi çalıştırır.
+
+Sonra: yeni bir Claude oturumu başlat (mevcut oturum eski skill listesini taşır) ve dene — *"master-blog skill'iyle içerik envanterimi çıkar"*. Skill devredeyse ilk iş proje keşfi olur ve aday için veri gerekçesi ister.`)}
 
       <h2 id="guncelleme">Güncel kalmak</h2>
       ${md(`Bu skill'in bilgi tabanı zamanla bayatlar: zengin sonuç tipleri kaldırılır, rapor alanları değişir, bot adları eklenir. **Skill bunu kendisi bildirir** — her oturumun başında yaşını kontrol eder:
@@ -1280,77 +1306,80 @@ function openInstall(mode){
       ${f?`<div class="opt" style="border-color:#3A2A18;background:var(--or-dim2)">
         <div class="oh"><span class="num">!</span><b>İndirme bu görünümde engelli</b></div>
         <div class="ob"><span>Bu sayfa gömülü bir çerçevede açıldığı için tarayıcı dosya indirmesini engelliyor.
-        <b style="color:var(--fg)">${esc(f.name)}</b> içeriğini panoya alıp dosyaya yapıştırabilirsin.</span>
+        <b style="color:var(--fg)">${esc(f.name)}</b> içeriğini panoya alabilirsin.</span>
         <button class="btn pri" onclick="copy(FILES.find(x=>x.name==='${esc(f.name)}').text,'${esc(f.name)} kopyalandı')">
           ${esc(f.name)} içeriğini kopyala</button></div></div>`:''}
 
-      <div class="opt" style="border-color:#3A2A18">
-        <div class="oh"><span class="num">1</span><b>Plugin olarak kur (önerilen)</b></div>
+      <div class="opt pri">
+        <div class="oh"><span class="num">1</span><b>Claude'a söyle — terminal yok</b></div>
         <div class="ob">
-          <span>Sürüm alır ve güncellenir. Claude Code içinde iki komut:</span>
+          <span>En az sürtünmeli yol. Claude Code'a şu cümleyi ver, gerisini o halleder:</span>
+          <code class="cmd">github.com/system-conf/master-blog-skill deposundan
+skills/master-blog klasörünü ~/.claude/skills/ altına kur</code>
+          <button class="btn pri" onclick="copy('github.com/system-conf/master-blog-skill deposundan skills/master-blog klasörünü ~/.claude/skills/ altına kur','Kurulum isteği kopyalandı')">Cümleyi kopyala</button>
+          <span style="color:var(--fg3);font-size:12.5px">İşletim sistemi fark etmez, komut sözdizimi ezberlemek gerekmez.</span>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="oh"><span class="num">2</span><b>Plugin — güncelleme alır</b></div>
+        <div class="ob">
+          <span>Sürümlenir; yeni sürüm çıktığında tek komutla güncellersin. Kaynak kaydı 3 ayda bir tazelendiği için bu proje özelinde önemli.</span>
           <code class="cmd">/plugin marketplace add system-conf/master-blog-skill
-/plugin install master-blog@master-blog-marketplace</code>
-          <button class="btn pri" onclick="copy('/plugin marketplace add system-conf/master-blog-skill\n/plugin install master-blog@master-blog-marketplace','Plugin komutları kopyalandı')">Komutları kopyala</button>
-          <span style="color:var(--fg3);font-size:12.5px">Dosya kurulumunda güncelleme almazsın; kaynak kaydı 3 ayda bir tazelendiği için bu fark önemli.</span>
+/plugin install master-blog@system-conf</code>
+          <button class="btn" onclick="copy('/plugin marketplace add system-conf/master-blog-skill\n/plugin install master-blog@system-conf','Plugin komutları kopyalandı')">Komutları kopyala</button>
         </div>
       </div>
 
       <div class="opt">
-        <div class="oh"><span class="num">2</span><b>Tek komutla kur (dosya)</b></div>
+        <div class="oh"><span class="num">3</span><b>kur.sh — tek komut</b></div>
         <div class="ob">
-          <span>Dört dosyayı da <code class="mono" style="color:var(--or3)">~/.claude/skills/master-blog/</code> altında oluşturur. Kopyala, terminale yapıştır, çalıştır.</span>
-          <code class="cmd">mkdir -p ~/.claude/skills/master-blog/references
-cat &gt; ~/.claude/skills/master-blog/SKILL.md &lt;&lt;'EOF'
-...
-EOF</code>
-          <button class="btn pri" onclick="copy(INSTALL_CMD,'Kurulum komutu kopyalandı')">Kurulum komutunu kopyala</button>
-          <span style="color:var(--fg3);font-size:12.5px">Komut yalnızca dizin oluşturur ve dosya yazar. Yapıştırmadan önce içeriğini okuyabilirsin.</span>
+          <span>1,8 KB'lık okunabilir script. Dosyaları buradan indirir, yani <b style="color:var(--fg)">her zaman güncel sürümü</b> kurar ve sonunda doğrulamayı kendi çalıştırır.</span>
+          <code class="cmd">curl -fsSL https://system-conf.github.io/master-blog-skill/kur.sh -o kur.sh
+less kur.sh     # 40 satır, okumadan çalıştırma
+sh kur.sh       # projeye özel için: sh kur.sh --proje</code>
+          <button class="btn" onclick="copy('curl -fsSL https://system-conf.github.io/master-blog-skill/kur.sh -o kur.sh\nless kur.sh\nsh kur.sh','Komutlar kopyalandı')">Komutları kopyala</button>
+          <span style="color:var(--fg3);font-size:12.5px">Bilerek <code class="mono">curl | sh</code> önermiyoruz — okumadan çalıştırmayı öneren bir kurulum, güvenlik politikamızla çelişirdi.</span>
         </div>
       </div>
 
-      <div class="opt">
-        <div class="oh"><span class="num">3</span><b>Dosyaları al</b></div>
-        <div class="ob">
-          <span>Her dosyayı ayrı ayrı kopyala ya da indir; ardından hedef dizine yerleştir.</span>
-          <div style="display:grid;gap:7px">
-            ${FILES.map((x,i)=>`<div style="display:flex;gap:8px;align-items:center">
-              <code class="mono" style="flex:1;font-size:11.5px;color:var(--fg2);overflow:hidden;text-overflow:ellipsis">${esc(x.path)}</code>
-              <button class="btn sm" onclick="copy(FILES[${i}].text,'${esc(x.name)} kopyalandı')">Kopyala</button>
-              <button class="btn sm" onclick="download(FILES[${i}].name,FILES[${i}].text)">İndir</button>
-            </div>`).join('')}
+      <details class="diger">
+        <summary>Diğer yöntemler ve kurulum sonrası</summary>
+        <div class="icerik">
+          <div>
+            <b style="font-size:13.5px;font-family:var(--d)">Kurulumu doğrula</b>
+            <div style="color:var(--fg2);font-size:13px;margin-top:6px">Hangi yolu seçersen seç, son adım aynı:</div>
+            <code class="cmd" style="margin-top:8px">python3 ~/.claude/skills/master-blog/scripts/surum-kontrol.py</code>
+            <div style="color:var(--fg3);font-size:12.5px;margin-top:6px">Sürümü, bilgi tazeliğini ve güncelleme gerekip gerekmediğini yazar.</div>
+          </div>
+          <div>
+            <b style="font-size:13.5px;font-family:var(--d)">Depoyu klonla</b>
+            <code class="cmd" style="margin-top:8px">git clone https://github.com/system-conf/master-blog-skill.git
+cp -r master-blog-skill/skills/master-blog ~/.claude/skills/</code>
+            <div style="color:var(--fg3);font-size:12.5px;margin-top:6px">Eşikleri değiştirmek ya da katkı vermek istiyorsan.</div>
+          </div>
+          <div>
+            <b style="font-size:13.5px;font-family:var(--d)">Dosyaları tek tek al</b>
+            <div style="color:var(--fg2);font-size:13px;margin:6px 0 8px">Ağ kısıtlı bir ortamdaysan.</div>
+            <div style="display:grid;gap:7px">
+              ${FILES.map((x,i)=>`<div style="display:flex;gap:8px;align-items:center">
+                <code class="mono" style="flex:1;font-size:11.5px;color:var(--fg2);overflow:hidden;text-overflow:ellipsis">${esc(x.path)}</code>
+                <button class="btn sm" onclick="copy(FILES[${i}].text,'${esc(x.name)} kopyalandı')">Kopyala</button>
+                <button class="btn sm" onclick="download(FILES[${i}].name,FILES[${i}].text)">İndir</button>
+              </div>`).join('')}
+            </div>
+            <button class="btn" style="margin-top:10px" onclick="copy(INSTALL_CMD,'Kurulum komutu kopyalandı (240 KB)')">Tek komutta hepsi (240 KB pano)</button>
+            <div style="color:var(--fg3);font-size:12.5px;margin-top:6px">Bu yöntem dondurulmuş bir kopya kurar — güncelleme almaz. Mümkünse kur.sh'ı tercih et.</div>
+          </div>
+          <div>
+            <b style="font-size:13.5px;font-family:var(--d)">Nerede çalışır?</b>
+            <div class="mrow" style="padding:6px 0"><span>Claude Code (terminal / IDE)</span><b style="color:var(--ok)">Hepsi</b></div>
+            <div class="mrow" style="padding:6px 0"><span>Claude uygulaması (web / masaüstü)</span><b style="color:var(--warn)">Ayarlardan yükleme</b></div>
+            <div class="mrow" style="padding:6px 0;border:none"><span>Agent SDK</span><b style="color:var(--ok)">Skill dizini olarak</b></div>
+            <span style="color:var(--fg3);font-size:12.5px">Uygulama tarafındaki yükleme arayüzü değişebilir; güncel Ayarlar bölümünü kontrol et.</span>
           </div>
         </div>
-      </div>
-
-      <div class="opt">
-        <div class="oh"><span class="num">4</span><b>Depoyu klonla</b></div>
-        <div class="ob">
-          <span>Skill'i sürümleyerek takip etmek, eşikleri kendi projene göre değiştirmek ya da katkı vermek istiyorsan:</span>
-          <code class="cmd">git clone https://github.com/system-conf/master-blog-skill.git
-cp -r master-blog-skill/skill/master-blog ~/.claude/skills/</code>
-          <button class="btn" onclick="copy('git clone https://github.com/system-conf/master-blog-skill.git\ncp -r master-blog-skill/skill/master-blog ~/.claude/skills/','Klonlama komutu kopyalandı')">Komutu kopyala</button>
-        </div>
-      </div>
-
-      <div class="opt">
-        <div class="oh"><span class="num">5</span><b>Claude'a yaptır</b></div>
-        <div class="ob">
-          <span>Dosyaları kopyaladıktan sonra Claude Code'a şu isteği ver:</span>
-          <code class="cmd">Bu içeriği ~/.claude/skills/master-blog/SKILL.md
-olarak kaydet, referans dosyalarını da
-references/ altına yaz.</code>
-        </div>
-      </div>
-
-      <div class="opt">
-        <div class="oh"><span class="num">6</span><b>Nerede çalışır?</b></div>
-        <div class="ob">
-          <div class="mrow" style="padding:6px 0"><span>Claude Code (terminal / IDE)</span><b style="color:var(--ok)">Dosya kurulumu</b></div>
-          <div class="mrow" style="padding:6px 0"><span>Claude uygulaması (web / masaüstü)</span><b style="color:var(--warn)">Ayarlardan yükleme</b></div>
-          <div class="mrow" style="padding:6px 0;border:none"><span>Agent SDK</span><b style="color:var(--ok)">Skill dizini olarak</b></div>
-          <span style="color:var(--fg3);font-size:12.5px">Uygulama tarafındaki yükleme arayüzü ve plan gereksinimleri değişebilir; güncel Ayarlar bölümünü kontrol et.</span>
-        </div>
-      </div>
+      </details>
 
       <p style="color:var(--fg3);font-size:13px;border-top:1px solid var(--line);padding-top:16px">
         Bir skill'i kurmadan önce içeriğini oku. Skill, Claude'un davranışını değiştirir — ne yaptığını bilmediğin bir talimat setini yükleme.</p>

@@ -196,6 +196,61 @@ def dosyalari_topla():
     return files
 
 
+def kur_scripti():
+    """~2 KB, okunabilir kurulum scripti. Dosyaları docs/paket/ altından çeker,
+    yani her zaman YAYINLANMIŞ GÜNCEL sürümü kurar (240 KB'lık pano yöntemi
+    dondurulmuş bir kopya kuruyordu)."""
+    dosyalar = " \\\n     ".join(ORDER)
+    return f"""#!/bin/sh
+# master-blog · kurulum
+# Kaynak : {REPO_URL}
+# Ne yapar: {len(ORDER)} dosyayı indirir, hedef dizine yazar, kurulumu doğrular.
+# Başka hiçbir şey yapmaz — ne PATH'e dokunur, ne kabuk profiline, ne ağa veri yollar.
+set -eu
+
+PAKET="{SITE_URL}paket"
+HEDEF="$HOME/.claude/skills/master-blog"
+KAPSAM="kişisel (tüm projeler)"
+
+if [ "${{1:-}}" = "--proje" ]; then
+  HEDEF="$(pwd)/.claude/skills/master-blog"
+  KAPSAM="projeye özel ($(pwd))"
+elif [ "${{1:-}}" = "--yardim" ] || [ "${{1:-}}" = "-h" ]; then
+  echo "Kullanım: sh kur.sh [--proje]"
+  echo "  (bayraksız)  ~/.claude/skills/master-blog altına kurar"
+  echo "  --proje      bulunduğun projenin .claude/skills/ dizinine kurar"
+  exit 0
+fi
+
+DOSYALAR="{dosyalar}"
+
+echo "master-blog kuruluyor"
+echo "  hedef  : $HEDEF"
+echo "  kapsam : $KAPSAM"
+
+mkdir -p "$HEDEF/references" "$HEDEF/scripts" "$HEDEF/evals"
+
+for f in $DOSYALAR; do
+  printf '  %s ' "$f"
+  if curl -fsSL "$PAKET/$f" -o "$HEDEF/$f"; then echo "ok"; else echo "BAŞARISIZ"; exit 1; fi
+done
+
+chmod +x "$HEDEF/scripts/"*.py 2>/dev/null || true
+
+echo
+echo "Doğrulama:"
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$HEDEF/scripts/surum-kontrol.py" --cevrimdisi || true
+else
+  echo "  python3 bulunamadı — skill çalışır ama mekanik kontrol scripti çalışmaz."
+fi
+
+echo
+echo "Kuruldu. Yeni bir Claude oturumu başlat ve dene:"
+echo "  master-blog skill'iyle içerik envanterimi çıkar"
+"""
+
+
 def kurulum_komutu(files):
     cmd = ["mkdir -p ~/.claude/skills/master-blog/{references,scripts,evals}"]
     for rel, f in zip(ORDER, files):
@@ -493,6 +548,13 @@ def main():
         "guncelleme_komutu": "/plugin update master-blog   (dosya kurulumunda: depoyu yeniden kopyala)",
         "kurulum_url": SITE_URL + "kurulum/",
     }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    # paket/: skill dosyalarının ham hâli — kur.sh buradan indirir
+    for rel, f in zip(ORDER, files):
+        hedef_dosya = DOCS / "paket" / rel
+        hedef_dosya.parent.mkdir(parents=True, exist_ok=True)
+        hedef_dosya.write_text(f["text"], encoding="utf-8")
+    (DOCS / "kur.sh").write_text(kur_scripti(), encoding="utf-8")
 
     (DOCS / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}sitemap.xml\n", encoding="utf-8")

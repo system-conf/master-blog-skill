@@ -46,8 +46,19 @@ dist/artifact.html          tek dosyalık sürüm (Claude Artifact için, iskele
 
 ```
 /plugin marketplace add system-conf/master-blog-skill
-/plugin install master-blog@master-blog-marketplace
+/plugin install master-blog@system-conf
 ```
+
+**Tek komutla (her zaman güncel sürüm):**
+
+```bash
+curl -fsSL https://system-conf.github.io/master-blog-skill/kur.sh -o kur.sh
+less kur.sh     # 1,8 KB — okumadan çalıştırma
+sh kur.sh       # projeye özel: sh kur.sh --proje
+```
+
+**Terminal istemiyorsan** Claude Code'a tek cümle yeter:
+*github.com/system-conf/master-blog-skill deposundan skills/master-blog klasörünü ~/.claude/skills/ altına kur*
 
 **Dosya olarak:**
 

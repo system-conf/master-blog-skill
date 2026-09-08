@@ -3,6 +3,30 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.5.0] — 2026-09-08
+
+Kurulum sadeleştirildi. Ölçülen sorun "zor" değil, **verdiğimiz sözü tutmamamızdı**:
+240 KB / 4.824 satırlık pano komutu için "yapıştırmadan önce okuyabilirsin" diyorduk.
+
+### Eklendi
+- **`kur.sh`** — 1,8 KB, gerçekten okunabilir. Dosyaları `docs/paket/` altından indirdiği
+  için **her zaman yayınlanmış güncel sürümü** kurar (pano yöntemi dondurulmuş kopya
+  kuruyordu). `--proje` bayrağıyla projeye özel kurulum yapar ve sonunda
+  `surum-kontrol.py` çalıştırıp kurulumu **kendi doğrular**.
+  `curl | sh` tek satırı bilerek sunulmuyor — okumadan çalıştırmayı öneren bir kurulum
+  kendi güvenlik politikamızla çelişirdi.
+- **`docs/paket/`** — skill dosyalarının ham hâli, kur.sh'ın kaynağı
+- CI kapısı: `kur.sh` içindeki dosya listesi ile `docs/paket/` birebir örtüşmeli
+
+### Değişti
+- **Kurulum paneli 7 seçenekten 3'e indi**, kalanlar katlanmış bölüme taşındı.
+  Yeni sıra: (1) Claude'a söyle — terminal yok, (2) Plugin — güncelleme alır,
+  (3) kur.sh — tek komut. "Claude'a söylet" yöntemi 5. sıradan 1. sıraya çıktı:
+  Claude Code kullanıcısı için en az sürtünmeli yol tek cümle.
+- **Marketplace adı kısaldı:** `master-blog@master-blog-marketplace` →
+  `master-blog@system-conf`. Depo 1 günlük ve henüz kimse kurmadığı için kırılma yok.
+- Kurulum doğrulaması artık her yolun son adımı olarak açıkça yazılı
+
 ## [1.4.0] — 2026-09-08
 
 Skill ilk kez **gerçek bir yazıda** uçtan uca çalıştırıldı ve süreç kendi kusurlarını buldu.

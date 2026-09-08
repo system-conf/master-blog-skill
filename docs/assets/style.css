@@ -260,6 +260,15 @@ a.card:hover,.card.hov:hover{border-color:#3A2A18;background:var(--card2);transf
 .dhead h3{font-size:20px;letter-spacing:-.025em}
 .dhead p{color:var(--fg2);font-size:13.5px;margin-top:5px}
 .dbody{padding:22px 24px 40px;overflow-y:auto;display:grid;gap:16px}
+details.diger{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+details.diger>summary{padding:13px 16px;cursor:pointer;font-size:13.5px;color:var(--fg2);list-style:none;
+  display:flex;align-items:center;gap:9px}
+details.diger>summary::-webkit-details-marker{display:none}
+details.diger>summary::before{content:"+";font-family:var(--m);color:var(--or);font-size:15px}
+details.diger[open]>summary::before{content:"−"}
+details.diger>summary:hover{color:var(--fg)}
+details.diger .icerik{padding:0 16px 16px;display:grid;gap:14px;border-top:1px solid var(--line);padding-top:14px}
+.opt.pri{border-color:#3A2A18;background:linear-gradient(180deg,rgba(255,106,0,.05),transparent)}
 .opt{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
 .opt .oh{padding:13px 16px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
 .opt .num{font-family:var(--m);font-size:11px;width:22px;height:22px;border-radius:6px;background:var(--or-dim);
