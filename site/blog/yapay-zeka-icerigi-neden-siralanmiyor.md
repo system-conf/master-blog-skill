@@ -21,6 +21,8 @@ Kanibalizasyon, aynı sitedeki iki sayfanın aynı arama niyetini hedefleyerek b
 
 Ayırt edici nokta şudur: sorun **aynı kelimeyi iki sayfada kullanmak değil**, aynı soruya iki sayfayla cevap vermektir. "Oyun grubu fiyatları" ve "oyun grubu kaç para" farklı kelimelerdir ama aynı sorudur.
 
+![İki panel: solda aynı sorguyu hedefleyen iki sayfa, her biri 4 iç link ve 2 backlink ile 11. ve 14. sırada; sağda 301 ile birleştirilmiş tek sayfa, 8 iç link ve 4 backlink ile 4. sırada.](gorseller/kanibalizasyon-sinyal-bolunmesi.svg "Zarar bir cezadan değil, sinyalin ikiye bölünmesinden gelir. Tek sayfada toplanan iç link ve backlink eşiği aşar; ikiye bölününce hiçbiri aşamaz.")
+
 **Nasıl teşhis edilir:** İki yazının H2 başlıklarını konu olarak eşleştirin ve oranı hesaplayın:
 
 `örtüşme = eşleşen konu sayısı / kısa olan yazının H2 sayısı`
@@ -57,6 +59,8 @@ Dördü de bir yıl önce doğruydu. Bugün dördü de yanlış tavsiye üretiyo
 Dördüncü hata yazıda değil, yazıdan sonra yapılır. "Yazıyı yayınladık, trafik arttı" cümlesi tek başına hiçbir şey kanıtlamaz. Aynı dönemde sitenin tamamı arttıysa sebep içerik değil, mevsim ya da bir algoritma güncellemesi olabilir.
 
 Google'ın kendi rehberi bu konuda nettir: çekirdek güncellemelerin etkisi değerlendirilirken karşılaştırma güncelleme öncesi hafta ile yapılır ve değerlendirme tek sayfa değil site geneli yürütülür.
+
+![İki grafik: solda hedef yazı ile kontrol grubu birlikte yükseliyor, sağda yalnızca hedef yazı yükselirken kontrol grubu düz kalıyor.](gorseller/kontrol-grubu.svg "Aynı soru, iki farklı cevap. Kontrol grubu da yükseldiyse sebep tekil sayfa değildir; yalnızca hedef yazı hareket ettiyse karar tablosu uygulanabilir.")
 
 **Nasıl teşhis edilir:** Yayın anında, aynı kategoriden ve o dönemde dokunmayacağınız 3-5 yazıyı seçip kayda geçirin. 28. günde hedef yazının değişimini bu grubun medyan değişimiyle birlikte okuyun. Grup da aynı yönde hareket ettiyse sebep tekil sayfa değildir. Yöntemin ayrıntısı [kontrol grubu teriminde](#/terim/kontrol-grubu).
 

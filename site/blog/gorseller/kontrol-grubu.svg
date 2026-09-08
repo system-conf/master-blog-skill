@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 362" width="900" height="362" role="img"
+     aria-label="Kontrol grubu karşılaştırması: solda hedef yazı ile kontrol grubu birlikte yükseliyor, sağda yalnızca hedef yazı yükseliyor.">
+  <style>
+    .bg{fill:#0B0B0B} .eksen{stroke:#242424;stroke-width:1}
+    .b{font-family:Archivo,Helvetica,Arial,sans-serif;font-weight:700;fill:#FFFFFF}
+    .t{font-family:Manrope,Helvetica,Arial,sans-serif;fill:#A8A29E}
+    .m{font-family:'JetBrains Mono',Menlo,monospace;fill:#8A837D}
+    .hedef{stroke:#FF6A00;stroke-width:3;fill:none;stroke-linecap:round}
+    .kontrol{stroke:#57534E;stroke-width:2.5;fill:none;stroke-dasharray:6 5;stroke-linecap:round}
+  </style>
+  <rect class="bg" width="900" height="362"/>
+  <line x1="450" y1="24" x2="450" y2="306" stroke="#242424" stroke-dasharray="4 6"/>
+
+  <!-- SOL -->
+  <text class="m" x="40" y="34" font-size="11" letter-spacing="1.6">DURUM A</text>
+  <text class="b" x="40" y="60" font-size="15">İkisi birlikte yükseldi</text>
+  <line class="eksen" x1="40" y1="220" x2="400" y2="220"/>
+  <line class="eksen" x1="40" y1="90" x2="40" y2="220"/>
+  <path class="kontrol" d="M52 196 L140 184 L228 158 L316 140 L388 128"/>
+  <path class="hedef"   d="M52 202 L140 188 L228 160 L316 138 L388 122"/>
+  <text class="m" x="52" y="238" font-size="10">yayın</text>
+  <text class="m" x="352" y="238" font-size="10">28. gün</text>
+  <text class="t" x="40" y="268" font-size="13">Sebep tekil sayfa <tspan fill="#FF9A4D" font-weight="700">değil</tspan>.</text>
+  <text class="m" x="40" y="290" font-size="11">Mevsimsellik ya da çekirdek güncelleme olabilir.</text>
+
+  <!-- SAĞ -->
+  <text class="m" x="500" y="34" font-size="11" letter-spacing="1.6">DURUM B</text>
+  <text class="b" x="500" y="60" font-size="15">Yalnızca hedef yükseldi</text>
+  <line class="eksen" x1="500" y1="220" x2="860" y2="220"/>
+  <line class="eksen" x1="500" y1="90" x2="500" y2="220"/>
+  <path class="kontrol" d="M512 196 L600 194 L688 197 L776 193 L848 195"/>
+  <path class="hedef"   d="M512 202 L600 178 L688 148 L776 122 L848 104"/>
+  <text class="m" x="512" y="238" font-size="10">yayın</text>
+  <text class="m" x="812" y="238" font-size="10">28. gün</text>
+  <text class="t" x="500" y="268" font-size="13">Sebep <tspan fill="#FF9A4D" font-weight="700">yazının kendisi</tspan>.</text>
+  <text class="m" x="500" y="290" font-size="11">Karar tablosu uygulanabilir.</text>
+
+  <!-- lejant: altta, taşma riski yok -->
+  <line x1="286" y1="336" x2="312" y2="336" class="hedef"/>
+  <text class="m" x="320" y="340" font-size="10.5">hedef yazı</text>
+  <line x1="430" y1="336" x2="456" y2="336" class="kontrol"/>
+  <text class="m" x="464" y="340" font-size="10.5">kontrol grubu medyanı</text>
+</svg>

@@ -469,7 +469,8 @@ def main():
 
     for y in yazilar:
         yol = "blog/" + y["slug"]
-        ld = ('<script type="application/ld+json">' + json.dumps({
+        ilk_gorsel = re.search(r'!\[[^\]]*\]\(([^)\s]+)', y["govde"])
+        ld_veri = {
             "@context": "https://schema.org", "@type": "BlogPosting",
             "headline": y["seoBaslik"], "description": y["ozet"],
             "datePublished": y["tarih"], "dateModified": y["tarih"],
@@ -477,7 +478,12 @@ def main():
             "publisher": {"@type": "Organization", "name": "master-blog", "url": SITE_URL},
             "mainEntityOfPage": {"@type": "WebPage", "@id": SITE_URL + yol + "/"},
             "inLanguage": "tr-TR",
-        }, ensure_ascii=False) + "</script>\n")
+        }
+        # Kural: schema'daki image sayfada GERÇEKTEN görünen görsel olmalı.
+        if ilk_gorsel:
+            ld_veri["image"] = SITE_URL + yol.rsplit("/", 1)[0] + "/" + ilk_gorsel.group(1)
+        ld = ('<script type="application/ld+json">'
+              + json.dumps(ld_veri, ensure_ascii=False) + "</script>\n")
         toplam += sayfa_yaz(yol, esc_attr(y["seoBaslik"] + " — master-blog"), esc_attr(y["ozet"]),
                             statik_linkler(render_[yol]), "assets/style.css", "assets/app.js", kabuk, ld)
 
@@ -557,6 +563,15 @@ def main():
         hedef_dosya.parent.mkdir(parents=True, exist_ok=True)
         hedef_dosya.write_text(f["text"], encoding="utf-8")
     (DOCS / "kur.sh").write_text(kur_scripti(), encoding="utf-8")
+
+    # blog görselleri
+    gorsel_dizin = SITE / "blog" / "gorseller"
+    if gorsel_dizin.exists():
+        hedef_g = DOCS / "blog" / "gorseller"
+        hedef_g.mkdir(parents=True, exist_ok=True)
+        for g in gorsel_dizin.iterdir():
+            if g.is_file():
+                shutil.copyfile(g, hedef_g / g.name)
 
     (DOCS / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}sitemap.xml\n", encoding="utf-8")

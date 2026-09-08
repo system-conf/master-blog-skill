@@ -97,6 +97,34 @@ def t_sahte_soru():
     assert m["durum"] == "uyari", f"4 sahte soru başlığı soru sayıldı: {m['detay']}"
     assert m["detay"].startswith("0/4"), f"0/4 bekleniyordu: {m['detay']}"
 
+# --- Görsel: ![alt](src "başlık") biçimi tanınmalı, alt metni denetlenmeli ---
+def t_gorsel_baslikli():
+    f = FIX / "gorselli.md"
+    f.write_text("""---
+baslik: "Görsel Testi"
+ozet: "Markdown görsel başlığı sözdiziminin alt metin denetimini bozup bozmadığını ölçen fixture dosyasıdır."
+tarih: 2026-09-08
+---
+
+## Bölüm
+
+![Kreş bahçesinde iki kişilik ahşap salıncak, çevresinde kauçuk zemin](a.svg "Açıklama satırı")
+
+![](b.svg "Alt metni olmayan görsel")
+
+| A | B |
+|---|---|
+| 1 | 2 |
+""", encoding="utf-8")
+    try:
+        r, _ = calistir("gorselli.md")
+        m = madde(r, 38, "Görsel")
+        assert "görsel yok" not in m["detay"], "başlıklı görseller hiç görülmedi"
+        assert m["durum"] == "uyari" and "alt metni yok" in m["detay"], \
+            f"alt metni boş görsel yakalanmadı: {m['detay']}"
+    finally:
+        f.unlink(missing_ok=True)
+
 # --- Hata 4: kelime içi tireler kelime sayısını şişiriyordu ---
 def t_tire():
     r, _ = calistir("tireli-kelimeler.md")
@@ -250,6 +278,7 @@ for ad, fn in [
     ("madde 14+18 · Türkçe İ ile başlayan hedef kelime", t_turkce_i),
     ("madde 14 · şapkalı harf katlanıyor (zekâ = zeka)", t_sapka),
     ("madde 19 · sahte soru başlıkları soru sayılmıyor", t_sahte_soru),
+    ("madde 38 · başlıklı görsel tanınıyor, alt metni denetleniyor", t_gorsel_baslikli),
     ("madde 22 · kelime içi tireler sayımı şişirmiyor", t_tire),
     ("BOM'lu dosyada frontmatter okunuyor", t_bom),
     ("madde 36 · iç link tam eşleşme arıyor", t_onek_link),

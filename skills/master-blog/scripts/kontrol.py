@@ -114,7 +114,7 @@ def govde_temizle(body):
     """Kod blokları, tablo işaretleri, URL'ler ve markdown sözdizimi düşülür."""
     t = re.sub(r"```.*?```", " ", body, flags=re.S)
     t = re.sub(r"`[^`]*`", " ", t)
-    t = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", t)
+    t = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", t)   # başlıklı görsel dâhil
     t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)
     t = re.sub(r"^\s*\|.*$", " ", t, flags=re.M)
     t = re.sub(r"https?://\S+", " ", t)
@@ -416,7 +416,8 @@ def main():
                "hepsi mevcut" if not eksik else f"bulunamadı: {', '.join(eksik[:3])}")
 
     # --- 38 · görsel alt metni ---
-    gorseller = re.findall(r"!\[([^\]]*)\]\(([^)\s]+)\)", body)
+    # Markdown görsel başlığı: ![alt](src "açıklama") — eski desen boşluk yüzünden eşleşmiyordu
+    gorseller = re.findall(r'!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)', body)
     if not gorseller:
         r.ekle(38, "Görsel alt metni", "gecti", "görsel yok")
     else:

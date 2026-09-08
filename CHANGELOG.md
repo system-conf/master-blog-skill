@@ -3,6 +3,23 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.7.0] — 2026-09-08
+
+### Eklendi
+- **Blog görselleri.** `site/blog/gorseller/` → `docs/blog/gorseller/`; markdown'da
+  `![alt](src "açıklama")` artık `<figure>` + `<figcaption>` olarak render ediliyor,
+  `loading="lazy"` ve responsive genişlikle.
+- İlk yazıya **iki bilgi taşıyan SVG diyagram** eklendi (dekoratif değil): kanibalizasyonda
+  sinyal bölünmesi ve kontrol grubu karşılaştırması. Site paletiyle aynı, ~4 KB, her
+  ölçekte net.
+- `BlogPosting` schema'sına `image` alanı — **yalnızca sayfada gerçekten görünen görselden**
+  türetiliyor (Aşama 9'un kendi kuralı).
+
+### Düzeltildi
+- **`kontrol.py` markdown görsel başlığını tanımıyordu.** `![alt](src "açıklama")`
+  biçimindeki görseller hiç görülmüyordu; madde 38 "görsel yok" diyordu. İlk görselli
+  yazımızda ortaya çıktı — dogfooding'in ikinci somut getirisi. (19. test eklendi.)
+
 ## [1.6.0] — 2026-09-08
 
 Üç mekanizma eklendi. Ortak noktaları: hiçbiri içerik şişirmiyor, üçü de **yazılı olan

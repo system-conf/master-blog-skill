@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#FF6A00" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#FF6A00" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#050505"/>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <rect x="80" y="86" width="72" height="72" rx="18" fill="#FF6A00"/>
+  <g stroke="#100600" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M99 107 L116 122 L99 137"/><path d="M124 141 L137 141"/>
+  </g>
+  <text x="172" y="134" font-family="Archivo,Helvetica,Arial,sans-serif" font-weight="700"
+        font-size="34" fill="#FFFFFF" letter-spacing="-0.5">master-blog</text>
+  <text x="80" y="290" font-family="Archivo,Helvetica,Arial,sans-serif" font-weight="800"
+        font-size="72" fill="#FFFFFF" letter-spacing="-2.6">Yazan değil,</text>
+  <text x="80" y="372" font-family="Archivo,Helvetica,Arial,sans-serif" font-weight="800"
+        font-size="72" fill="#FF6A00" letter-spacing="-2.6">yayına hazırlayan.</text>
+  <text x="80" y="440" font-family="Manrope,Helvetica,Arial,sans-serif"
+        font-size="25" fill="#A8A29E">Claude için uçtan uca SEO/GEO içerik üretim skill'i</text>
+  <line x1="80" y1="496" x2="1120" y2="496" stroke="#242424"/>
+  <text x="80" y="542" font-family="'JetBrains Mono',Menlo,monospace" font-size="19" fill="#8A837D">
+    13 aşama · 2 kapı · 43 maddelik kontrol · 66 terim</text>
+  <text x="80" y="576" font-family="'JetBrains Mono',Menlo,monospace" font-size="19" fill="#FF9A4D">
+    system-conf.github.io/master-blog-skill</text>
+</svg>
