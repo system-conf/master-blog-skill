@@ -3,6 +3,30 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.9.0] — 2026-09-09
+
+### Eklendi
+- **`references/medya-brief.md` — görsel kararı artık sınıflandırmayla veriliyor.**
+  Üç yol: **diyagram** (skill SVG'yi kendi yazar — yapay zekâ görsel modelleri etiketli
+  şemada okunaksız sahte metin üretir), **fotoğraf/illüstrasyon** (skill tam bir prompt
+  paketi üretir: konum, prompt, negatif kısıtlar, en-boy, dosya adı, alt metin taslağı),
+  **gerek yok** (zorlanmaz). Dekoratif stok görsel eklenmez.
+- Diyagramlar için **ev stili**: viewBox zorunlu, dış font yok, proje paleti, `role="img"`
+  + `aria-label`, metin ≥10,5px, kenar payı, <8 KB. Hepsi dün diyagram yazarken
+  öğrenilen somut derslerden.
+- **12. kırmızı çizgi — sahte görsel yasağı.** Yapay zekâ ile üretilmiş görsel, gerçek gibi
+  sunulan bir şeyi tasvir edemez: sahte ekip fotoğrafı, sahte ürün görseli, sahte ekran
+  görüntüsü, sahte sertifika. Ayrım: görselin işi **anlatmak** mı **kanıtlamak** mı?
+- **`kontrol.py` madde 44:** referans edilen görsel dosyası gerçekten var mı, formatı ve
+  ağırlığı uygun mu, SVG ise `viewBox` ve `aria-label` yerinde mi. **Kırık görsel yolu
+  artık blokaj** — bu hata daha önce yalnızca tarayıcıda fark edilmişti.
+- Kontrol listesi 43 → **46 madde** (44-46: medya).
+- 2 test daha (21): kırık görsel yolu ve SVG ev stili.
+
+### Düzeltildi
+- Madde sayısı `surum.json` içinde sabit yazılıydı; artık listeden sayılıyor.
+- Sürüklenme testi de sabit sayı kullanıyordu; o da kaynağa bağlandı.
+
 ## [1.8.0] — 2026-09-08
 
 Sürüm ve tarih bilgisi sitede **12 yerde sabit yazılmıştı** ve sürümler v1.0'dan v1.3'e

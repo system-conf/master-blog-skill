@@ -222,6 +222,64 @@ def canli_denetle(url, r, title, desc, kelime):
         r.ekle(40, "Hedef kelime render edildi", "gecti", "var")
 
 
+GORSEL_UZANTI = {".webp", ".avif", ".png", ".jpg", ".jpeg", ".svg", ".gif"}
+GORSEL_AGIRLIK = 200 * 1024        # gövde görseli için üst sınır
+
+
+def png_boyut(veri):
+    if veri[:8] == b"\x89PNG\r\n\x1a\n" and veri[12:16] == b"IHDR":
+        return int.from_bytes(veri[16:20], "big"), int.from_bytes(veri[20:24], "big")
+    return None
+
+
+def gorselleri_denetle(dosya_yolu, gorseller, r):
+    """Madde 44: referans edilen görsel dosyası gerçekten var mı, formatı ve ağırlığı uygun mu.
+
+    Kırık görsel yolu daha önce yalnızca tarayıcıda fark edildi; kaynak dosyaya bakan
+    hiçbir kontrol yakalamamıştı. Bu fonksiyon o boşluğu kapatır.
+    """
+    kok = os.path.dirname(os.path.abspath(dosya_yolu))
+    eksik, agir, kotu_format, svg_sorun = [], [], [], []
+    for alt, src in gorseller:
+        if src.startswith(("http://", "https://", "data:")):
+            continue
+        yol = os.path.normpath(os.path.join(kok, src))
+        if not os.path.exists(yol):
+            eksik.append(src)
+            continue
+        uzanti = os.path.splitext(yol)[1].lower()
+        if uzanti not in GORSEL_UZANTI:
+            kotu_format.append(src)
+            continue
+        boyut = os.path.getsize(yol)
+        if uzanti != ".svg" and boyut > GORSEL_AGIRLIK:
+            agir.append(f"{src} ({boyut // 1024} KB)")
+        if uzanti == ".svg":
+            try:
+                icerik = open(yol, encoding="utf-8").read(4000)
+            except OSError:
+                svg_sorun.append(f"{src} (okunamadı)")
+                continue
+            if "viewBox" not in icerik:
+                svg_sorun.append(f"{src} (viewBox yok — ölçeklenmez)")
+            elif not re.search(r'aria-label="[^"]{10,}"', icerik):
+                svg_sorun.append(f"{src} (aria-label yok ya da çok kısa)")
+
+    if eksik:
+        r.ekle(44, "Görsel dosyaları", "blokaj", "referans var dosya yok: " + ", ".join(eksik[:3]))
+    elif not gorseller:
+        r.ekle(44, "Görsel dosyaları", "gecti", "görsel yok")
+    else:
+        r.ekle(44, "Görsel dosyaları", "gecti", f"{len(gorseller)} görselin tamamı mevcut")
+    if kotu_format:
+        r.ekle(44, "Görsel formatı", "uyari", "desteklenmeyen uzantı: " + ", ".join(kotu_format[:3]))
+    if agir:
+        r.ekle(44, "Görsel ağırlığı", "uyari",
+               f"{GORSEL_AGIRLIK // 1024} KB üstü: " + ", ".join(agir[:3]))
+    if svg_sorun:
+        r.ekle(44, "SVG ev stili", "uyari", "; ".join(svg_sorun[:3]))
+
+
 class Rapor:
     def __init__(self):
         self.satir = []
@@ -437,6 +495,8 @@ def main():
     # --- ek: frontmatter tarih ---
     tarih = next((fm[k] for k in TARIH_ALAN if fm.get(k)), "")
     r.ekle(0, "Yayın tarihi alanı", "gecti" if tarih else "uyari", tarih or "yok")
+
+    gorselleri_denetle(a.dosya, gorseller, r)
 
     # --- 40 · canli URL: markdown'da dogru olan sablonda kaybolabilir ---
     if a.url:

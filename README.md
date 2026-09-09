@@ -12,11 +12,12 @@ Claude için uçtan uca SEO/GEO içerik üretim skill'i + onu anlatan dokümanta
 skills/master-blog/          ← kurulacak skill (bu klasörü kopyala)
   SKILL.md                    13 aşamalı süreç, 2 atlanamaz kapı
   references/
-    yayin-oncesi-kontrol.md   43 maddelik denetim listesi
+    yayin-oncesi-kontrol.md   46 maddelik denetim listesi
     terimler-sozlugu.md       ÜRETİLİR — elle düzenleme
     schema-ve-geo.md          yapılandırılmış veri + AI motoru notları
     kaynaklar.md              zamana bağlı iddiaların kaynak kaydı (3 ayda bir tazele)
     kullanim-senaryolari.md   6 proje profili, çalışma modu, eşik uyarlama tablosu
+    medya-brief.md            görsel kararı: diyagram / prompt / gerek yok + sahte görsel yasağı
     yazim-katmanlari.md       Aşama 5-9: SEO, GEO, E-E-A-T, bağlantı, teknik
     yayin-ve-olcum.md         Aşama 11-12 + arşiv kararı + güncelleme modu
   scripts/kontrol.py          mekanik yayın öncesi kontrol (Aşama 10a)
@@ -163,7 +164,7 @@ Aynı dosyada eşik uyarlama tablosu var — yeni bir sitede `IC_LINK_MIN = 4` s
 
 ## Mekanik kontrol
 
-43 maddelik listenin ölçülebilir kısmını gerçekten sayar — modelin "muhtemelen tamam"
+46 maddelik listenin ölçülebilir kısmını gerçekten sayar — modelin "muhtemelen tamam"
 demesini engeller:
 
 ```bash

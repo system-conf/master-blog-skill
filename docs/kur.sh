@@ -1,7 +1,7 @@
 #!/bin/sh
 # master-blog · kurulum
 # Kaynak : https://github.com/system-conf/master-blog-skill
-# Ne yapar: 13 dosyayı indirir, hedef dizine yazar, kurulumu doğrular.
+# Ne yapar: 14 dosyayı indirir, hedef dizine yazar, kurulumu doğrular.
 # Başka hiçbir şey yapmaz — ne PATH'e dokunur, ne kabuk profiline, ne ağa veri yollar.
 set -eu
 
@@ -27,6 +27,7 @@ DOSYALAR="SKILL.md \
      references/kullanim-senaryolari.md \
      references/yazim-katmanlari.md \
      references/yayin-ve-olcum.md \
+     references/medya-brief.md \
      scripts/kontrol.py \
      scripts/surum-kontrol.py \
      scripts/olcum.py \

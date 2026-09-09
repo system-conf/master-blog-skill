@@ -125,6 +125,60 @@ tarih: 2026-09-08
     finally:
         f.unlink(missing_ok=True)
 
+# --- Madde 44: kırık görsel yolu BLOKAJ olmalı (daha önce yalnızca tarayıcıda görülmüştü) ---
+def t_gorsel_kirik_yol():
+    f = FIX / "kirik-gorsel.md"
+    f.write_text("""---
+baslik: "Kırık Görsel"
+ozet: "Var olmayan bir görsele referans verildiğinde denetçinin blokaj verip vermediğini ölçen fixture."
+tarih: 2026-09-09
+---
+
+## Bölüm
+
+![Bu görsel dosya sisteminde yok](gorseller/olmayan.svg "açıklama")
+
+| A | B |
+|---|---|
+| 1 | 2 |
+""", encoding="utf-8")
+    try:
+        r, kod = calistir("kirik-gorsel.md")
+        m = madde(r, 44, "Görsel dosya")
+        assert m["durum"] == "blokaj", f"kırık görsel yolu blokaj vermedi: {m['detay']}"
+        assert kod == 1
+    finally:
+        f.unlink(missing_ok=True)
+
+# --- Madde 44: SVG ev stili (viewBox + aria-label) denetleniyor mu ---
+def t_gorsel_svg_stili():
+    d = FIX / "gorseller"; d.mkdir(exist_ok=True)
+    svg = d / "eksik.svg"; f = FIX / "svg-stili.md"
+    svg.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"></svg>',
+                   encoding="utf-8")
+    f.write_text("""---
+baslik: "SVG Stili"
+ozet: "viewBox ve aria-label eksik bir SVG'nin ev stili denetiminden geçip geçmediğini ölçen fixture."
+tarih: 2026-09-09
+---
+
+## Bölüm
+
+![Ev stiline uymayan bir vektör diyagram örneği burada](gorseller/eksik.svg)
+
+| A | B |
+|---|---|
+| 1 | 2 |
+""", encoding="utf-8")
+    try:
+        r, _ = calistir("svg-stili.md")
+        m = madde(r, 44, "SVG ev stili")
+        assert m["durum"] == "uyari" and "viewBox" in m["detay"], f"viewBox eksikliği yakalanmadı: {m}"
+    finally:
+        f.unlink(missing_ok=True); svg.unlink(missing_ok=True)
+        try: d.rmdir()
+        except OSError: pass
+
 # --- Hata 4: kelime içi tireler kelime sayısını şişiriyordu ---
 def t_tire():
     r, _ = calistir("tireli-kelimeler.md")
@@ -221,8 +275,10 @@ def t_denetim_suruklenme():
         hedef = pathlib.Path(t) / "master-blog"
         shutil.copytree(KOK / "skills" / "master-blog", hedef)
         md = hedef / "SKILL.md"
-        md.write_text(md.read_text(encoding="utf-8").replace("43 maddelik", "40 maddelik"),
-                      encoding="utf-8")
+        liste = (hedef / "references" / "yayin-oncesi-kontrol.md").read_text(encoding="utf-8")
+        gercek = len(re.findall(r"^\s*\d+\.\s", liste, re.M))
+        md.write_text(re.sub(r"\b\d+(\s*maddelik)", str(gercek - 3) + r"\1",
+                             md.read_text(encoding="utf-8")), encoding="utf-8")
         p = subprocess.run([sys.executable, str(DENETIM), str(hedef), "--json"],
                            capture_output=True, text=True)
         r = json.loads(p.stdout)
@@ -279,6 +335,8 @@ for ad, fn in [
     ("madde 14 · şapkalı harf katlanıyor (zekâ = zeka)", t_sapka),
     ("madde 19 · sahte soru başlıkları soru sayılmıyor", t_sahte_soru),
     ("madde 38 · başlıklı görsel tanınıyor, alt metni denetleniyor", t_gorsel_baslikli),
+    ("madde 44 · kırık görsel yolu blokaj veriyor", t_gorsel_kirik_yol),
+    ("madde 44 · SVG ev stili denetleniyor", t_gorsel_svg_stili),
     ("madde 22 · kelime içi tireler sayımı şişirmiyor", t_tire),
     ("BOM'lu dosyada frontmatter okunuyor", t_bom),
     ("madde 36 · iç link tam eşleşme arıyor", t_onek_link),
