@@ -1,4 +1,4 @@
-# Yayın Öncesi Kontrol Listesi (46 madde)
+# Yayın Öncesi Kontrol Listesi (53 madde)
 
 > Son gözden geçirme: 8 Eylül 2026.
 >
@@ -93,12 +93,27 @@ Blokaj maddeleri yıldızlıdır (*).
 46. Görsel kararı sınıflandırmayla verildi mi — diyagram (skill üretir) · fotoğraf
     (prompt üretilir) · gerek yok? Dekoratif stok görsel eklenmedi mi?
 
+## J. Üslup (47-53)
+
+47. Yazı konuyu tanıtan bir cümleyle mi başlıyor? (somut olay, nesne, diyalog ya da
+    doğrulanabilir rakamla açılmalı; "günümüzde", "bu yazıda" gibi klişe açılış yok)
+48. Cümle ritmi ölçüldü mü — ortalama bantta, **standart sapma ≥ 5**, uzun cümle oranı
+    sınırda mı? (Bölücünün kaba olmadığından emin ol; kaba bölücü yanlış bulgu üretir)
+49. Üslup klişeleri bin kelimede eşiği aşmıyor mu?
+50. Hitap tutarlı mı — "sen" ve "siz" karışmıyor mu?
+51. Yazı bir tez savunuyorsa karşı argümana bölüm ayrılmış mı ve karşı argüman dürüstçe
+    mi kurulmuş? (Tanım yazısında uygulanmaz)
+52. Okurun kopyalayıp kendi işinde kullanabileceği en az bir varlık var mı?
+    (şablon metin, kontrol listesi, karar tablosu, adım planı)
+53. Ticari köprü doğru yerde mi — ürün adı ilk yarıda geçmiyor, tezin sonucu olarak
+    giriyor ve yazı satış cümlesiyle bitmiyor mu? (Ticari içerikte)
+
 ---
 
 ### Rapor şablonu
 
 ```
-Öz denetim: __/46
+Öz denetim: __/53
 🔴 Blokaj : (yoksa "yok")
 🟡 Uyarı  : (madde + neden bilerek böyle)
 Karar     : YAYINA HAZIR / DÜZELTME GEREKİYOR

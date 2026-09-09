@@ -102,7 +102,39 @@ karşılaştırmasında hepsine bakılır.
 **Doğrulama notu (7 Eylül 2026):** Bu dosyadaki dış bağlantıların tamamı `curl` ile
 kontrol edilmiş ve 200 döndüğü doğrulanmıştır.
 
-## 8. Kalıcı birincil kaynaklar
+## 8. Dış katkılar
+
+Skill'e dışarıdan gelen ve uygulanan katkılar burada kayıtlıdır. Amaç, bir kuralın
+**nereden geldiğini** ve **hangi sınıfta doğrulandığını** kaybetmemek.
+
+| Katkı | Tarih | Sınıf | Kaynak |
+|---|---|---|---|
+| Üslup katmanı (Aşama 5.5): açılış kuralı, cümle ritmi + standart sapma, klişe listesi, karşı-tez, kopyalanabilir varlık, ticari köprü doktrini, hitap tutarlılığı | Eylül 2026 | SEKTÖR | Saha geri bildirimi — Türkçe bir SaaS içerik ekibi, 53 yayınlanmış yazılık arşivden çıkarılmış iç doktrin |
+
+**Eşiklerin sınıfı önemli.** Cümle ortalaması 10-18, standart sapma ≥5, bin kelimede 2
+klişe — bunlar **ölçülmüş değerler değil**, katkıyı veren ekibin kendi korpusundaki
+kalibrasyonudur. `ÖLÇÜM` değil `SEKTÖR` sınıfındadırlar; varsayılan olarak alınır,
+projede `master-blog.toml` ile kalibre edilir.
+
+**Uygulanmayan bir öneri ve gerekçesi.** Aynı belge, ölçüm tablosuna okuma süresi/derinliği
+satırları önerirken *"Google uzun vadede bu farkı görüyor"* gerekçesini kullandı. Google
+okuma süresini (dwell time) ve hemen çıkma oranını doğrudan sıralama faktörü olarak
+kullandığını **reddediyor**; 2024 API sızıntısı içeride "uzun tıklama/kısa tıklama"
+izlendiğini gösteriyor, yani konu tartışmalı. Satırlar **editoryal teşhis** olarak
+alındı, sıralama gerekçesi alınmadı (12. kırmızı çizgi).
+
+| İddia | Sınıf | Kaynak |
+|---|---|---|
+| Google dwell time ve bounce rate'i doğrudan sıralama faktörü olarak kullanmıyor | SEKTÖR | [Rankability](https://www.rankability.com/blog/dwell-time-ranking-factor/) · [Rankxon](https://rankxon.com/does-bounce-rate-affect-google-rankings/) |
+| 2024 API sızıntısı içeride "uzun tıklama" izlendiğini gösteriyor | SEKTÖR | [Leadership in SEO](https://www.leadershipinseo.com/p/how-google-uses-engagement-metrics) |
+
+**Yöntem notu.** Belge, bu skill'in dosyaları hakkında üç somut gözlem de içeriyordu
+(aşama sayısı, madde sayısı, blokaj sayımı). Üçü de dosyalarda doğrulanamadı; gönderen
+zaten bunları "okuma aracımızın özetlemesinden kaynaklanıyor olabilir" notuyla
+işaretlemişti. **Kural:** dış geri bildirimin *önerileri* değerlendirilir, *dosya
+gözlemleri* her zaman kaynaktan doğrulanır.
+
+## 9. Kalıcı birincil kaynaklar
 
 Bu sayfalar tarihe bağlı değil; doğrulama yaparken ilk bakılacak yerler.
 

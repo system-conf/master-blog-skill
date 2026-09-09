@@ -3,6 +3,44 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.10.0] — 2026-09-09
+
+Dış saha geri bildirimi üzerine **Aşama 5.5 — Üslup** katmanı eklendi. Katkı,
+Türkçe bir SaaS içerik ekibinin 53 yayınlanmış yazılık arşivinden çıkardığı iç
+doktrinden geldi; `kaynaklar.md` → dış katkılar bölümünde kayıtlı.
+
+### Eklendi
+- **`references/uslup.md`** — SEO ile GEO arasında duran katman: somut açılış kuralı,
+  cümle ritmi, üslup klişeleri, karşı-tez bölümü, kopyalanabilir varlık, ticari köprü
+  doktrini ve dile özgü kurallar.
+- **`kontrol.py` madde 47-50:** açılış kalıbı · **cümle ritmi (ortalama, standart sapma,
+  uzun cümle oranı)** · üslup klişeleri (bin kelimede) · hitap tutarlılığı (sen/siz).
+  Klişe ve yasak açılış listeleri `master-blog.toml` ile genişletilebilir.
+- Kontrol listesi 46 → **53 madde** (47-50 mekanik, 51-53 yargı: karşı-tez,
+  kopyalanabilir varlık, ticari köprü).
+- `kaynaklar.md`'ye **dış katkılar** bölümü: katkının sınıfı (`SEKTÖR`), eşiklerin
+  ölçülmüş olmadığı, uygulanmayan öneri ve gerekçesi.
+- 2 test daha (23): cümle bölücünün kısaltma/ondalık koruması, üslup kontrollerinin
+  tetiklenmesi.
+
+### Uygulanmayan öneri
+Geri bildirim, ölçüm tablosuna okuma süresi satırları önerirken *"Google uzun vadede bu
+farkı görüyor"* gerekçesini kullanıyordu. Google dwell time ve bounce rate'i doğrudan
+sıralama faktörü olarak kullandığını **reddediyor** (2024 API sızıntısı içeride "uzun
+tıklama" izlendiğini gösteriyor, konu tartışmalı). Satırlar **editoryal teşhis** olarak
+alındı, sıralama gerekçesi 12. kırmızı çizgi gereği alınmadı.
+
+### Düzeltildi
+- **Açılış kontrolü sessizce işlevsizdi:** `govde_temizle` başlık satırlarını silmiyor,
+  yalnızca `#` işaretini boşluğa çeviriyordu; kontrol ilk paragraf sanıp başlık
+  kalıntısına bakıyordu. Artık ilk *proza* paragrafına bakıyor.
+
+### Ölçüm notu
+Cümle ritmi ölçütünü kendi iki yazımızda test ederken **kaba bir cümle bölücü yanlış
+bulgu üretti**: iki nokta üst üsteden de bölünce cümle sayısı %20 şişti, ortalama
+10,8→8,5, sapma 5,8→3,9 düştü. Düzgün bölücüyle ikisi de eşiği geçiyor. `uslup.md`
+bu tuzağı ayrıca belgeliyor.
+
 ## [1.9.0] — 2026-09-09
 
 ### Eklendi

@@ -27,7 +27,7 @@ Most content tooling stops at "here is your draft". This skill runs the work **b
 | **3** | **CANNIBALIZATION GATE** | CLEAN / CHANGE ANGLE / UPDATE — overlap computed as a number **[cannot be skipped]** |
 | 4 | Brief | A 16-line contract incl. 8-12 fan-out sub-questions — no body text without approval |
 | 5-9 | Writing layers | SEO · GEO · E-E-A-T · linking · technical package |
-| **10** | **SELF-AUDIT GATE** | 46 items; a red item stops publication **[cannot be skipped]** |
+| **10** | **SELF-AUDIT GATE** | 53 items; a red item stops publication **[cannot be skipped]** |
 | 11 | Publish + verify | Build, deploy, live URL 200, publication report |
 | 12 | Measurement | 14/28/90 days + a control group |
 
@@ -93,7 +93,7 @@ Faking approval is worse than not checking at all.
 
 ## The mechanical checker
 
-The measurable half of the 46-item gate isn't left to judgement:
+The measurable half of the 53-item gate isn't left to judgement:
 
 ```bash
 python3 skills/master-blog/scripts/kontrol.py <post.md> --kelime "target keyword" --net

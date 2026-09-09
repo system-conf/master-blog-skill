@@ -1,10 +1,10 @@
 ---
 name: master-blog
-description: "Herhangi bir web projesi için uçtan uca blog/içerik üretir: veriden konu seçer, arama niyetini çözer, YAZMADAN ÖNCE kanibalizasyon denetimi yapar, brief çıkarır, SEO + GEO + E-E-A-T katmanlarını tek tek uygular, iç bağlantı ve schema paketini kurar, 46 maddelik öz denetim kapısından geçirir, yayınlar ve canlı doğrular. Şu isteklerde kullan: 'blog yazalım', 'yeni içerik ekle', 'şu kelime için yazı lazım', 'bu yazıyı güncelle/tazele', 'içerik planı çıkar', 'bu konuyu kim yiyor'. SADECE DENETİM istendiğinde (rapor, dosya değiştirmeden) bunu değil seo-denetim skill'ini kullan."
+description: "Herhangi bir web projesi için uçtan uca blog/içerik üretir: veriden konu seçer, arama niyetini çözer, YAZMADAN ÖNCE kanibalizasyon denetimi yapar, brief çıkarır, SEO + GEO + E-E-A-T katmanlarını tek tek uygular, iç bağlantı ve schema paketini kurar, 53 maddelik öz denetim kapısından geçirir, yayınlar ve canlı doğrular. Şu isteklerde kullan: 'blog yazalım', 'yeni içerik ekle', 'şu kelime için yazı lazım', 'bu yazıyı güncelle/tazele', 'içerik planı çıkar', 'bu konuyu kim yiyor'. SADECE DENETİM istendiğinde (rapor, dosya değiştirmeden) bunu değil seo-denetim skill'ini kullan."
 argument-hint: "[konu | hedef kelime | mevcut yazı yolu] (boşsa veriden aday çıkarır)"
 license: MIT
 metadata:
-  surum: "1.9.0"
+  surum: "1.10.0"
   bilgi-tazeligi: "2026-09-08"
   sonraki-gozden-gecirme: "2026-12-08"
 allowed-tools: >-
@@ -19,7 +19,7 @@ allowed-tools: >-
      önce bu satırı okumak kullanıcının hakkıdır. İzin bir sonraki mesajda düşer;
      kalıcı istiyorsan projenin permissions ayarını kullan. -->
 
-# Master Blog Skill (v1.9)
+# Master Blog Skill (v1.10)
 
 Sen, üzerinde çalıştığın projenin **içerik editörü ve SEO/GEO stratejistisin**. Çıktı dili
 varsayılan **Türkçe**; proje başka dilde yayın yapıyorsa projenin dilini kullan.
@@ -53,8 +53,8 @@ geçilmeden ilerlenmez.
 | 2 | Niyet + SERP | Niyet etiketi + doğru format kararı |
 | **3** | **KANİBALİZASYON KAPISI** | TEMİZ / AÇI DEĞİŞTİR / GÜNCELLE — oran sayıyla **[ATLANAMAZ]** |
 | 4 | Brief | 16 satırlık sözleşme + fan-out alt sorular — onaysız gövde yok |
-| 5-9 | Yazım katmanları | SEO · GEO · E-E-A-T · bağlantı · teknik → `yazim-katmanlari.md` |
-| **10** | **ÖZ DENETİM KAPISI** | 46 madde; blokaj varsa yayın yok **[ATLANAMAZ]** |
+| 5-9 | Yazım katmanları | SEO · **üslup** · GEO · E-E-A-T · bağlantı · teknik → `yazim-katmanlari.md` |
+| **10** | **ÖZ DENETİM KAPISI** | 53 madde; blokaj varsa yayın yok **[ATLANAMAZ]** |
 | 11 | Yayın + doğrulama | Build, deploy, URL 200, yayın raporu |
 | 12 | Ölçüm | 14/28/90 gün + kontrol grubu → `yayin-ve-olcum.md` |
 
@@ -299,8 +299,8 @@ en ucuz yerde yakalar.
 
 ## Aşama 5-9 — Yazım katmanları
 
-Beş katman sırayla uygulanır: **5** SEO · **6** GEO/AEO · **7** E-E-A-T · **8** bağlantı
-mimarisi · **9** teknik paket.
+Altı katman sırayla uygulanır: **5** SEO · **5.5** üslup · **6** GEO/AEO · **7** E-E-A-T ·
+**8** bağlantı mimarisi · **9** teknik paket.
 
 > **Gövdeyi yazmadan önce `references/yazim-katmanlari.md` dosyasını OKU.** Eşikler,
 > kurallar ve zayıf/güçlü örnekleri orada. Okumadan yazma; "zaten biliyorum" diye atlama.
@@ -310,6 +310,7 @@ mimarisi · **9** teknik paket.
 | Katman | Bu katman tamamlanmadan ilerlenmez |
 |---|---|
 | 5 · SEO | Title ≤ 60, tek H1, hiyerarşi atlamasız, ilk 100 kelimede cevap, kalıcı slug |
+| 5.5 · Üslup | Somut açılış, cümle ritmi (**sapma ≥ 5**), klişesiz dil, hitap tutarlılığı, kopyalanabilir varlık, karşı-tez (tez varsa), ticari köprünün yeri → `uslup.md` |
 | 6 · GEO | Answer-first cümleler, ≥1 bağımsız tanım, ≥1 tablo, brief'teki fan-out alt sorularının eşlenmesi, özet bölümü |
 | 7 · E-E-A-T | Ölçülebilir iddia, isimli yazar + doğrulanmış profil bağı, kaynak, eski yazılarla tutarlılık |
 | 8 · Bağlantı | 4-6 (arşiv fragment/sonsuz kaydırma ise 6-8) tanımlayıcı iç link, çeşitli anchor, doğrulanmış dış link |
@@ -353,7 +354,7 @@ render edilmiş title/meta/canonical, önizleme direktifleri ve **hedef kelimeni
 edilmiş gövdede gerçekten bulunması** (JavaScript'te kalmışsa bulunmaz). Kaynak dosyaya
 bakan hiçbir kontrol bunu göremez.
 
-**10b — Yargı gerektirenler:** `references/yayin-oncesi-kontrol.md` dosyasındaki **46
+**10b — Yargı gerektirenler:** `references/yayin-oncesi-kontrol.md` dosyasındaki **53
 maddelik listeyi** madde madde çalıştır. Script'in geçtiklerini tekrar sayma; onun
 bakamadıklarına bak: niyet uyumu, kanibalizasyon kararı, kaynak gerçekliği, uydurma
 denetimi, E-E-A-T, iç tutarlılık, anchor anlamlılığı, schema-sayfa örtüşmesi.
@@ -427,6 +428,7 @@ Bu dosyalar gerektiğinde okunur; hepsini baştan yükleme.
 | Dosya | Ne zaman okunur |
 |---|---|
 | `references/yazim-katmanlari.md` | **Aşama 5-9'dan önce, her yazıda** |
+| `references/uslup.md` | **Aşama 5.5'te, her yazıda** |
 | `references/medya-brief.md` | Aşama 9'da, görsel kararı verilirken |
 | `references/yayin-ve-olcum.md` | Aşama 1.5, 11 ve 12'de |
 | `references/yayin-oncesi-kontrol.md` | Aşama 10'da, her yayında |

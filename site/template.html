@@ -572,7 +572,7 @@ const PHASES=[
  {n:'07',t:'E-E-A-T katmanı',d:'Birinci elden deneyim, ölçülebilir iddia, isimli yazar, kaynak ve tutarlılık. Uydurma deneyim yazılmaz.'},
  {n:'08',t:'Bağlantı mimarisi',d:'4-6 tanımlayıcı iç bağlantı, çeşitli anchor metinleri, ters yön link ve curl ile doğrulanmış 0-2 dış kaynak.'},
  {n:'09',t:'Teknik paket',d:'Frontmatter şemaya birebir, medya paketi (schema image = sayfadaki gerçek görsel), BlogPosting + BreadcrumbList, gerçek güncelleme tarihi.'},
- {n:'10',t:'Öz denetim kapısı',d:'46 maddelik kontrol listesi madde madde çalıştırılır. Blokaj maddesi varsa yayın durur.',g:1},
+ {n:'10',t:'Öz denetim kapısı',d:'53 maddelik kontrol listesi madde madde çalıştırılır. Blokaj maddesi varsa yayın durur.',g:1},
  {n:'11',t:'Yayın ve canlı doğrulama',d:'Build, deploy, URL 200 kontrolü, sitemap doğrulaması, indeksleme talebi ve tek ekranlık yayın raporu.'},
  {n:'12',t:'Ölçüm',d:'14/28/90 gün. Yayın anında dokunulmayacak 3-5 yazı kontrol grubu olarak seçilir; hedef yazının değişimi bu grubun medyanıyla birlikte okunur — grup da hareket ettiyse sayfa bazlı teşhis yapılmaz.'}
 ];
@@ -582,7 +582,7 @@ const PROMPTS=[
  {t:'Veriden konu seçimi',p:'master-blog skill\'iyle bu ay için 3 içerik adayı çıkar.\n\nAdayları Search Console verisindeki 8-30 pozisyon bandından seç.\nHer aday için: hedef sorgu, veri sinyali, niyet etiketi ve\nmevcut içerikle kanibalizasyon riski yaz.'},
  {t:'Mevcut yazıyı tazeleme',p:'master-blog skill\'ini güncelleme modunda çalıştır.\n\nDosya: src/content/blog/oyun-grubu-fiyatlari.md\n\nNeyin eskidiğini listele, yalnızca eskiyeni değiştir,\nguncelleme tarihini gerçek değişiklikle birlikte at.'},
  {t:'Kanibalizasyon kontrolü',p:'master-blog skill\'inin 3. aşamasını tek başına çalıştır.\n\nPlanladığım yazı: "salıncak nasıl seçilir"\n\nMevcut blog envanteriyle örtüşme oranını hesapla,\nkararı TEMİZ / AÇI DEĞİŞTİR / GÜNCELLE olarak ver.'},
- {t:'Yayın öncesi denetim',p:'master-blog skill\'inin 46 maddelik yayın öncesi kontrol listesini\nşu taslağa uygula ve sonucu __/43 biçiminde raporla.\n\nBlokaj maddelerini ayrı listele; düzeltmeden yayınlama.'}
+ {t:'Yayın öncesi denetim',p:'master-blog skill\'inin 53 maddelik yayın öncesi kontrol listesini\nşu taslağa uygula ve sonucu __/43 biçiminde raporla.\n\nBlokaj maddelerini ayrı listele; düzeltmeden yayınlama.'}
 ];
 
 /* ============ görünümler ============ */
@@ -595,7 +595,7 @@ function vHome(){
   <div>
     <a class="badge" href="#/kaynaklar"><span class="dot"></span>Açık kaynak · v${SURUM.surum} · Son doğrulama ${SURUM.tazelikTR}</a>
     <h1 class="big">Blog yazan değil,<br><em>yayına hazırlayan</em> skill.</h1>
-    <p class="lede">master-blog, Claude'a bir web projesinde içerik üretmenin tam sürecini öğretir: veriden konu seçimi, kanibalizasyon denetimi, SEO + GEO + E-E-A-T katmanları, 46 maddelik yayın öncesi kapı ve canlı doğrulama.</p>
+    <p class="lede">master-blog, Claude'a bir web projesinde içerik üretmenin tam sürecini öğretir: veriden konu seçimi, kanibalizasyon denetimi, SEO + GEO + E-E-A-T katmanları, 53 maddelik yayın öncesi kapı ve canlı doğrulama.</p>
     <div class="ctarow">
       <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
       <a class="btn" href="#/skill">Skill'i incele</a>
@@ -646,7 +646,7 @@ function vHome(){
       <li>Kanibalizasyon oranı hesaplanır; %50 üstü yazıyı durdurur.</li>
       <li>Teknik bilgi yalnızca proje verisinden alınır; kaynağı yoksa yazılmaz.</li>
       <li>4-6 tanımlayıcı iç bağlantı + doğrulanmış dış kaynak zorunludur.</li>
-      <li>46 maddelik kapı geçilmeden yayın yapılmaz, URL canlı doğrulanır.</li>
+      <li>53 maddelik kapı geçilmeden yayın yapılmaz, URL canlı doğrulanır.</li>
     </ul></div>
   </div>
 </div></section>
@@ -737,7 +737,7 @@ function vSkill(){
       <p style="color:var(--fg2);font-size:16.5px;margin-top:14px;max-width:66ch">
         Claude'u, bir web projesinde içerik üretiminin tamamını yürütebilen bir editöre dönüştürür:
         veriden konu seçer, arama niyetini çözer, yazmadan önce kanibalizasyon denetimi yapar,
-        SEO + GEO + E-E-A-T katmanlarını tek tek uygular, 46 maddelik kapıdan geçirir ve yayını canlı doğrular.</p>
+        SEO + GEO + E-E-A-T katmanlarını tek tek uygular, 53 maddelik kapıdan geçirir ve yayını canlı doğrular.</p>
       <div class="ctarow" style="margin-top:22px">
         <button class="btn pri" onclick="openInstall()">Claude'a Ekle</button>
         <button class="btn" onclick="copyAll()">Tüm skill'i kopyala</button>
@@ -755,7 +755,7 @@ Skill üç şeyi aynı anda güvence altına alır: **doğruluk** (yazılan her 
     <h2 id="ne-yapar">Ne yapıyor?</h2>
     ${md(`Skill, blog yazmayı tek bir "metin üretme" işi olmaktan çıkarıp on üç adımlı, iki kapılı bir sürece dönüştürür. En büyük farkı, **yazmadan önce** yaptığı işlerdedir: proje keşfi, veri gerekçesi, niyet analizi ve kanibalizasyon denetimi. En pahalı hata olan "yanlış yazının tamamını yazmak", en ucuz yerde yakalanır.
 
-İkinci farkı, **yazdıktan sonra** yaptığı işlerdedir: 46 maddelik kontrol listesi, canlı URL doğrulaması ve 28 gün sonrası için ölçüm planı.`)}
+İkinci farkı, **yazdıktan sonra** yaptığı işlerdedir: 53 maddelik kontrol listesi, canlı URL doğrulaması ve 28 gün sonrası için ölçüm planı.`)}
 
     <h2 id="ne-zaman">Ne zaman kullanılır?</h2>
     <div class="ba" style="margin-bottom:20px">
@@ -791,7 +791,7 @@ Skill üç şeyi aynı anda güvence altına alır: **doğruluk** (yazılan her 
       <pre>${esc(p.p)}</pre></div>`).join('')}
 
     <h2 id="kontrol">Mekanik kontrol</h2>
-    ${md(`46 maddelik kapının **ölçülebilir kısmı tahmine bırakılmaz.** Skill, Aşama 10'da önce \`scripts/kontrol.py\` dosyasını çalıştırır:
+    ${md(`53 maddelik kapının **ölçülebilir kısmı tahmine bırakılmaz.** Skill, Aşama 10'da önce \`scripts/kontrol.py\` dosyasını çalıştırır:
 
 \`\`\`
 python3 scripts/kontrol.py yazi.md --kelime "hedef kelime" --net
@@ -1207,7 +1207,7 @@ function vBlog(){
     <h1 style="font-size:clamp(30px,4.4vw,44px);letter-spacing:-.035em;margin-top:12px">Skill'in kendi ürettiği yazılar</h1>
     <p style="color:var(--fg2);max-width:66ch;margin-top:14px;font-size:16px">
       Bu yazıların hepsi master-blog skill'inin 13 aşamalı süreciyle üretildi: kanibalizasyon kapısı
-      çalıştırıldı, brief onaylandı, 46 maddelik kapıdan geçirildi. Her yazının denetim çıktısı sonunda duruyor.</p>
+      çalıştırıldı, brief onaylandı, 53 maddelik kapıdan geçirildi. Her yazının denetim çıktısı sonunda duruyor.</p>
   </div>
   ${POSTS.length ? `<div class="grid3" style="padding-bottom:70px">${POSTS.map(p=>`
     <a class="card" href="#/blog/${p.slug}">

@@ -125,6 +125,51 @@ tarih: 2026-09-08
     finally:
         f.unlink(missing_ok=True)
 
+# --- Madde 48: kaba cümle bölücü yanlış bulgu üretiyordu; kısaltma ve ondalık korunmalı ---
+def t_cumle_bolucu():
+    kaynak = KONTROL.read_text(encoding="utf-8")
+    ns = {}
+    exec(kaynak.split("def main(")[0], ns)
+    metin = ("Bir cümle burada bitiyor. Ikinci cümle de burada. "
+             "Ölçü 3.5 metre olmalı yani yaklaşık bu kadar. "
+             "Kısaltma vb. ifadeler cümleyi bölmemeli tamam mı. "
+             "Şu da bir başlık gibi: ama iki nokta cümle sonu değildir.")
+    c = ns["cumlelere_bol"](metin)
+    assert len(c) == 5, f"5 cümle bekleniyordu, {len(c)} bulundu: {c}"
+    assert any("3.5" in x for x in c), "ondalık sayı bölünmüş"
+    assert any("vb." in x for x in c), "kısaltma bölünmüş"
+
+# --- Madde 47/49/50: üslup kontrolleri tetikleniyor mu ---
+def t_uslup():
+    f = FIX / "uslupsuz.md"
+    f.write_text("""---
+baslik: "Üslup Testi"
+ozet: "Klişe açılış, üslup klişeleri ve karışık hitap kullanan bir metnin denetimden nasıl geçtiğini ölçen fixture."
+tarih: 2026-09-09
+---
+
+## Bölüm
+
+Günümüzde bu konu büyük önem taşımaktadır. Bu yazıda konuyu ele alacağız.
+
+Bu bağlamda şunu söylemek gerekir. Bu doğrultuda ilerleyebilirsiniz. Söz konusu durum
+şüphesiz son derece önemlidir. Bu çerçevede sen de bunu yapabilirsin.
+
+| A | B |
+|---|---|
+| 1 | 2 |
+""", encoding="utf-8")
+    try:
+        r, _ = calistir("uslupsuz.md")
+        m47 = madde(r, 47, "Açılış")
+        assert m47["durum"] == "uyari", f"klişe açılış yakalanmadı: {m47['detay']}"
+        m49 = madde(r, 49, "klişe")
+        assert m49["durum"] == "uyari", f"üslup klişeleri yakalanmadı: {m49['detay']}"
+        m50 = madde(r, 50, "Hitap")
+        assert m50["durum"] == "uyari", f"sen/siz karışımı yakalanmadı: {m50['detay']}"
+    finally:
+        f.unlink(missing_ok=True)
+
 # --- Madde 44: kırık görsel yolu BLOKAJ olmalı (daha önce yalnızca tarayıcıda görülmüştü) ---
 def t_gorsel_kirik_yol():
     f = FIX / "kirik-gorsel.md"
@@ -335,6 +380,8 @@ for ad, fn in [
     ("madde 14 · şapkalı harf katlanıyor (zekâ = zeka)", t_sapka),
     ("madde 19 · sahte soru başlıkları soru sayılmıyor", t_sahte_soru),
     ("madde 38 · başlıklı görsel tanınıyor, alt metni denetleniyor", t_gorsel_baslikli),
+    ("madde 48 · cümle bölücü kısaltma ve ondalığı koruyor", t_cumle_bolucu),
+    ("madde 47/49/50 · üslup kontrolleri tetikleniyor", t_uslup),
     ("madde 44 · kırık görsel yolu blokaj veriyor", t_gorsel_kirik_yol),
     ("madde 44 · SVG ev stili denetleniyor", t_gorsel_svg_stili),
     ("madde 22 · kelime içi tireler sayımı şişirmiyor", t_tire),

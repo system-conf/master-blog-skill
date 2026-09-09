@@ -48,6 +48,14 @@ VARSAYILAN = {
     "DIS_LINK_MAX": 2,      # fazlası dikkat dağıtır; B2B/SaaS'ta 3-4 makul
     "SORU_ORANI": 0.5,      # H2'lerin en az yarısı soru/karar başlığı (GEO)
     "PARA_MAX_KELIME": 90,  # üstü okunabilirliği düşürür; yerel hizmette 70
+    # --- üslup katmanı (Aşama 5.5) ---
+    # Bu dört eşik ÖLÇÜLMÜŞ değildir; bir saha ekibinin kendi korpusundan bildirdiği
+    # değerlerdir (bkz. kaynaklar.md → dış katkı). Projede kalibre edilmeleri beklenir.
+    "CUMLE_ORT_ALT": 10,    # altı telgraf üslubu
+    "CUMLE_ORT_UST": 18,    # üstü akademik
+    "CUMLE_SAPMA_MIN": 5,   # en kritik ölçüt: düşük sapma = tekdüze ritim
+    "UZUN_CUMLE_ORAN": 5,   # 25+ kelimelik cümlelerin yüzdesi, üst sınır
+    "KLISE_BIN_KELIME": 2,  # bin kelimede izin verilen üslup klişesi sayısı
 }
 E = dict(VARSAYILAN)        # yürürlükteki eşikler; main() içinde config ile güncellenir
 E_KAYNAK = "varsayılan"
@@ -70,6 +78,12 @@ def esikleri_yukle(yol=None):
         except Exception as e:
             print(f"HATA: '{a}' okunamadi: {e}", file=sys.stderr)
             sys.exit(2)
+        for alan, hedef in (("kliseler", KLISELER), ("yasak_acilis", YASAK_ACILIS)):
+            if alan in veri:
+                if not isinstance(veri[alan], list):
+                    print(f"HATA: '{a}' icinde {alan} liste olmali", file=sys.stderr)
+                    sys.exit(2)
+                hedef.extend(str(x) for x in veri.pop(alan))
         bilinmeyen = [k for k in veri if k not in VARSAYILAN]
         if bilinmeyen:
             print(f"HATA: '{a}' icinde bilinmeyen esik: {', '.join(bilinmeyen)}", file=sys.stderr)
@@ -220,6 +234,91 @@ def canli_denetle(url, r, title, desc, kelime):
                "render edilmiş gövdede yok — içerik JavaScript'te kalmış olabilir")
     elif kelime:
         r.ekle(40, "Hedef kelime render edildi", "gecti", "var")
+
+
+# --- üslup katmanı desenleri ---
+# Kaynak: saha geri bildirimi (SEKTÖR sınıfı). master-blog.toml ile genişletilebilir.
+YASAK_ACILIS = ["günümüzde", "bu yazıda", "ele alacağız", "büyük önem",
+                "sıkça sorulan", "hızla gelişen", "son yıllarda"]
+KLISELER = ["bu bağlamda", "bu çerçevede", "bu doğrultuda", "söz konusu",
+            "önemle belirtmek gerekir", "unutulmamalıdır ki", "şüphesiz",
+            "tartışmasız", "son derece", "ele alacağız", "inceleyeceğiz",
+            "gördüğümüz gibi", "devrim niteliğinde", "oyunun kurallarını değiştiren",
+            "çığır açan", "başarılar dileriz", "büyük önem taşımaktadır"]
+SIZ_DESEN = re.compile(r"\b(siz|sizin|size|sizi|sizce)\b|\w+(?:sınız|siniz|sunuz|sünüz)\b", re.I)
+SEN_DESEN = re.compile(r"\b(sen|senin|sana|seni|sence)\b|\w+(?:abilirsin|ebilirsin|malısın|melisin)\b", re.I)
+
+
+def cumlelere_bol(duz):
+    """Cümlelere böler. Kısaltma ve ondalık sayı yüzünden yanlış bölmeyi azaltır.
+    Tablo, kod bloğu ve başlıklar zaten govde_temizle ile düşülmüş olmalıdır."""
+    t = re.sub(r"\b(vb|vs|bkz|ör|Dr|Av|Prof|Doç|No|Sn)\.", r"\1<NOKTA>", duz)
+    t = re.sub(r"(\d)\.(\d)", r"\1<NOKTA>\2", t)
+    parcalar = re.split(r"(?<=[.!?])\s+(?=[A-ZÇĞİÖŞÜ\"'(])", t)
+    return [p.replace("<NOKTA>", ".").strip() for p in parcalar if len(p.split()) >= 3]
+
+
+def uslup_denetle(body, duz, r):
+    """Aşama 5.5 — üslup katmanının ölçülebilir maddeleri (47-50)."""
+    # 47 · açılış kalıbı
+    # İlk paragraf, ilk PROZA paragrafıdır. govde_temizle başlıkları silmiyor,
+    # yalnızca # işaretini boşluğa çeviriyor; başlık kalıntısını ilk paragraf sanmak
+    # kontrolü sessizce işlevsiz bırakıyordu.
+    proza = re.sub(r"^#{1,6}.*$", "", body, flags=re.M)
+    proza = re.sub(r"```.*?```", " ", proza, flags=re.S)
+    proza = re.sub(r"^\s*\|.*$|^!\[.*$|^>\s.*$", "", proza, flags=re.M)
+    paragraflar = [x.strip() for x in re.split(r"\n\s*\n", proza) if len(x.split()) >= 5]
+    ilk = tr_kucult(paragraflar[0]) if paragraflar else ""
+    yakalanan = [k for k in YASAK_ACILIS if k in ilk]
+    r.ekle(47, "Açılış kalıbı", "gecti" if not yakalanan else "uyari",
+           "somut açılış" if not yakalanan
+           else "klişe açılış: " + ", ".join(f"'{k}'" for k in yakalanan))
+
+    # 48 · cümle ritmi
+    cumleler = cumlelere_bol(duz)
+    uz = [len(c.split()) for c in cumleler]
+    if len(uz) < 10:
+        r.ekle(48, "Cümle ritmi", "atlandi", f"{len(uz)} cümle — ölçüm için az")
+    else:
+        ort = sum(uz) / len(uz)
+        sapma = (sum((x - ort) ** 2 for x in uz) / len(uz)) ** 0.5
+        uzun = sum(1 for x in uz if x >= 25) / len(uz) * 100
+        detay = f"ort {ort:.1f} · sapma {sapma:.1f} · 25+ %{uzun:.0f} ({len(uz)} cümle)"
+        sorun = []
+        if not (E["CUMLE_ORT_ALT"] <= ort <= E["CUMLE_ORT_UST"]):
+            sorun.append(f"ortalama {E['CUMLE_ORT_ALT']}-{E['CUMLE_ORT_UST']} bandı dışında")
+        if sapma < E["CUMLE_SAPMA_MIN"]:
+            sorun.append(f"sapma {E['CUMLE_SAPMA_MIN']} altında — tekdüze ritim")
+        if uzun > E["UZUN_CUMLE_ORAN"]:
+            sorun.append(f"uzun cümle oranı %{E['UZUN_CUMLE_ORAN']} üstünde")
+        r.ekle(48, "Cümle ritmi", "gecti" if not sorun else "uyari",
+               detay + ("" if not sorun else " → " + "; ".join(sorun)))
+
+    # 49 · üslup klişeleri
+    kw = kelime_say(duz) or 1
+    bulunan = {}
+    alcak = tr_kucult(duz)
+    for k in KLISELER:
+        n = alcak.count(tr_kucult(k))
+        if n:
+            bulunan[k] = n
+    toplam = sum(bulunan.values())
+    bin_basi = toplam / kw * 1000
+    r.ekle(49, "Üslup klişeleri", "gecti" if bin_basi <= E["KLISE_BIN_KELIME"] else "uyari",
+           f"{toplam} eşleşme · bin kelimede {bin_basi:.1f}"
+           + ("" if not bulunan else " → " + ", ".join(f"'{k}'×{n}" for k, n in
+                                                       sorted(bulunan.items(), key=lambda x: -x[1])[:4])))
+
+    # 50 · hitap tutarlılığı
+    siz = len(SIZ_DESEN.findall(duz))
+    sen = len(SEN_DESEN.findall(duz))
+    if siz + sen < 3:
+        r.ekle(50, "Hitap tutarlılığı", "gecti", "doğrudan hitap az kullanılmış")
+    else:
+        azinlik = min(siz, sen)
+        oran = azinlik / (siz + sen) * 100
+        r.ekle(50, "Hitap tutarlılığı", "gecti" if oran < 15 else "uyari",
+               f"siz {siz} · sen {sen}" + ("" if oran < 15 else " → ikisi karışmış"))
 
 
 GORSEL_UZANTI = {".webp", ".avif", ".png", ".jpg", ".jpeg", ".svg", ".gif"}
@@ -496,6 +595,7 @@ def main():
     tarih = next((fm[k] for k in TARIH_ALAN if fm.get(k)), "")
     r.ekle(0, "Yayın tarihi alanı", "gecti" if tarih else "uyari", tarih or "yok")
 
+    uslup_denetle(body, duz, r)
     gorselleri_denetle(a.dosya, gorseller, r)
 
     # --- 40 · canli URL: markdown'da dogru olan sablonda kaybolabilir ---
