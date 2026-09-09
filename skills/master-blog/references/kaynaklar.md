@@ -1,6 +1,15 @@
 # Kaynaklar ve Doğrulama Kaydı
 
-**Son doğrulama: 7 Eylül 2026** · Sonraki gözden geçirme: en geç 7 Aralık 2026
+**Son doğrulama: 9 Eylül 2026** · Sonraki gözden geçirme: en geç 9 Aralık 2026
+
+> **9 Eylül 2026 doğrulama kaydı — ne yapıldı:** Bu dosyadaki 34 ve terim sözlüğündeki 32
+> dış bağlantı `curl` ile denetlendi, **66'sı da 200** döndü. İki en oynak iddia birincil
+> kaynağından tekrar okundu: Search Console Generative AI raporu **hâlâ yalnızca gösterim**
+> veriyor (tıklama/TO/pozisyon yok), Google Arama Durum Panosu'nda **Eylül 2026'da başlayan
+> güncelleme yok**. Panoda kayıtlı olup bu dosyada eksik olan bir olay bulundu ve eklendi:
+> 18 Ağustos 2026 spam güncellemesi. Diğer maddeler (FAQ kaldırılması, Core Web Vitals
+> eşikleri, veri kırılmaları, llms.txt) tarihsel kayıtlardır; değişmedikleri bağlantı
+> denetimiyle teyit edildi, içerik olarak yeniden okunmadı.
 
 Bu skill'deki **zamana bağlı** her iddia burada kaynağına bağlanır. Amaç iki yönlü:
 (1) iddiaların denetlenebilmesi, (2) bilginin ne zaman tazelenmesi gerektiğinin görülmesi.
@@ -92,6 +101,8 @@ Karar vermeden önce ilgili sağlayıcının kendi tarayıcı sayfasına bak.
 | Güncelleme takviminin resmî kaydı (çekirdek, spam ve Discover güncellemeleri) | sürekli | BİRİNCİL | [Google Arama Durum Panosu](https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history) |
 | Mart 2026 çekirdek güncellemesi: 27 Mart 2026 başlangıç, 12 gün 4 saat sürdü | 27 Mart 2026 | BİRİNCİL | [Google Arama Durum Panosu](https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history) |
 | Mayıs 2026 çekirdek güncellemesi: 21 Mayıs 2026 başlangıç, 11 gün 21 saat sürdü | 21 Mayıs 2026 | BİRİNCİL | [Google Arama Durum Panosu](https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history) |
+| Ağustos 2026 spam güncellemesi: 18 Ağustos 2026 başlangıç, 2 gün 16 saat sürdü | 18 Ağustos 2026 | BİRİNCİL | [Google Arama Durum Panosu](https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history) |
+| Eylül 2026 içinde başlayan bir güncelleme yok | 9 Eylül 2026 | BİRİNCİL | [Google Arama Durum Panosu](https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history) |
 | Yeni sıralama sistemi getirilmedi; rehberlik aynı kaldı (yararlı, insan öncelikli içerik) | 2026 | BİRİNCİL | [Google — Core updates](https://developers.google.com/search/docs/appearance/core-updates) |
 
 **Sonuç:** İçerik ilkeleri değişmedi. Sıralama düşüşü teşhisinde, düşüşün bir çekirdek
@@ -99,7 +110,7 @@ güncelleme penceresine denk gelip gelmediği **ilk bakılacak şeydir**. Panoda
 çekirdek güncellemeler değil, spam ve Discover güncellemeleri de kayıtlıdır — tarih
 karşılaştırmasında hepsine bakılır.
 
-**Doğrulama notu (7 Eylül 2026):** Bu dosyadaki dış bağlantıların tamamı `curl` ile
+**Doğrulama notu (9 Eylül 2026):** Bu dosyadaki dış bağlantıların tamamı `curl` ile
 kontrol edilmiş ve 200 döndüğü doğrulanmıştır.
 
 ## 8. Dış katkılar

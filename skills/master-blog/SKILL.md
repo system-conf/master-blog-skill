@@ -4,9 +4,9 @@ description: "Herhangi bir web projesi için uçtan uca blog/içerik üretir: ve
 argument-hint: "[konu | hedef kelime | mevcut yazı yolu] (boşsa veriden aday çıkarır)"
 license: MIT
 metadata:
-  surum: "1.10.0"
-  bilgi-tazeligi: "2026-09-08"
-  sonraki-gozden-gecirme: "2026-12-08"
+  surum: "1.10.1"
+  bilgi-tazeligi: "2026-09-09"
+  sonraki-gozden-gecirme: "2026-12-09"
 allowed-tools: >-
   Read Glob Grep WebSearch AskUserQuestion
   Bash(python3 *kontrol.py *) Bash(python3 *surum-kontrol.py*)

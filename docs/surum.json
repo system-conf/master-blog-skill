@@ -1,7 +1,7 @@
 {
-  "surum": "1.10.0",
-  "bilgi_tazeligi": "2026-09-08",
-  "sonraki_gozden_gecirme": "2026-12-08",
+  "surum": "1.10.1",
+  "bilgi_tazeligi": "2026-09-09",
+  "sonraki_gozden_gecirme": "2026-12-09",
   "kontrol_maddesi": 53,
   "terim_sayisi": 66,
   "degisiklikler_url": "https://github.com/system-conf/master-blog-skill/blob/main/CHANGELOG.md",

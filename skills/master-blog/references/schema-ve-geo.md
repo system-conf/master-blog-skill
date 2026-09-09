@@ -1,6 +1,6 @@
 # Yapılandırılmış Veri ve AI Motoru Optimizasyonu
 
-> **Son doğrulama: 7 Eylül 2026.** Bu dosyadaki zamana bağlı iddiaların kaynakları
+> **Son doğrulama: 9 Eylül 2026.** Bu dosyadaki zamana bağlı iddiaların kaynakları
 > `kaynaklar.md` dosyasındadır. Yapılandırılmış veri ve AI arama tarafı hızlı değişiyor;
 > 3 aydan eski bir doğrulamayla çalışıyorsan önce kaynakları tazele.
 

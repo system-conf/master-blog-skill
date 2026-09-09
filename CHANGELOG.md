@@ -3,6 +3,19 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/), sürümleme
 [SemVer](https://semver.org/lang/tr/).
 
+## [1.10.1] — 2026-09-09
+
+### Doğrulandı
+- **Kaynak kaydı yeniden doğrulandı; bilgi tazeliği 8 Eylül → 9 Eylül.** Tarih kendiliğinden
+  ilerlemedi — 2. kırmızı çizgi ("sahte tazelik yok") gereği önce iş yapıldı:
+  `kaynaklar.md`'deki 34 ve terim sözlüğündeki 32 dış bağlantı denetlendi (**66'sı da 200**),
+  iki oynak iddia birincil kaynağından tekrar okundu (Search Console Generative AI raporu
+  hâlâ yalnızca gösterim veriyor; Eylül 2026'da başlayan güncelleme yok).
+- **Eksik olay eklendi:** 18 Ağustos 2026 spam güncellemesi Google Arama Durum Panosu'nda
+  kayıtlıydı ama bizim kaydımızda yoktu.
+- `kaynaklar.md`'ye **doğrulama kaydı** bölümü: neyin yeniden okunduğu, neyin yalnızca
+  bağlantı denetimiyle teyit edildiği açıkça yazılı.
+
 ## [1.10.0] — 2026-09-09
 
 Dış saha geri bildirimi üzerine **Aşama 5.5 — Üslup** katmanı eklendi. Katkı,

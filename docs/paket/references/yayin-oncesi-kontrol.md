@@ -1,6 +1,6 @@
 # Yayın Öncesi Kontrol Listesi (53 madde)
 
-> Son gözden geçirme: 8 Eylül 2026.
+> Son gözden geçirme: 9 Eylül 2026.
 >
 > **Önce `scripts/kontrol.py` çalıştırılır.** Aşağıdaki maddelerden 14, 15, 16, 17, 18,
 > 19, 20, 21, 22, 25, 27, 33, 34, 35, 36 ve 38 mekanik olarak ölçülür — script'in verdiği
