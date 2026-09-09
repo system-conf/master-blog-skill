@@ -4,6 +4,7 @@
 Cikis kodlari: 0 basarili · 1 veri/dogrulama hatasi · 2 ortam hatasi (node yok vb.)
 """
 import json, re, subprocess, pathlib, sys
+from datetime import date
 
 ROOT    = pathlib.Path(__file__).parent
 SKILL   = ROOT / "skills" / "master-blog"
@@ -599,9 +600,21 @@ def main():
     # (b) skill'in kendi "sahte tazelik yok" kuralını çiğner.
     # Git yoksa alan tamamen atlanır — yanlış tarih yazmaktansa yazmamak doğrudur.
     def son_degisiklik(*yollar_):
+        """Kaynagin son ANLAMLI degisiklik tarihi.
+
+        Tuzak: yalnizca 'git log -1' kullanmak build'i deterministik OLMAKTAN CIKARIR.
+        Yerelde commit'ten ONCE build alinir (eski tarih), CI ayni kaynagi commit'ten
+        SONRA build eder (yeni tarih) -> cikti tutmaz. CI bunu yakaladi.
+        Cozum: dosyada commit'lenmemis degisiklik varsa bugun, yoksa son commit tarihi.
+        Ikisi de ayni commit icin ayni sonucu verir."""
         tarihler = []
         for yol in yollar_:
             try:
+                kirli = subprocess.run(["git", "status", "--porcelain", "--", yol],
+                                       capture_output=True, text=True, cwd=ROOT)
+                if kirli.returncode == 0 and kirli.stdout.strip():
+                    tarihler.append(date.today().isoformat())
+                    continue
                 p = subprocess.run(["git", "log", "-1", "--format=%cs", "--", yol],
                                    capture_output=True, text=True, cwd=ROOT)
                 if p.returncode == 0 and p.stdout.strip():
