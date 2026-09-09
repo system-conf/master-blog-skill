@@ -1,0 +1,26 @@
+{
+  "slug": "turkce-icerikte-seo-araclari-nerede-yaniliyor",
+  "url": "https://system-conf.github.io/master-blog-skill/blog/turkce-icerikte-seo-araclari-nerede-yaniliyor/",
+  "hedef_sorgu": "türkçe seo aracı ölçüm hatası",
+  "yayin": "2026-09-09",
+  "kontrol_grubu": [
+    "blog/yapay-zeka-icerigi-neden-siralanmiyor",
+    "terim/okunabilirlik",
+    "terim/kelime-istifleme",
+    "terim/ince-icerik"
+  ],
+  "noktalar": {
+    "14": {
+      "tarih": "2026-09-23",
+      "veri": null
+    },
+    "28": {
+      "tarih": "2026-10-07",
+      "veri": null
+    },
+    "90": {
+      "tarih": "2026-12-08",
+      "veri": null
+    }
+  }
+}
